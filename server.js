@@ -17,7 +17,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 60, // 1 hour
+    maxAge: 1000 * 60 * 60,
     httpOnly: true,
     sameSite: "lax"
   }
@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* =========================
-   STATIC FILES (SPA READY)
+   STATIC FILES
 ========================= */
 app.use(express.static("public"));
 app.use("/pages", express.static("public/pages"));
