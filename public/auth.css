@@ -5,6 +5,11 @@
     font-family: 'Poppins', sans-serif;
 }
 
+:root {
+    --fb-bg: #1877f2;
+    --fb-hover-bg: #1468d6;
+}
+
 body {
     height: 100vh;
     display: flex;
@@ -12,7 +17,7 @@ body {
     align-items: center;
 
     background: linear-gradient(to bottom,
-            #303641 50%,
+            var(--fb-bg) 50%,
             rgb(243, 243, 243) 50%);
 }
 
@@ -36,7 +41,7 @@ body {
 /* Title */
 .loginCard h2 {
     margin-bottom: 5px;
-    color: #303641;
+    color: var(--fb-bg);
 }
 
 .subtitle {
@@ -68,7 +73,7 @@ body {
 }
 
 .form-group input:focus {
-    border-color: #303641;
+    border-color: var(--fb-bg);
     box-shadow: 0 0 0 2px rgba(48, 54, 65, 0.1);
 }
 
@@ -105,7 +110,7 @@ button i {
     width: 100%;
     padding: 10px;
     border: none;
-    background: #303641;
+    background: var(--fb-bg);
     color: white;
     border-radius: 6px;
     cursor: pointer;
@@ -116,7 +121,7 @@ button i {
 }
 
 .loginCard #login:hover {
-    background: #485161;
+    background: var(--fb-hover-bg);
 }
 
 .loginCard .quest {
@@ -129,9 +134,9 @@ button i {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
-    border: 1px solid #303641;
+    border: 1px solid var(--fb-bg);
     background: transparent;
-    color: #303641;
+    color: var(--fb-bg);
     cursor: pointer;
     font-size: 14px;
     transition: 0.2s;
@@ -139,7 +144,7 @@ button i {
 }
 
 .loginCard #contactAgent:hover {
-    background: #303641;
+    background: var(--fb-hover-bg);
     color: white;
 }
 

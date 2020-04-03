@@ -1,144 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+<div class="cards">
+  <div class="card blue">
+    <h3>Total Items</h3>
+    <p id="total"></p>
+  </div>
 
-<body>
-    <!-- GLOBAL LOADING -->
-    <div id="dashboard-loading">
-        <div class="loader"></div>
-        <p>Loading...</p>
-    </div>
+  <div class="card light">
+    <h3>Borrowed</h3>
+    <p id="borrowed"></p>
+  </div>
+</div>
 
-    <div class="dashboard-wrapper">
-        <h2 class="title">Dashboard Overview</h2>
-        <p class="title-p">Track appointments, customer statistics, and recent activities.</p>
+<div class="table-container">
+  <h3>Recent Logs</h3>
+  <table id="logsTableUI">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Borrower</th>
+        <th>Date Borrowed</th>
+        <th>Status</th>
+      </tr>
+    </thead>
 
-
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-
-            <div class="stat-card total-customer">
-                <div class="icon"><i class="fa-solid fa-users"></i></div>
-                <div>
-                    <h3>TOTAL<br>CLIENTS</h3>
-                    <p id="total-customers"></p>
-                </div>
-            </div>
-
-            <div class="stat-card total-appointments">
-                <div class="icon"><i class="fa-solid fa-calendar-check"></i></div>
-                <div>
-                    <h3>TOTAL<br>SCHEDULES</h3>
-                    <p id="total-appointments"></p>
-                </div>
-            </div>
-
-            <div class="stat-card upcoming-today">
-                <div class="icon"><i class="fa-solid fa-clock"></i></div>
-                <div>
-                    <h3>UPCOMING<br>TODAY</h3>
-                    <p id="upcoming-today"></p>
-                </div>
-            </div>
-
-            <div class="stat-card pending-approval">
-                <div class="icon"><i class="fa-solid fa-hourglass-half"></i></div>
-                <div>
-                    <h3>PENDING<br>APPROVALS</h3>
-                    <p id="pending-appointments"></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chart -->
-        <div class="chart-container">
-            <div class="labAndBut">
-                <h3 id="chartLabel"></h3>
-                <img id="cType" src="/graphics/bar.svg" data-type="bar">
-            </div>
-            <div class="chart-filters">
-                <p>Filters:</p>
-                <select id="yearFilter"></select>
-                <select id="monthFilter"></select>
-                <select id="weekFilter"></select>
-            </div>
-
-            <canvas id="appointmentsChart"></canvas>
-        </div>
-
-
-        <!-- Recent Appointments -->
-        <div class="recent-activity">
-            <h3 id="recentApp">Recent Appointments</h3>
-            <table id="recentTable">
-                <thead>
-                    <tr>
-                        <th>Customer</th>
-                        <th>Date</th>
-                        <th>Last Update</th>
-                        <th>Status/Action</th>
-                    </tr>
-                </thead>
-                <tbody id="recent-appointments"></tbody>
-            </table>
-        </div>
-
-        <div id="modal" class="modal" style="display:none">
-            <div class="modal-content">
-                <div class="counter" id="counter">0</div>
-                <div class="modalControls">
-                    <span id="close-modal">&times;</span>
-                    <h3 id="txtLabel"></h3>
-                    <input type="text" class="searchClient" id="modal-search" placeholder="Search Client..." />
-
-                    <select id="modal-status-filter" style="display:none">
-                        <option value="">All</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                    </select>
-
-                    <div class="limitCont">
-                        <p>Show</p>
-                        <select id="modal-limit">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                        </select>
-                        <p>entries</p>
-                    </div>
-                </div>
-                <div class="centContainerModal">
-                    <div class="tableContModal">
-                        <div id="modal-body"></div>
-
-                        <div id="modal-pagination">
-                            <button id="modal-prev">Prev</button>
-                            <span id="modal-page-info">Page 1</span>
-                            <button id="modal-next">Next</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div id="msgBox" class="msgBox">
-            <div class="msgContent">
-                <h3 id="msgTitle"></h3>
-                <p id="msgText"></p>
-
-                <div id="msgBtns">
-                    <button id="msgOk">Confirm</button>
-                    <button id="msgCancel">Close</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="msgSuccess">
-            <h3 id="successTitle"></h3>
-            <p id="successText"></p>
-        </div>
-    </div>
-</body>
-
-</html>
+    <tbody id="logsTable"></tbody>
+  </table>
+</div>

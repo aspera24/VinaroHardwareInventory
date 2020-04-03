@@ -1,131 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title id="browserTitle"></title>
+    <title>Hardware Inventory</title>
     <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/app-tab-mob.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <link rel="stylesheet" href="/pages/css/dashboard.css">
-    <link rel="stylesheet" href="/pages/css/dashboard-tab-mob.css">
-    <link rel="stylesheet" href="/pages/css/add-customer.css">
-    <link rel="stylesheet" href="/pages/css/add-customer-tab-mob.css">
-    <link rel="stylesheet" href="/pages/css/appointments.css">
-    <link rel="stylesheet" href="/pages/css/appointments-tab-mob.css">
-    <link rel="stylesheet" href="/pages/css/settings.css">
-    <link rel="stylesheet" href="/pages/css/settings-tab-mob.css">
-    <link rel="stylesheet" href="/pages/css/update.css">
-    <link rel="stylesheet" href="/pages/css/update-tab-mob.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-    <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <!-- For DataTable -->
-    <link rel="stylesheet"
-        href="https://bplc-staff.doitcebutech.com/assets/dashboard/vendor-css/jquery.dataTables.min.css">
-    <!-- <script src="//cdn.datatables.net/2.3.6/js/dataTables.min.js"></script> -->
-    <script
-        src="https://bplc-staff.doitcebutech.com/assets/dashboard/vendor-js/1.10.19jquery.dataTables.min.js"></script>
-    <script
-        src="https://bplc-staff.doitcebutech.com/assets/dashboard/vendor-js/1.10.18query.dataTables.min.js"></script>
-    <script
-        src="https://bplc-staff.doitcebutech.com/assets/dashboard/vendor-js/1.10.19dataTables.bootstrap4.min.js"></script>
-    <script src="https://bplc-staff.doitcebutech.com/assets/dashboard/vendor-js/dataTables.responsive.min.js"></script>
-
-
-    <!-- For Screenshot -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="gospel">
-            <div class="headGos">
-                <i id="ss">†</i>
-                <h2 id="g-title">Title</h2>
-            </div>
-            <p id="g-content">Loading...</p>
+    <!-- TOP NAVBAR -->
+    <header class="topbar">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button class="menuBtn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <h2 data-page="dashboard" onclick="navigate('dashboard', this)">🔧 Vinaro Inventory</h2>
         </div>
 
-        <button id="nav-toggle">
-            <i class="fa-solid fa-bars"></i>
+        <button class="logoutBtn" onclick="logout()">Logout</button>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <button data-page="dashboard" onclick="navigate('dashboard', this)">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
         </button>
 
-        <nav id="sidebar">
+        <button data-page="inventory" onclick="navigate('inventory', this)">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>Inventory</span>
+        </button>
 
-            <h2 id="webName" onclick="navigate('dashboard')">CUSTOMER SERVICE</h2>
+        <button data-page="borrow" onclick="navigate('borrow', this)">
+            <i class="fa-solid fa-hand-holding"></i>
+            <span>Borrow</span>
+        </button>
 
-            <div class="sidebarMenu">
-                <ul>
-                    <li>
-                        <a id="dashboard" onclick="navigate('dashboard')">
-                            <i class="fa-solid fa-chart-line"></i><span>Dashboard</span>
-                        </a>
-                    </li>
+        <button data-page="logs" onclick="navigate('logs', this)">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Logs</span>
+        </button>
+    </aside>
 
-                    <li>
-                        <a id="add_customer" onclick="navigate('add-customer')">
-                            <i class="fa-solid fa-user-plus"></i><span>Add Customer</span>
-                        </a>
-                    </li>
+    <!-- CONTENT -->
+    <main class="content">
+        <div id="appContent"></div>
+    </main>
 
-                    <li>
-                        <a id="appointments" onclick="navigate('appointments')">
-                            <i class="fa-solid fa-calendar-check"></i><span>Appointments</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="settings" onclick="navigate('settings')">
-                            <i class="fa-solid fa-gear"></i><span>Settings</span>
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="userCont">
-                    <h4 id="uName"></h4>
-                    <input id="logout" type="button" value="Sign Out">
-                </div>
-            </div>
-
-            
-        </nav>
-
-        <div id="main-content"></div>
-    </div>
-
-
-    <div id="msgBox1" class="msgBox1">
-        <div class="msgContent1">
-            <h3 id="msgTitle1"></h3>
-            <p id="msgText1"></p>
-
-            <div id="msgBtns1">
-                <button id="msgOk1">Confirm</button>
-                <button id="msgCancel1">Close</button>
-            </div>
-        </div>
-    </div>
-
-
-    <script src="/socket.io/socket.io.js"></script>
     <script src="/app.js"></script>
-
-
 </body>
 
 </html>

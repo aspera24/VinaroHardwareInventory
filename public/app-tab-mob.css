@@ -1,77 +1,12 @@
-/* Responsive: Tablets & Phones */
-@media (max-width: 1770px) {
-    .gospel {
-        display: none;
-    }
+/* DEFAULT: visible on desktop */
+.sidebar.hide {
+    transform: translateX(-100%);
 }
 
-@media (max-width: 1645px) {
-    nav {
-        background: #303641;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-        height: 100%;
-        flex-shrink: 0;
-        z-index: 1000;
-        transition: all 0.3s ease-in-out;
-    }
-
-    nav h2 {
-        font-size: 12px;
-        padding: 10px;
-        text-align: center;
-        width: 100%;
-    }
-
-
-    nav i {
-        margin-right: 5px;
-    }
-
-    nav ul li a {
-        font-size: 10px;
-    }
-
-    .profileCont {
-        position: absolute;
-        right: 20px;
-        top: 10px;
-        background: #303641;
-        height: 40px;
-        width: auto;
-        display: flex;
-        align-items: center;
-        z-index: 1002;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .profileCont img {
-        height: 30px;
-        width: 30px;
-    }
-
-    .profileCont p {
-        display: none;
-    }
-
-    .profileCont:hover>p {
-        color: rgb(126, 206, 255);
-    }
-
-
-    .hide-browser-bar {
-        height: 100vh;
-        overflow: hidden;
-    }
-
+.menuBtn.hide {
+    display: none;
 }
 
-@media (max-height: 630px) {
-    #sidebar { 
-        overflow-y: scroll;
-    }
+.content.slide {
+    margin-left: 0;
 }

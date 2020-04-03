@@ -1,308 +1,112 @@
-let dashboard = document.getElementById('dashboard');
-let add_customer = document.getElementById('add_customer');
-let appointments = document.getElementById('appointments');
-let settings = document.getElementById('settings');
-let browserTitle = document.getElementById('browserTitle');
-let webName = document.getElementById('webName');
-let logout = document.getElementById('logout');
-const msgBox = document.getElementById("msgBox1");
-const msgTitle = document.getElementById("msgTitle1");
-const msgText = document.getElementById("msgText1");
-const msgBtns = document.getElementById("msgBtns1");
-const msgOk = document.getElementById("msgOk1");
-const msgCancel = document.getElementById("msgCancel1");
-let uName = document.getElementById("uName");
+const appContent = document.getElementById("appContent");
+appContent.innerHTML = "Loading...";
 
-window.socket = io();
+// VALID PAGES
+const validPages = ["dashboard", "inventory", "borrow", "logs"];
 
-function getAdminPath() {
-    const parts = location.pathname.split("/");
-    // example: ["", "admin-rodel", "page", "dashboard"]
-    return parts[1];
-}
+// SPA ROUTER CORE
+async function loadPage(page, addToHistory = true) {
+    try {
+        const res = await fetch(`/pages/html/${page}.html`);
+        const html = await res.text();
 
-let fullName = localStorage.getItem("fullName");
-let accountType = localStorage.getItem("accountType");
-console.log(accountType);
+        appContent.innerHTML = html;
 
-uName.textContent = `Hi, ${fullName} (${accountType})`;
+        // load JS of page
+        loadScript(page);
 
-function showMsg(title, text, confirmFn = null) {
-
-    msgTitle.innerText = title;
-    msgText.innerText = text;
-
-    msgBox.style.display = "flex";
-
-    if (confirmFn) {
-        msgBtns.style.display = "block";
-
-        msgOk.onclick = () => {
-            msgBox.style.display = "none";
-            confirmFn();
-        };
-
-        msgCancel.onclick = () => {
-            msgBox.style.display = "none";
-        };
-
-    } else {
-
-        msgBtns.style.display = "none";
-
-        setTimeout(() => {
-            msgBox.style.display = "none";
-        }, 3000);
-    }
-}
-
-let lastScrollTop = 0;
-const mainContent = document.getElementById("main-content");
-
-mainContent.addEventListener("scroll", () => {
-    let st = mainContent.scrollTop;
-
-    if (st > lastScrollTop) {
-        // scrolling DOWN
-        document.body.classList.add("hide-browser-bar");
-    } else {
-        // scrolling UP
-        document.body.classList.remove("hide-browser-bar");
-    }
-
-    lastScrollTop = st <= 0 ? 0 : st;
-});
-
-
-const toggleBtn = document.getElementById("nav-toggle");
-const container = document.querySelector(".container");
-
-function updateNavByScreen() {
-    if (window.innerWidth <= 1900) {
-        container.classList.add("nav-hidden");
-    } else {
-        container.classList.remove("nav-hidden");
-    }
-
-    updateToggleIcon();
-}
-
-function updateToggleIcon() {
-    toggleBtn.innerHTML = container.classList.contains("nav-hidden")
-        ? '<i class="fa-solid fa-chevron-right"></i>'
-        : '<i class="fa-solid fa-chevron-left"></i>';
-}
-
-// Initial check
-updateNavByScreen();
-
-// On resize
-window.addEventListener("resize", updateNavByScreen);
-
-// Toggle click
-toggleBtn.addEventListener("click", () => {
-    container.classList.toggle("nav-hidden");
-    updateToggleIcon();
-});
-
-
-logout.addEventListener("click", () => {
-
-    showMsg("Confirmation",
-        "Please confirm if you want to logout.",
-        () => {
-            window.location.href = "/logout";
-        }
-    )
-
-});
-
-
-let menuItems = [webName, dashboard, add_customer, appointments, settings];
-
-function setActive(page) {
-    menuItems.forEach(item => {
-        item.parentElement.classList.remove("active");
-    });
-
-    let activeItem;
-
-    if (page === 'dashboard' || page === 'webName') {
-        activeItem = dashboard;
-    } else if (page === 'add-customer') {
-        activeItem = add_customer;
-    } else if (page === 'appointments') {
-        activeItem = appointments;
-    } else if (page === 'settings') {
-        activeItem = settings;
-    }
-
-    if (activeItem) {
-        activeItem.parentElement.classList.add("active");
-    }
-
-    var pageName = page.split("-")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join("-");
-
-    browserTitle.textContent = pageName;
-
-    // FOR SCREENSHOT
-    const printBtn = document.getElementById("ss");
-
-    printBtn.addEventListener("click", () => {
-        window.print();
-    });
-}
-
-function loadPage(page) {
-    fetch(`/pages/html/${page}.html`)
-        .then(res => res.text())
-        .then(html => {
-            let main = document.getElementById("main-content");
-            main.innerHTML = html;
-
-            // Remove old script
-            let old = document.getElementById('page-script');
-            if (old) old.remove();
-
-            // Load new page script
-            let script = document.createElement("script");
-            script.src = `/pages/js/${page}.js`;
-            script.id = "page-script";
-            document.body.appendChild(script);
-        });
-
-    setActive(page);
-}
-
-
-
-let validRoutes = ["webName", "dashboard", "add-customer", "appointments", "profile", "settings", "update"];
-
-function router() {
-    const parts = location.pathname.split("/");
-    const admin = parts[1];
-    const pageIndex = parts.indexOf("page");
-    const mainRoute = pageIndex !== -1 ? parts[pageIndex + 1] : "dashboard";
-    const segments = parts.slice(pageIndex + 1);
-
-    // --- SETTINGS ROUTE ---
-    if (mainRoute === "settings") {
-        loadPage("settings");
-        setActive("settings");
-
-        const tab = segments[1] || "modify-account";
-
-        setTimeout(() => {
-            updateSettingsLinks(); // update URLs for tabs
-            const link = document.querySelector(`.settings-menu a[data-page="${tab}"]`);
-            if (link) link.click();
-        }, 50);
-
-        return;
-    }
-
-    // --- APPOINTMENTS UPDATE / PROFILE ROUTES ---
-    let page = mainRoute;
-
-    if (mainRoute === "appointments") {
-        if (segments[1] === "update") {
-            page = "update";
-            // Optional: handle query params
-            const searchParams = new URLSearchParams(window.location.search);
-            const id = searchParams.get("id");
-            // now you can pass `id` to your update page JS
-            setTimeout(() => {
-                if (window.loadUpdatePage) window.loadUpdatePage(id);
-            }, 50);
+        // update URL without reload
+        if (addToHistory) {
+            const username = window.location.pathname.split("/")[1];
+            history.pushState({}, "", `/${username}/page/${page}`);
         }
 
-        if (segments[1] === "profile") {
-            page = "profile";
-        }
+        // highlight active button
+        setActiveByPage(page);
+
+    } catch (err) {
+        appContent.innerHTML = "<h2>404 - Page Not Found</h2>";
     }
+}
 
-    if (!validRoutes.includes(page)) {
-        document.getElementById("main-content").innerHTML = `
-            <h2 style="color:red;">400 Bad Request</h2>
-            <p>Invalid route.</p>
-        `;
-        return;
-    }
+// LOAD PAGE JS FILES
+function loadScript(page) {
+    const oldScript = document.getElementById("pageScript");
+    if (oldScript) oldScript.remove();
 
-    loadPage(page);
+    const script = document.createElement("script");
+    script.src = `/pages/js/${page}.js`;
+    script.id = "pageScript";
 
-    if (page === "profile" || page === "update") {
-        setActive("appointments");
+    script.onerror = () => {
+        console.error("Failed to load JS for:", page);
+    };
+
+    document.body.appendChild(script);
+}
+
+// SIDEBAR ACTIVE STATE
+function setActiveByPage(page) {
+    document.querySelectorAll(".sidebar button").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.page === page);
+    });
+}
+
+// NAVIGATION (CLICK)
+window.navigate = function (page, btn) {
+    loadPage(page, true);
+};
+
+// BACK / FORWARD SUPPORT
+window.onpopstate = () => {
+    const path = window.location.pathname.split("/").pop();
+
+    const page = validPages.includes(path) ? path : "dashboard";
+    loadPage(page, false);
+};
+
+// INITIAL LOAD (DEEP LINK)
+window.onload = () => {
+    const path = window.location.pathname.split("/").pop();
+
+    const page = validPages.includes(path) ? path : "dashboard";
+
+    loadPage(page, false);
+};
+
+/* =========================
+   GLOBAL HELPERS
+========================= */
+window.API = "";
+
+window.formatDate = function (date) {
+    return new Date(date).toLocaleString();
+};
+
+
+const sidebar = document.querySelector(".sidebar");
+const content = document.querySelector(".content");
+const menu = document.querySelector(".menuBtn");
+
+function handleSidebarResize() {
+    if (window.innerWidth <= 1040) {
+        sidebar.classList.add("hide"); // auto hide
+        content.classList.add("slide");
+        menu.classList.remove("hide");
     } else {
-        setActive(page);
+        sidebar.classList.remove("hide"); // auto show
+        content.classList.remove("slide");
+        menu.classList.add("hide");
     }
 }
 
-function updateMenuLinks() {
-
-    const admin = getAdminPath();
-
-    dashboard.href = `/${admin}/page/dashboard`;
-    add_customer.href = `/${admin}/page/add-customer`;
-    appointments.href = `/${admin}/page/appointments`;
-    settings.href = `/${admin}/page/settings`;
-
+function toggleSidebar() {
+    sidebar.classList.toggle("hide");
+    content.classList.toggle("slide");
 }
 
-updateMenuLinks();
+// run on load
+window.addEventListener("load", handleSidebarResize);
 
-
-function updateSettingsLinks() {
-    const admin = getAdminPath();
-
-    const links = document.querySelectorAll(".settings-menu a");
-
-    links.forEach(link => {
-
-        const page = link.dataset.page;
-
-        link.href = `/${admin}/page/settings/${page}`;
-
-        link.addEventListener("click", e => {
-            e.preventDefault();
-
-            history.pushState({}, "", `/${admin}/page/settings/${page}`);
-
-            activateSettingsTab(page);
-        });
-
-    });
-}
-
-
-function navigate(page) {
-
-    if (!validRoutes.includes(page)) {
-        alert("Invalid route!");
-        return;
-    }
-
-    const adminPath = getAdminPath();
-
-    window.location.href = `/${adminPath}/page/${page}`;
-}
-
-
-window.addEventListener("load", router);
-window.addEventListener("popstate", router);
-
-
-// --- Daily Verse ---
-fetch('https://beta.ourmanna.com/api/v1/get?format=json&order=daily')
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('g-title').innerText = data.verse.details.reference;
-        document.getElementById('g-content').innerText = data.verse.details.text;
-    })
-    .catch(err => {
-        console.error(err);
-        document.getElementById('g-content').innerText = 'Failed to load verse.';
-    });
-
+// run every resize
+window.addEventListener("resize", handleSidebarResize);
