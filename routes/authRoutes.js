@@ -4,8 +4,7 @@ const db = require("../config/db.config");
 
 function handleAuth(req, res) {
     console.log(`Session Expires: ${req.session.cookie.expires}`);
-    if (req.session.admin) {
-        console.log("Admin already logged in:", req.session.admin);
+    if (req.session.admin && req.path === "/auth") {
         return res.redirect(`/${req.session.admin}/page/dashboard`);
     }
 
@@ -17,6 +16,13 @@ function handleAuth(req, res) {
 router.get("/", handleAuth);
 router.get("/auth", handleAuth);
 
+router.get("/auth/check", (req, res) => {
+    if (req.session.admin) {
+        res.json({ authenticated: true });
+    } else {
+        res.status(401).json({ authenticated: false });
+    }
+});
 
 router.post("/login", (req, res) => {
 

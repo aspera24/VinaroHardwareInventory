@@ -4,16 +4,23 @@ const requireAuth = require("../middleware/authMiddleware");
 const path = require("path");
 
 
-router.get("/:username/page/*", requireAuth, (req, res) => {
+const validPages = ["dashboard", "inventory", "borrow", "logs"];
 
-  const { username } = req.params;
+router.get("/:username/page/:page", (req, res) => {
+    const { username, page } = req.params;
 
-  if (username !== req.session.admin) {
-    return res.status(404).send("Invalid admin");
-  }
+    // INVALID PAGE
+    if (!validPages.includes(page)) {
+        return res.status(404).send("404 Page Not Found");
+    }
 
-  res.sendFile(process.cwd() + "/public/app.html");
+    // NOT LOGGED IN
+    if (!req.session.admin || req.session.admin !== username) {
+        return res.redirect("/auth");
+    }
 
+    // VALID → serve main SPA
+    res.sendFile(process.cwd() + "/public/app.html");
 });
 
 router.get("/:username/profile", requireAuth, (req, res) => {

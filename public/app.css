@@ -42,12 +42,23 @@ body {
   align-items: center;
 }
 
+.menuBtn {
+  cursor: pointer;
+}
+
 .logoutBtn {
   background: white;
   border: none;
-  padding: 8px 15px;
+  padding: 4px 10px;
   border-radius: 6px;
   cursor: pointer;
+  color: var(--fb-bg);
+  font-size: 12px;
+  transition: .1s all ease-in-out;
+}
+
+.logoutBtn:hover {
+  transform: scale(1.08);
 }
 
 
@@ -66,16 +77,19 @@ body {
   transition: .2s all ease-in-out;
 }
 
-.sidebar button {
+.sidebar a {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   margin-bottom: 5px;
   border: none;
+  font-size: 12px;
   background: #f0f2f5;
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
   display: flex;
+  text-decoration: none;
+  color: inherit;
   align-items: center;
   gap: 10px;
   transition: background 0.2s ease;
@@ -86,16 +100,16 @@ body {
   text-align: center;
 }
 
-.sidebar button.active {
+.sidebar a.active {
   background: #1877f2;
   color: white;
 }
 
-.sidebar button.active i {
+.sidebar a.active i {
   color: #fff;
 }
 
-.sidebar button:hover:not(.active) {
+.sidebar a:hover:not(.active) {
   background: #d5dfec;
 }
 
@@ -106,15 +120,6 @@ body {
   flex: 1;
   transition: .2s all ease-in-out;
 }
-
-section {
-  display: none;
-}
-
-section.active {
-  display: block;
-}
-
 
 /* FORM */
 .form {
@@ -131,7 +136,7 @@ section.active {
   flex: 1;
 }
 
-.form button {
+.form a {
   background: #1877f2;
   color: white;
   border: none;

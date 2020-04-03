@@ -1,6 +1,8 @@
 async function loadBorrowPage() {
     const itemsRes = await fetch("/items", { credentials: "include" });
     const items = await itemsRes.json();
+    console.log(items);
+
 
     const select = document.getElementById("itemSelect");
     select.innerHTML = items
@@ -9,6 +11,7 @@ async function loadBorrowPage() {
         .join("");
 
     loadLogs();
+    console.log(document.getElementById("itemSelect"));
 }
 
 async function borrowItem() {

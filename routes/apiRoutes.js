@@ -4,6 +4,22 @@ module.exports = (io) => {
   const db = require("../config/db.config");
   const requireAuth = require("../middleware/authMiddleware");
 
+  // GET borrowers
+  router.get("/borrower", requireAuth, (req, res) => {
+    db.query(`SELECT * FROM borrowers`, (err, result) => {
+      if (err) return res.status(500).json(err);
+
+      const formatted = result.map(r => {
+        if (r.profile) {
+          r.profile = `data:image/jpeg;base64,${r.profile.toString("base64")}`;
+        }
+        return r;
+      });
+
+      res.json(formatted);
+    });
+  });
+
   // GET items
   router.get("/items", requireAuth, (req, res) => {
     db.query(`

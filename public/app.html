@@ -2,16 +2,17 @@
 <html>
 
 <head>
-    <title>Hardware Inventory</title>
+    <title id="browser-title"></title>
     <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/app-tab-mob.css">
     <link rel="stylesheet" href="/pages/css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -19,36 +20,36 @@
     <!-- TOP NAVBAR -->
     <header class="topbar">
         <div style="display:flex; align-items:center; gap:10px;">
-            <button class="menuBtn" onclick="toggleSidebar()">
+            <a class="menuBtn" onclick="toggleSidebar()">
                 <i class="fa-solid fa-bars"></i>
-            </button>
+            </a>
             <h2 data-page="dashboard" onclick="navigate('dashboard', this)">🔧 Vinaro Inventory</h2>
         </div>
 
-        <button class="logoutBtn" onclick="logout()">Logout</button>
+        <a class="logoutBtn" onclick="logout()">Logout</a>
     </header>
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        <button data-page="dashboard" onclick="navigate('dashboard', this)">
+        <a data-page="dashboard" onclick="navigate('dashboard', this)">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
-        </button>
+        </a>
 
-        <button data-page="inventory" onclick="navigate('inventory', this)">
+        <a data-page="inventory" onclick="navigate('inventory', this)">
             <i class="fa-solid fa-boxes-stacked"></i>
             <span>Inventory</span>
-        </button>
+        </a>
 
-        <button data-page="borrow" onclick="navigate('borrow', this)">
+        <a data-page="borrow" onclick="navigate('borrow', this)">
             <i class="fa-solid fa-hand-holding"></i>
             <span>Borrow</span>
-        </button>
+        </a>
 
-        <button data-page="logs" onclick="navigate('logs', this)">
+        <a data-page="logs" onclick="navigate('logs', this)">
             <i class="fa-solid fa-clock-rotate-left"></i>
             <span>Logs</span>
-        </button>
+        </a>
     </aside>
 
     <!-- CONTENT -->
