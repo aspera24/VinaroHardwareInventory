@@ -1,31 +1,24 @@
-/**
- * Created by Christos Ploutarchou
- * Project : node_rest_api_with_mysql
- * Filename : routes.js
- * Date: 05/04/2020
- * Time: 01:45
- **/
-
-const post = require("../controllers/Post");
 const express = require("express");
 const router = express.Router();
-// Create New Post
-router.post("/api/posts/create", post.create);
-// // Retrieve all posts
-router.get("/api/posts/all", post.getAllPosts);
-// Retrieve all Published posts
-router.get("/api/posts/published", post.getAllPublishedPosts);
-// Retrieve all Published posts by Publisher Name
-router.get("/api/posts/publisher", post.getAllPostsByPublisherName);
-// Retrieve all posts by title
-router.get("/api/posts", post.getPostByTitle);
-// Retrieve post by ID
-router.get("/api/posts/:id", post.getPostByID);
-// // Update post by ID
-router.put("/api/post/update/:id", post.updatePostByID);
-// // Delete post by ID
-router.delete("/api/post/delete/:id", post.deletePostByID);
-// Delete all posts
-router.delete("/api/posts/deleteAll", post.deleteAllPosts);
+
+// backend route for customers
+router.get("/customers", (req, res) => {
+    res.json([
+        { id: 1, name: "John Doe" }
+    ]);
+});
+
+// backend add customer
+router.post("/add-customer", (req, res) => {
+    res.json({ message: "Customer added!" });
+});
+
+// backend appointments
+router.get("/appointments", (req, res) => {
+    res.json([
+        { id: 1, time: "10:00" },
+        { id: 2, time: "11:00" }
+    ]);
+});
 
 module.exports = router;

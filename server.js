@@ -1,34 +1,22 @@
-/**
- * Created by Christos Ploutarchou
- * Project : node_rest_api_with_mysql
- * Filename : app.js
- * Date: 03/04/2020
- * Time: 12:22
- **/
-
 const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const server = express();
-const db = require("./models");
-const corsSettings = {
-  originL: "http://localhost:8081"
-};
+const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 
-const api = require("./routes/index");
-server.use(cors(corsSettings));
-// Parse request of content-type - application/json
-server.use(bodyParser.json());
-// parse requests of content-type -application/x-www-form-urlencoded
-server.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public")); 
 
-server.use("/", api);
-// set listening ports for request
-const port = process.env.PORT || 80;
+const routes = require("./routes");
+app.use("/backend", routes);   
 
-server.listen(port, () => {
-  console.log(`Server running on port : ${port}`);
+io.on("connection", (socket) => {
+    console.log("Socket connected:", socket.id);
 });
-// Run following function if you want drop existing tables and re-sync database
-// db.dropRestApiTable();
-db.databaseConf.sync();
+
+// MOVE THIS TO THE BOTTOM
+// Handles SPA front-end routes
+app.get("*", (req, res) => {
+    res.sendFile(__dirname + "/public/index.html");
+});
+
+http.listen(3000, () => console.log("Server running on port 3000"));
