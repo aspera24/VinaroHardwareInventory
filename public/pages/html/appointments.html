@@ -1,0 +1,41 @@
+<div class="card">
+    <h2>Appointments</h2>
+
+    <table border="1" width="100%" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Purpose</th>
+                <th>Date</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+
+        <tbody id="appointmentList">
+            <!-- dynamically loaded -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+async function loadAppointments() {
+    const res = await fetch("/api/appointments");
+    const data = await res.json();
+
+    const tbody = document.getElementById("appointmentList");
+    tbody.innerHTML = "";
+
+    data.forEach(a => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${a.name}</td>
+                <td>${a.purpose}</td>
+                <td>${a.date}</td>
+                <td>${a.time}</td>
+            </tr>
+        `;
+    });
+}
+
+loadAppointments();
+</script>

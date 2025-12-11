@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service System</title>
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <nav>
+            <h2>CUSTOMER SERVICE SYSTEM</h2>
+            <ul>
+                <li>
+                    <a id="dashboard" href="javascript:void(0)" onclick="navigate('dashboard')">
+                        <i class="fa-solid fa-chart-line"></i> Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a id="add_customer" href="javascript:void(0)" onclick="navigate('add-customer')">
+                        <i class="fa-solid fa-user-plus"></i> Add Customer
+                    </a>
+                </li>
+
+                <li>
+                    <a id="appointments" href="javascript:void(0)" onclick="navigate('appointments')">
+                        <i class="fa-solid fa-calendar-check"></i> Appointments
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="main-content"></div>
+    </div>
+
+    <script src="/pages/js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+
+</html>

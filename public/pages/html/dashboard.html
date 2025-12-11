@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/pages/css/dashboard.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="dashboard-wrapper">
+
+        <h2 class="title">Dashboard Overview</h2>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+
+            <div class="stat-card total-customer">
+                <div class="icon">👤</div>
+                <div>
+                    <h3>Total Customers</h3>
+                    <p id="total-customers">120</p>
+                </div>
+            </div>
+
+            <div class="stat-card total-appointments">
+                <div class="icon">📅</div>
+                <div>
+                    <h3>Total Appointments</h3>
+                    <p id="total-appointments">75</p>
+                </div>
+            </div>
+
+            <div class="stat-card upcoming-today">
+                <div class="icon">⏰</div>
+                <div>
+                    <h3>Upcoming Today</h3>
+                    <p id="upcoming-today">5</p>
+                </div>
+            </div>
+
+            <div class="stat-card pending-approval">
+                <div class="icon">⛔</div>
+                <div>
+                    <h3>Pending Approvals</h3>
+                    <p id="pending-appointments">8</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <h3>Appointments This Week</h3>
+            <canvas id="appointmentsChart" width="600" height="300"></canvas>
+
+        </div>
+
+
+        <!-- Recent Appointments -->
+        <div class="recent-activity">
+            <h3>Recent Appointments</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-appointments">
+                    <tr>
+                        <td>Juan Dela Cruz</td>
+                        <td>2025-12-03</td>
+                        <td>Confirmed</td>
+                    </tr>
+                    <tr>
+                        <td>Maria Santos</td>
+                        <td>2025-12-03</td>
+                        <td>Pending</td>
+                    </tr>
+                    <tr>
+                        <td>Pedro Reyes</td>
+                        <td>2025-12-02</td>
+                        <td>Completed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span id="close-modal" class="close">&times;</span>
+                <div id="modal-body">
+                    <!-- Dynamic content will go here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    
+    <script src="/pages/js/dashboard.js"></script>
+
+
+
+</body>
+
+</html>
