@@ -69,6 +69,8 @@
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+
+
 /* Recent Appointments Table */
 .recent-activity {
     background-color: #fff;
@@ -118,6 +120,7 @@
     max-width: 600px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     position: relative;
+    height: 400px;
 }
 
 /* Close button */

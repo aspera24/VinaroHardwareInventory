@@ -1,9 +1,9 @@
-const dashboard = document.getElementById('dashboard');
-const add_customer = document.getElementById('add_customer');
-const appointments = document.getElementById('appointments');
+let dashboard = document.getElementById('dashboard');
+let add_customer = document.getElementById('add_customer');
+let appointments = document.getElementById('appointments');
 
 
-const menuItems = [dashboard, add_customer, appointments];
+let menuItems = [dashboard, add_customer, appointments];
 
 function setActive(page) {
     // Remove highlight from all
@@ -22,15 +22,15 @@ function loadPage(page) {
         .then(res => res.text())
         .then(html => {
 
-            const main = document.getElementById("main-content");
+            let main = document.getElementById("main-content");
             main.innerHTML = html;
 
             // Remove old script
-            const old = document.getElementById('page-script');
+            let old = document.getElementById('page-script');
             if (old) old.remove();
 
             // Load new page script
-            const script = document.createElement("script");
+            let script = document.createElement("script");
             script.src = `/pages/js/${page}.js`;
             script.id = "page-script";
             document.body.appendChild(script);
@@ -44,10 +44,9 @@ function loadPage(page) {
 
 
 
-const validRoutes = ["dashboard", "add-customer", "appointments"];
+let validRoutes = ["dashboard", "add-customer", "appointments"];
 
 function router() {
-    // Fail immediately kung naay hash
     if (location.hash) {
         document.getElementById("main-content").innerHTML = `
             <h2 style="color:red;">400 Bad Request</h2>

@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="/pages/css/dashboard.css">
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -23,7 +21,7 @@
                 <div class="icon">👤</div>
                 <div>
                     <h3>Total Customers</h3>
-                    <p id="total-customers">120</p>
+                    <p id="total-customers"></p>
                 </div>
             </div>
 
@@ -31,7 +29,7 @@
                 <div class="icon">📅</div>
                 <div>
                     <h3>Total Appointments</h3>
-                    <p id="total-appointments">75</p>
+                    <p id="total-appointments"></p>
                 </div>
             </div>
 
@@ -39,7 +37,7 @@
                 <div class="icon">⏰</div>
                 <div>
                     <h3>Upcoming Today</h3>
-                    <p id="upcoming-today">5</p>
+                    <p id="upcoming-today"></p>
                 </div>
             </div>
 
@@ -47,7 +45,7 @@
                 <div class="icon">⛔</div>
                 <div>
                     <h3>Pending Approvals</h3>
-                    <p id="pending-appointments">8</p>
+                    <p id="pending-appointments"></p>
                 </div>
             </div>
 
@@ -56,7 +54,13 @@
         <!-- Chart -->
         <div class="chart-container">
             <h3>Appointments This Week</h3>
-            <canvas id="appointmentsChart" width="600" height="300"></canvas>
+            <div class="chart-filters">
+                <select id="yearFilter"></select>
+                <select id="monthFilter"></select>
+                <select id="weekFilter"></select>
+            </div>
+
+            <div id="appointmentsChart" style="height: 220px;"></div>
 
         </div>
 
@@ -102,13 +106,6 @@
         </div>
 
     </div>
-
-
-
-    
-    <script src="/pages/js/dashboard.js"></script>
-
-
 
 </body>
 

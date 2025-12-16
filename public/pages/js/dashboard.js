@@ -1,63 +1,155 @@
-const ctx = document.getElementById('appointmentsChart').getContext('2d');
+(function () {
 
-const appointmentsChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        datasets: [{
-            label: 'Appointments',
-            data: [5, 7, 3, 6, 8, 4, 2],
-            backgroundColor: '#3498db'
-        }]
+  const socket = io();
+
+  var total_customers = document.getElementById("total-customers");
+  var total_appointments = document.getElementById("total-appointments");
+  var upcoming_today = document.getElementById("upcoming-today");
+  var pending_appointments = document.getElementById("pending-appointments");
+
+  const yearFilter = document.getElementById("yearFilter");
+  const monthFilter = document.getElementById("monthFilter");
+  const weekFilter = document.getElementById("weekFilter");
+
+  const daysLabel = ["(Sun)", "(Mon)", "(Tue)", "(Wed)", "(Thu)", "(Fri)", "(Sat)"];
+  const numberLabel = [
+    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
+  ]
+
+  function generateDataPoints(values) {
+    const weekNum = parseInt(weekFilter.value); 
+    const start = (weekNum - 1) * 7; 
+    const end = start + values.length; 
+    const labels = numberLabel.slice(start, end).map((n, i) => `${n} ${daysLabel[i]}`);
+
+    return labels.map((d, i) => ({
+      label: d,
+      y: typeof values[i] === 'number' ? values[i] : 0
+    }));
+  }
+
+
+  // Initialize chart with dummy data
+  const chart = new CanvasJS.Chart("appointmentsChart", {
+    animationEnabled: true,
+    axisX: {
+      title: "Day of Week",
     },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: { display: false }
-        },
-        scales: {
-            y: { beginAtZero: true }
-        }
-    }
+    axisY: { title: "Number of Customers", includeZero: true },
+    data: [{
+      type: "splineArea",
+      color: "#303641",
+      fillOpacity: 0.3,
+      dataPoints: generateDataPoints([0, 0, 0, 0, 0, 0, 0])
+    }]
+  });
+
+  chart.render();
+
+  // ================= DASHBOARD DATA =================
+  socket.on("dashboardStats", stats => {
+  total_customers.innerText = stats.totalCustomers;
+  total_appointments.innerText = stats.totalAppointments;
+  upcoming_today.innerText = stats.upcomingToday;
+  pending_appointments.innerText = stats.pendingApproval;
+});
+
+socket.on("dashboardChart", data => {
+  chart.options.data[0].dataPoints = generateDataPoints(data.weekData);
+  chart.render();
 });
 
 
+  // ================= FILTERS =================
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
-// Select all stat-cards
-const cards = document.querySelectorAll('.stat-card');
-const modal = document.getElementById('modal');
-const modalBody = document.getElementById('modal-body');
-const closeModal = document.getElementById('close-modal');
+  let cachedFilters = null;
 
-// Sample data
-const data = {
+  socket.on("filterOptions", filters => {
+    cachedFilters = filters;
+
+    // populate years
+    yearFilter.innerHTML = "";
+    filters.years.forEach(y => yearFilter.innerHTML += `<option value="${y}">${y}</option>`);
+
+    loadMonths(filters, yearFilter.value);
+    requestChartUpdate();
+  });
+
+  function loadMonths(filters, year) {
+    monthFilter.innerHTML = "";
+
+    if (!filters.months[year]) return;
+
+    filters.months[year].forEach(m => monthFilter.innerHTML += `<option value="${m}">${monthNames[m - 1]}</option>`);
+
+    loadWeeks(filters, year, monthFilter.value);
+  }
+
+  function loadWeeks(filters, year, month) {
+    weekFilter.innerHTML = "";
+
+    // compute number of days in selected month
+    const monthEnd = new Date(year, month, 0).getDate(); // last day of month
+    const totalWeeks = Math.ceil(monthEnd / 7);
+
+    for (let w = 1; w <= totalWeeks; w++) {
+      const start = (w - 1) * 7 + 1;
+      const end = w === totalWeeks ? monthEnd : w * 7;
+      weekFilter.innerHTML += `<option value="${w}">Week ${start}-${end}</option>`;
+    }
+  }
+
+  function requestChartUpdate() {
+    socket.emit("filterDashboard", {
+      year: yearFilter.value,
+      month: monthFilter.value,
+      week: weekFilter.value
+    });
+  }
+
+  yearFilter.addEventListener("change", () => {
+    loadMonths(cachedFilters, yearFilter.value);
+    requestChartUpdate();
+  });
+
+  monthFilter.addEventListener("change", () => {
+    loadWeeks(cachedFilters, yearFilter.value, monthFilter.value);
+    requestChartUpdate();
+  });
+
+  weekFilter.addEventListener("change", requestChartUpdate);
+
+  // ================= MODAL / CARDS =================
+  let cards = document.querySelectorAll('.stat-card');
+  let modal = document.getElementById('modal');
+  let modalBody = document.getElementById('modal-body');
+  let closeModal = document.getElementById('close-modal');
+
+  let data = {
     'total-customer': ['Juan Dela Cruz', 'Maria Santos', 'Pedro Reyes'],
     'total-appointments': ['Appointment 1', 'Appointment 2', 'Appointment 3'],
     'upcoming-today': ['Appointment Today 1', 'Appointment Today 2'],
     'pending-approval': ['Pending 1', 'Pending 2', 'Pending 3']
-};
+  };
 
-// Add click listener to each card
-cards.forEach(card => {
+  cards.forEach(card => {
     card.addEventListener('click', () => {
-        const id = card.classList[1]; // get the second class (like 'total-customer')
-        const items = data[id] || [];
+      let id = card.classList[1];
+      let items = data[id] || [];
 
-        // Populate modal content
-        modalBody.innerHTML = `<h3>${card.querySelector('h3').innerText}</h3>
-                               <ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
-        modal.style.display = 'flex'; // show modal
+      modalBody.innerHTML = `
+        <h3>${card.querySelector('h3').innerText}</h3>
+        <ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>
+      `;
+      modal.style.display = 'flex';
     });
-});
+  });
 
-// Close modal when clicking the X
-closeModal.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
+  closeModal.addEventListener('click', () => modal.style.display = 'none');
+  window.addEventListener('click', e => { if (e.target == modal) modal.style.display = 'none'; });
 
-// Close modal when clicking outside modal-content
-window.addEventListener('click', (e) => {
-    if (e.target == modal) {
-        modal.style.display = 'none';
-    }
-});
+})();
