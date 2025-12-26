@@ -147,8 +147,9 @@ io.on("connection", (socket) => {
         a.status
       FROM appointments a
       JOIN customers c ON a.customer_id = c.id
-      ORDER BY a.appointment_date DESC
       WHERE a.status = 'completed'
+      ORDER BY a.appointment_date DESC
+      
       LIMIT ? OFFSET ?
       `,
       [limit, offset],
@@ -157,7 +158,7 @@ io.on("connection", (socket) => {
 
         // get total count (for total pages)
         db.query(
-          `SELECT COUNT(*) AS total FROM appointments`,
+          `SELECT COUNT(*) AS total FROM appointments WHERE status = 'pending'`,
           (err2, countResult) => {
             if (err2) return;
 
