@@ -52,9 +52,9 @@ io.on("connection", (socket) => {
   sendDashboardStats();
 
   /* ==========================
-     UPDATE STATS EVERY 5 SECONDS
+     UPDATE STATS EVERY 2 MILLISECONDS
   ========================== */
-  const interval = setInterval(sendDashboardStats, 5000);
+  const interval = setInterval(sendDashboardStats, 1000);
 
   /* ==========================
      FILTER DASHBOARD (CHART ONLY)
@@ -132,8 +132,52 @@ io.on("connection", (socket) => {
     }
   );
 
+  /* ==========================
+   RECENT APPOINTMENTS
+========================== */
+  socket.on("getRecentAppointments", ({ page, limit }) => {
+    const offset = (page - 1) * limit;
+
+    // get paginated data
+    db.query(
+      `
+      SELECT 
+        c.name AS customer,
+        a.appointment_date AS date,
+        a.status
+      FROM appointments a
+      JOIN customers c ON a.customer_id = c.id
+      ORDER BY a.appointment_date DESC
+      LIMIT ? OFFSET ?
+      `,
+      [limit, offset],
+      (err, rows) => {
+        if (err) return;
+
+        // get total count (for total pages)
+        db.query(
+          `SELECT COUNT(*) AS total FROM appointments`,
+          (err2, countResult) => {
+            if (err2) return;
+
+            socket.emit("recentAppointments", {
+              rows,
+              total: countResult[0].total
+            });
+          }
+        );
+      }
+    );
+  });
+
+  // sendRecentAppointments();
+
+  // const recentInterval = setInterval(sendRecentAppointments, 1000);
+
+
   socket.on("disconnect", () => {
     clearInterval(interval);
+    // clearInterval(recentInterval);
     console.log("Socket disconnected:", socket.id);
   });
 });

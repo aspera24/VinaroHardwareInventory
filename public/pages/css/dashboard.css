@@ -131,3 +131,22 @@
     font-size: 24px;
     cursor: pointer;
 }
+
+.status.pending {
+  color: orange;
+  font-weight: bold;
+}
+
+.status.confirmed {
+  color: green;
+  font-weight: bold;
+}
+
+.status.completed {
+  color: blue;
+  font-weight: bold;
+}
+
+td{
+    font-size: 12px;
+}

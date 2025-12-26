@@ -60,7 +60,7 @@
                 <select id="weekFilter"></select>
             </div>
 
-            <div id="appointmentsChart" style="height: 220px;"></div>
+            <div id="appointmentsChart" style="height: 250px;"></div>
 
         </div>
 
@@ -77,23 +77,24 @@
                     </tr>
                 </thead>
                 <tbody id="recent-appointments">
-                    <tr>
-                        <td>Juan Dela Cruz</td>
-                        <td>2025-12-03</td>
-                        <td>Confirmed</td>
-                    </tr>
-                    <tr>
-                        <td>Maria Santos</td>
-                        <td>2025-12-03</td>
-                        <td>Pending</td>
-                    </tr>
-                    <tr>
-                        <td>Pedro Reyes</td>
-                        <td>2025-12-02</td>
-                        <td>Completed</td>
-                    </tr>
+                    <!-- dynamic data from DB -->
                 </tbody>
             </table>
+            <div class="pagination-controls">
+                <button id="prevPage">Prev</button>
+
+                <span id="pageInfo">Page 1</span>
+
+                <button id="nextPage">Next</button>
+
+                <select id="pageLimit">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+
         </div>
 
         <div id="modal" class="modal">

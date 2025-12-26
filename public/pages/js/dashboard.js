@@ -17,9 +17,9 @@
   ]
 
   function generateDataPoints(values) {
-    const weekNum = parseInt(weekFilter.value); 
-    const start = (weekNum - 1) * 7; 
-    const end = start + values.length; 
+    const weekNum = parseInt(weekFilter.value);
+    const start = (weekNum - 1) * 7;
+    const end = start + values.length;
     const labels = numberLabel.slice(start, end).map((n, i) => `${n} ${daysLabel[i]}`);
 
     return labels.map((d, i) => ({
@@ -48,16 +48,16 @@
 
   // ================= DASHBOARD DATA =================
   socket.on("dashboardStats", stats => {
-  total_customers.innerText = stats.totalCustomers;
-  total_appointments.innerText = stats.totalAppointments;
-  upcoming_today.innerText = stats.upcomingToday;
-  pending_appointments.innerText = stats.pendingApproval;
-});
+    total_customers.innerText = stats.totalCustomers;
+    total_appointments.innerText = stats.totalAppointments;
+    upcoming_today.innerText = stats.upcomingToday;
+    pending_appointments.innerText = stats.pendingApproval;
+  });
 
-socket.on("dashboardChart", data => {
-  chart.options.data[0].dataPoints = generateDataPoints(data.weekData);
-  chart.render();
-});
+  socket.on("dashboardChart", data => {
+    chart.options.data[0].dataPoints = generateDataPoints(data.weekData);
+    chart.render();
+  });
 
 
   // ================= FILTERS =================
@@ -151,5 +151,86 @@ socket.on("dashboardChart", data => {
 
   closeModal.addEventListener('click', () => modal.style.display = 'none');
   window.addEventListener('click', e => { if (e.target == modal) modal.style.display = 'none'; });
+
+
+
+  const recentTable = document.getElementById("recent-appointments");
+  const prevBtn = document.getElementById("prevPage");
+  const nextBtn = document.getElementById("nextPage");
+  const pageInfo = document.getElementById("pageInfo");
+  const pageLimitSelect = document.getElementById("pageLimit");
+
+  let currentPage = 1;
+  let limit = 10;
+  let totalRows = 0;
+
+  function loadRecentAppointments() {
+    socket.emit("getRecentAppointments", {
+      page: currentPage,
+      limit
+    });
+  }
+
+  socket.on("recentAppointments", data => {
+    const { rows, total } = data;
+    totalRows = total;
+
+    recentTable.innerHTML = "";
+
+    if (!rows.length) {
+      recentTable.innerHTML = `
+      <tr>
+        <td colspan="3" style="text-align:center;">No recent appointments</td>
+      </tr>`;
+      return;
+    }
+
+    rows.forEach(r => {
+      recentTable.innerHTML += `
+      <tr>
+        <td>${r.customer}</td>
+        <td>${new Date(r.date).toISOString().slice(0, 10)}</td>
+        <td>
+          <span class="status ${r.status}">
+            ${r.status}
+          </span>
+        </td>
+      </tr>
+    `;
+    });
+
+    const totalPages = Math.ceil(totalRows / limit);
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+  });
+
+  /* EVENTS */
+  prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      loadRecentAppointments();
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    const totalPages = Math.ceil(totalRows / limit);
+    if (currentPage < totalPages) {
+      currentPage++;
+      loadRecentAppointments();
+    }
+  });
+
+  pageLimitSelect.addEventListener("change", () => {
+    limit = parseInt(pageLimitSelect.value);
+    currentPage = 1;
+    loadRecentAppointments();
+  });
+
+  /* INITIAL LOAD */
+  loadRecentAppointments();
+
+
 
 })();
