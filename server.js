@@ -148,6 +148,7 @@ io.on("connection", (socket) => {
       FROM appointments a
       JOIN customers c ON a.customer_id = c.id
       ORDER BY a.appointment_date DESC
+      WHERE a.status = 'completed'
       LIMIT ? OFFSET ?
       `,
       [limit, offset],
