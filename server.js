@@ -187,7 +187,7 @@ io.on("connection", (socket) => {
     switch (type) {
 
       case "total-customer":
-        title = "All Customers";
+        title = "Total Customers";
         dataQuery = `
         SELECT name
         FROM customers
@@ -198,7 +198,7 @@ io.on("connection", (socket) => {
         break;
 
       case "total-appointments":
-        title = "All Appointments";
+        title = "Total Appointments";
         dataQuery = `
         SELECT 
           c.name AS customer,
@@ -213,7 +213,7 @@ io.on("connection", (socket) => {
         break;
 
       case "upcoming-today":
-        title = "Appointments Today";
+        title = "Upcoming Today";
         dataQuery = `
         SELECT 
           c.name AS customer,
@@ -232,7 +232,7 @@ io.on("connection", (socket) => {
         break;
 
       case "pending-approval":
-        title = "Pending Appointments";
+        title = "Pending Approvals";
         dataQuery = `
         SELECT 
           c.name AS customer,

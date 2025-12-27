@@ -195,7 +195,7 @@
       modalType = card.classList[1];
       modalPage = 1;
 
-      modalBody.innerHTML = "Loading...";
+      modalBody.innerHTML = `<div class="loader"></div><p>Loading...</p>`;
       modal.style.display = "flex";
 
       loadModalData();
@@ -222,7 +222,6 @@
     // Detect columns dynamically
     const hasName = rows[0].name || rows[0].customer;
     const hasDate = rows[0].appointment_date;
-    const hasStatus = rows[0].status;
 
     modalBody.innerHTML = `
     <h3>${title}</h3>
