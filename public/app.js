@@ -94,6 +94,3 @@ function navigate(page) {
 window.addEventListener("load", router);
 window.addEventListener("popstate", router);
 
-
-
-

@@ -5,14 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/pages/css/dashboard.css">
 </head>
 
 <body>
+    <!-- GLOBAL LOADING -->
+    <div id="dashboard-loading">
+        <div class="loader"></div>
+        <p>Loading dashboard...</p>
+    </div>
+
 
     <div class="dashboard-wrapper">
 
         <h2 class="title">Dashboard Overview</h2>
+        <p class="title-p">Track appointments, customer statistics, and recent activity in real time.</p>
+
 
         <!-- Stats Cards -->
         <div class="stats-grid">
@@ -55,6 +62,7 @@
         <div class="chart-container">
             <h3>Appointments This Week</h3>
             <div class="chart-filters">
+                <p>Filters: </p>
                 <select id="yearFilter"></select>
                 <select id="monthFilter"></select>
                 <select id="weekFilter"></select>
@@ -71,11 +79,17 @@
             <div class="limit">
                 <p>Select Limit:</p>
                 <select id="pageLimit">
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="50">50</option>
-            </select>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                    <option value="30">30</option>
+                    <option value="35">35</option>
+                    <option value="40">40</option>
+                    <option value="45">45</option>
+                    <option value="50">50</option>
+                </select>
             </div>
             <table>
                 <thead>
@@ -101,14 +115,35 @@
 
         </div>
 
-        <div id="modal" class="modal">
+        <!-- <div id="modal" class="modal">
             <div class="modal-content">
                 <span id="close-modal" class="close">&times;</span>
-                <div id="modal-body">
-                    <!-- Dynamic content will go here -->
+                <div id="modalInner">
+                    <div id="modal-body"></div>
+                </div>
+            </div>
+        </div> -->
+
+        <div id="modal" class="modal" style="display:none">
+            <div class="modal-content">
+                <span id="close-modal">&times;</span>
+                <select id="modal-limit">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+
+                <div id="modal-body"></div>
+
+                <div id="modal-pagination">
+                    <button id="modal-prev">Prev</button>
+                    <span id="modal-page-info">Page 1</span>
+                    <button id="modal-next">Next</button>
                 </div>
             </div>
         </div>
+
 
     </div>
 

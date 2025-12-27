@@ -1,5 +1,10 @@
 (function () {
 
+
+  const loading = document.getElementById("dashboard-loading");
+
+  loading.style.display = "flex";
+
   const socket = io();
 
   var total_customers = document.getElementById("total-customers");
@@ -11,40 +16,80 @@
   const monthFilter = document.getElementById("monthFilter");
   const weekFilter = document.getElementById("weekFilter");
 
-  const daysLabel = ["(Sun)", "(Mon)", "(Tue)", "(Wed)", "(Thu)", "(Fri)", "(Sat)"];
-  const numberLabel = [
-    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31",
-  ]
+  // function generateDataPoints(values) {
+  //   const weekNum = parseInt(weekFilter.value);
+  //   const start = (weekNum - 1) * 7;
+  //   const end = start + values.length;
+  //   const labels = numberLabel.slice(start, end).map((n, i) => `${n} ${daysLabel[i]}`);
+
+  //   return labels.map((d, i) => ({
+  //     label: d,
+  //     y: typeof values[i] === 'number' ? values[i] : 0
+  //   }));
+  // }
 
   function generateDataPoints(values) {
+    const year = parseInt(yearFilter.value);
+    const month = parseInt(monthFilter.value); // 1–12
     const weekNum = parseInt(weekFilter.value);
-    const start = (weekNum - 1) * 7;
-    const end = start + values.length;
-    const labels = numberLabel.slice(start, end).map((n, i) => `${n} ${daysLabel[i]}`);
 
-    return labels.map((d, i) => ({
-      label: d,
-      y: typeof values[i] === 'number' ? values[i] : 0
-    }));
+    const startDay = (weekNum - 1) * 7 + 1;
+    const monthEnd = new Date(year, month, 0).getDate(); // last day of month
+    console.log(month)
+
+    return values.map((val, index) => {
+      const dayNumber = startDay + index;
+
+      // if dayNumber exceeds monthEnd, ignore
+      if (dayNumber > monthEnd) return null;
+
+      const dateObj = new Date(year, month - 1, dayNumber);
+      const dayName = dateObj.toLocaleDateString("en-US", { weekday: "long" });
+
+      console.log(dayNumber + " + " + dayName);
+
+      return {
+        label: `${dayNumber} (${dayName})`,
+        y: typeof val === "number" ? val : 0
+      };
+
+
+    }).filter(dp => dp !== null); // remove nulls
+
+
   }
+
+
 
 
   // Initialize chart with dummy data
   const chart = new CanvasJS.Chart("appointmentsChart", {
     animationEnabled: true,
+    backgroundColor: "transparent",
     axisX: {
       title: "Day of Week",
+      labelFontSize: 12,
+      labelFontColor: "#000000ff",
+      tickThickness: 20,
+      lineThickness: 1,
     },
     axisY: { title: "Number of Customers", includeZero: true },
     data: [{
       type: "splineArea",
-      color: "#303641",
-      fillOpacity: 0.3,
+      lineThickness: 2,
+      markerSize: 6,
+      color: "#760000ff",
+      labelFontColor: "#000000ff",
+      fillOpacity: 0.5,
       dataPoints: generateDataPoints([0, 0, 0, 0, 0, 0, 0])
     }]
   });
 
-  chart.render();
+
+  // chart.render();
+
+  // window.addEventListener("resize", () => chart.render());
+
 
   // ================= DASHBOARD DATA =================
   socket.on("dashboardStats", stats => {
@@ -54,10 +99,14 @@
     pending_appointments.innerText = stats.pendingApproval;
   });
 
+
+
   socket.on("dashboardChart", data => {
+    chart.options.animationEnabled = true;
     chart.options.data[0].dataPoints = generateDataPoints(data.weekData);
     chart.render();
   });
+
 
 
   // ================= FILTERS =================
@@ -123,34 +172,120 @@
 
   weekFilter.addEventListener("change", requestChartUpdate);
 
+
   // ================= MODAL / CARDS =================
   let cards = document.querySelectorAll('.stat-card');
   let modal = document.getElementById('modal');
   let modalBody = document.getElementById('modal-body');
   let closeModal = document.getElementById('close-modal');
 
-  let data = {
-    'total-customer': ['Juan Dela Cruz', 'Maria Santos', 'Pedro Reyes'],
-    'total-appointments': ['Appointment 1', 'Appointment 2', 'Appointment 3'],
-    'upcoming-today': ['Appointment Today 1', 'Appointment Today 2'],
-    'pending-approval': ['Pending 1', 'Pending 2', 'Pending 3']
-  };
+  let modalPage = 1;
+  let modalLimit = 5;
+  let modalTotal = 0;
+  let modalType = null;
+
+  const modalPrev = document.getElementById("modal-prev");
+  const modalNext = document.getElementById("modal-next");
+  const modalPageInfo = document.getElementById("modal-page-info");
+  const modalLimitSelect = document.getElementById("modal-limit");
+
 
   cards.forEach(card => {
-    card.addEventListener('click', () => {
-      let id = card.classList[1];
-      let items = data[id] || [];
+    card.addEventListener("click", () => {
+      modalType = card.classList[1];
+      modalPage = 1;
 
-      modalBody.innerHTML = `
-        <h3>${card.querySelector('h3').innerText}</h3>
-        <ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>
-      `;
-      modal.style.display = 'flex';
+      modalBody.innerHTML = "Loading...";
+      modal.style.display = "flex";
+
+      loadModalData();
     });
   });
 
-  closeModal.addEventListener('click', () => modal.style.display = 'none');
-  window.addEventListener('click', e => { if (e.target == modal) modal.style.display = 'none'; });
+  function loadModalData() {
+    socket.emit("getStatDetailsPaginated", {
+      type: modalType,
+      page: modalPage,
+      limit: modalLimit
+    });
+  }
+
+
+  socket.on("statDetailsPaginated", ({ title, rows, total }) => {
+    modalTotal = total;
+
+    if (!rows.length) {
+      modalBody.innerHTML = `<h3>${title}</h3><p>No data</p>`;
+      return;
+    }
+
+    // Detect columns dynamically
+    const hasName = rows[0].name || rows[0].customer;
+    const hasDate = rows[0].appointment_date;
+    const hasStatus = rows[0].status;
+
+    modalBody.innerHTML = `
+    <h3>${title}</h3>
+
+    <table class="table">
+      <thead>
+        <tr>
+          ${hasName ? "<th>Name</th>" : ""}
+          ${hasDate ? "<th>Date</th>" : ""}
+        </tr>
+      </thead>
+
+      <tbody>
+        ${rows.map(r => `
+          <tr>
+            ${hasName ? `<td>${r.name || r.customer}</td>` : ""}
+            ${hasDate ? `<td>${r.appointment_date.slice(0, 10)}</td>` : ""}
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+
+    const totalPages = Math.ceil(total / modalLimit);
+    modalPageInfo.textContent = `Page ${modalPage} of ${totalPages}`;
+
+    modalPrev.disabled = modalPage === 1;
+    modalNext.disabled = modalPage === totalPages;
+  });
+
+
+  modalPrev.addEventListener("click", () => {
+    if (modalPage > 1) {
+      modalPage--;
+      loadModalData();
+    }
+  });
+
+  modalNext.addEventListener("click", () => {
+    const totalPages = Math.ceil(modalTotal / modalLimit);
+    if (modalPage < totalPages) {
+      modalPage++;
+      loadModalData();
+    }
+  });
+
+  modalLimitSelect.addEventListener("change", () => {
+    modalLimit = parseInt(modalLimitSelect.value);
+    modalPage = 1;
+    loadModalData();
+  });
+
+
+
+
+  closeModal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  window.addEventListener("click", e => {
+    if (e.target === modal) modal.style.display = "none";
+  });
+
 
 
 
@@ -161,7 +296,7 @@
   const pageLimitSelect = document.getElementById("pageLimit");
 
   let currentPage = 1;
-  let limit = 10;
+  let limit = 5;
   let totalRows = 0;
 
   function loadRecentAppointments() {
@@ -231,6 +366,6 @@
   /* INITIAL LOAD */
   loadRecentAppointments();
 
-
-
+  loading.style.display = "none";
 })();
+

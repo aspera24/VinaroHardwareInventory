@@ -61,35 +61,37 @@ io.on("connection", (socket) => {
   ========================== */
   socket.on("filterDashboard", ({ year, month, week }) => {
     const startDay = (week - 1) * 7 + 1;
-    const endDay = Math.min(
-      week * 7,
-      new Date(year, month, 0).getDate()
-    );
+    const monthEnd = new Date(year, month, 0).getDate();
+    const endDay = Math.min(week * 7, monthEnd);
 
     db.query(
       `
-      SELECT DAYOFWEEK(appointment_date) AS day,
-             COUNT(*) AS total
-      FROM appointments
-      WHERE YEAR(appointment_date) = ?
-        AND MONTH(appointment_date) = ?
-        AND DAY(appointment_date) BETWEEN ? AND ?
-      GROUP BY day
-      `,
+    SELECT DAY(appointment_date) AS day,
+           COUNT(*) AS total
+    FROM appointments
+    WHERE YEAR(appointment_date) = ?
+      AND MONTH(appointment_date) = ?
+      AND DAY(appointment_date) BETWEEN ? AND ?
+    GROUP BY day
+    ORDER BY day
+    `,
       [year, month, startDay, endDay],
       (err, rows) => {
-        if (err) return;
+        if (err) return console.error(err);
 
-        const weekData = [0, 0, 0, 0, 0, 0, 0];
-        rows.forEach(r => {
-          weekData[r.day - 1] = r.total;
-        });
+        // Initialize array with zeros
+        const weekData = [];
+        for (let d = startDay; d <= endDay; d++) {
+          const row = rows.find(r => r.day === d);
+          weekData.push(row ? row.total : 0);
+        }
 
-        // CHART DATA ONLY
         socket.emit("dashboardChart", { weekData });
       }
     );
   });
+
+
 
   /* ==========================
      FILTER OPTIONS
@@ -172,14 +174,109 @@ io.on("connection", (socket) => {
     );
   });
 
-  // sendRecentAppointments();
 
-  // const recentInterval = setInterval(sendRecentAppointments, 1000);
+
+  socket.on("getStatDetailsPaginated", ({ type, page, limit }) => {
+
+    let dataQuery = "";
+    let countQuery = "";
+    let title = "";
+
+    const offset = (page - 1) * limit;
+
+    switch (type) {
+
+      case "total-customer":
+        title = "All Customers";
+        dataQuery = `
+        SELECT name
+        FROM customers
+        ORDER BY name ASC
+        LIMIT ? OFFSET ?
+      `;
+        countQuery = `SELECT COUNT(*) AS total FROM customers`;
+        break;
+
+      case "total-appointments":
+        title = "All Appointments";
+        dataQuery = `
+        SELECT 
+          c.name AS customer,
+          a.appointment_date,
+          a.status
+        FROM appointments a
+        JOIN customers c ON a.customer_id = c.id
+        ORDER BY a.appointment_date DESC
+        LIMIT ? OFFSET ?
+      `;
+        countQuery = `SELECT COUNT(*) AS total FROM appointments`;
+        break;
+
+      case "upcoming-today":
+        title = "Appointments Today";
+        dataQuery = `
+        SELECT 
+          c.name AS customer,
+          a.appointment_date
+        FROM appointments a
+        JOIN customers c ON a.customer_id = c.id
+        WHERE a.appointment_date = CURDATE()
+        ORDER BY a.appointment_date ASC
+        LIMIT ? OFFSET ?
+      `;
+        countQuery = `
+        SELECT COUNT(*) AS total
+        FROM appointments
+        WHERE appointment_date = CURDATE()
+      `;
+        break;
+
+      case "pending-approval":
+        title = "Pending Appointments";
+        dataQuery = `
+        SELECT 
+          c.name AS customer,
+          a.appointment_date,
+          a.status
+        FROM appointments a
+        JOIN customers c ON a.customer_id = c.id
+        WHERE a.status = 'pending'
+        ORDER BY a.appointment_date DESC
+        LIMIT ? OFFSET ?
+      `;
+        countQuery = `
+        SELECT COUNT(*) AS total
+        FROM appointments
+        WHERE status = 'pending'
+      `;
+        break;
+
+      default:
+        return;
+    }
+
+    db.query(countQuery, (err, countResult) => {
+      if (err) return console.error(err);
+
+      const total = countResult[0].total;
+
+      db.query(dataQuery, [limit, offset], (err2, rows) => {
+        if (err2) return console.error(err2);
+
+        socket.emit("statDetailsPaginated", {
+          title,
+          rows,
+          total
+        });
+      });
+    });
+  });
+
+
 
 
   socket.on("disconnect", () => {
     clearInterval(interval);
-    // clearInterval(recentInterval);
     console.log("Socket disconnected:", socket.id);
   });
 });
