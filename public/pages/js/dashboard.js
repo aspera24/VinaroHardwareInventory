@@ -1,5 +1,8 @@
 (function () {
-
+  if (!isOnline()) {
+    alert("No internet connection. Please try again later.");
+    return;
+  }
 
   const loading = document.getElementById("dashboard-loading");
 
@@ -16,17 +19,6 @@
   const monthFilter = document.getElementById("monthFilter");
   const weekFilter = document.getElementById("weekFilter");
 
-  // function generateDataPoints(values) {
-  //   const weekNum = parseInt(weekFilter.value);
-  //   const start = (weekNum - 1) * 7;
-  //   const end = start + values.length;
-  //   const labels = numberLabel.slice(start, end).map((n, i) => `${n} ${daysLabel[i]}`);
-
-  //   return labels.map((d, i) => ({
-  //     label: d,
-  //     y: typeof values[i] === 'number' ? values[i] : 0
-  //   }));
-  // }
 
   function generateDataPoints(values) {
     const year = parseInt(yearFilter.value);
@@ -34,7 +26,7 @@
     const weekNum = parseInt(weekFilter.value);
 
     const startDay = (weekNum - 1) * 7 + 1;
-    const monthEnd = new Date(year, month, 0).getDate(); 
+    const monthEnd = new Date(year, month, 0).getDate();
 
     return values.map((val, index) => {
       const dayNumber = startDay + index;
@@ -82,9 +74,12 @@
   });
 
 
-  // chart.render();
-
-  // window.addEventListener("resize", () => chart.render());
+  socket.off("dashboardStats");
+  socket.off("dashboardChart");
+  socket.off("filterOptions");
+  socket.off("databaseUpdated");
+  socket.off("statDetailsPaginated");
+  socket.off("recentAppointments");
 
 
   // ================= DASHBOARD DATA =================
@@ -116,29 +111,59 @@
   socket.on("filterOptions", filters => {
     cachedFilters = filters;
 
-    // populate years
-    yearFilter.innerHTML = "";
-    filters.years.forEach(y => yearFilter.innerHTML += `<option value="${y}">${y}</option>`);
+    const prevYear = yearFilter.value;
+    const prevMonth = monthFilter.value;
+    const prevWeek = weekFilter.value;
 
-    loadMonths(filters, yearFilter.value);
+    yearFilter.innerHTML = "";
+
+    filters.years.forEach(y => {
+      yearFilter.innerHTML += `<option value="${y}">${y}</option>`;
+    });
+
+    if (prevYear && filters.years.includes(Number(prevYear))) {
+      yearFilter.value = prevYear;
+    } else {
+      yearFilter.value = filters.years[0];
+    }
+
+    loadMonths(filters, yearFilter.value, prevMonth);
+
+    // 🔥 restore week AFTER everything
+    if (prevWeek) weekFilter.value = prevWeek;
+
     requestChartUpdate();
   });
 
-  function loadMonths(filters, year) {
+
+
+  function loadMonths(filters, year, prevMonth = null) {
+    const prevWeek = weekFilter.value;
+
     monthFilter.innerHTML = "";
 
     if (!filters.months[year]) return;
 
-    filters.months[year].forEach(m => monthFilter.innerHTML += `<option value="${m}">${monthNames[m - 1]}</option>`);
+    filters.months[year].forEach(m => {
+      monthFilter.innerHTML += `<option value="${m}">${monthNames[m - 1]}</option>`;
+    });
 
-    loadWeeks(filters, year, monthFilter.value);
+    if (prevMonth && filters.months[year].includes(Number(prevMonth))) {
+      monthFilter.value = prevMonth;
+    } else {
+      const months = filters.months[year];
+      monthFilter.value = months[months.length - 1];
+    }
+
+    loadWeeks(filters, year, monthFilter.value, prevWeek);
   }
 
-  function loadWeeks(filters, year, month) {
+
+
+  function loadWeeks(filters, year, month, prevWeek = null) {
     weekFilter.innerHTML = "";
 
-    // compute number of days in selected month
-    const monthEnd = new Date(year, month, 0).getDate(); // last day of month
+    const monthEnd = new Date(year, month, 0).getDate();
     const totalWeeks = Math.ceil(monthEnd / 7);
 
     for (let w = 1; w <= totalWeeks; w++) {
@@ -146,7 +171,27 @@
       const end = w === totalWeeks ? monthEnd : w * 7;
       weekFilter.innerHTML += `<option value="${w}">Week ${start}-${end}</option>`;
     }
+
+    // PRESERVE WEEK SELECTION
+    if (prevWeek && prevWeek <= totalWeeks) {
+      weekFilter.value = prevWeek;
+    }
   }
+
+
+
+  socket.on("databaseUpdated", () => {
+    // refresh stats
+    socket.emit("filterDashboard", {
+      year: yearFilter.value,
+      month: monthFilter.value,
+      week: weekFilter.value
+    });
+
+    // refresh recent table
+    loadRecentAppointments();
+  });
+
 
   function requestChartUpdate() {
     socket.emit("filterDashboard", {
@@ -338,7 +383,6 @@
 
   /* EVENTS */
   prevBtn.addEventListener("click", () => {
-    console.log("PREV CLICKED", currentPage);
     if (currentPage > 1) {
       currentPage--;
       loadRecentAppointments();
@@ -346,7 +390,6 @@
   });
 
   nextBtn.addEventListener("click", () => {
-    console.log("NEXT CLICKED", currentPage);
     const totalPages = Math.ceil(totalRows / limit);
     if (currentPage < totalPages) {
       currentPage++;
@@ -364,5 +407,11 @@
   loadRecentAppointments();
 
   loading.style.display = "none";
+
+
+
 })();
 
+function isOnline() {
+  return navigator.onLine;
+}

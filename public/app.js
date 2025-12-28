@@ -18,10 +18,12 @@ function setActive(page) {
 }
 
 function loadPage(page) {
+    // Update button states
+    updateButtonState(page);
+
     fetch(`/pages/html/${page}.html`)
         .then(res => res.text())
         .then(html => {
-
             let main = document.getElementById("main-content");
             main.innerHTML = html;
 
@@ -41,6 +43,23 @@ function loadPage(page) {
 
 
 
+
+function updateButtonState(activePage) {
+    menuItems.forEach(item => {
+        // Identify which button corresponds to which page
+        let page = item.id === 'dashboard' ? 'dashboard' :
+            item.id === 'add_customer' ? 'add-customer' :
+                item.id === 'appointments' ? 'appointments' : '';
+
+        if (page === activePage) {
+            item.disabled = true; // disable current page button
+            item.style.pointerEvents = "none";
+        } else {
+            item.disabled = false; // enable other buttons
+            item.style.pointerEvents = "auto";
+        }
+    });
+}
 
 
 

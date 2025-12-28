@@ -46,15 +46,11 @@ io.on("connection", (socket) => {
     });
   };
 
-  /* ==========================
-     SEND STATS ON CONNECT
-  ========================== */
-  sendDashboardStats();
 
   /* ==========================
-     UPDATE STATS EVERY 2 MILLISECONDS
+     UPDATE STATS EVERY 5 SECONDs
   ========================== */
-  const interval = setInterval(sendDashboardStats, 1000);
+  const interval = setInterval(sendDashboardStats, 5000);
 
   /* ==========================
      FILTER DASHBOARD (CHART ONLY)
@@ -96,43 +92,84 @@ io.on("connection", (socket) => {
   /* ==========================
      FILTER OPTIONS
   ========================== */
-  db.query(
-    `
-    SELECT YEAR(appointment_date) AS year,
-           MONTH(appointment_date) AS month,
-           DAY(appointment_date) AS day
+  const sendFilterOptions = (targetSocket = io) => {
+    db.query(
+      `
+    SELECT 
+      YEAR(appointment_date) AS year,
+      MONTH(appointment_date) AS month,
+      DAY(appointment_date) AS day
     FROM appointments
     GROUP BY year, month, day
     ORDER BY year DESC, month ASC, day ASC
     `,
-    (err, rows) => {
-      if (err) return;
+      (err, rows) => {
+        if (err) return console.error(err);
 
-      const filters = {
-        years: [...new Set(rows.map(r => r.year))],
-        months: {},
-        weeks: {}
-      };
+        const filters = {
+          years: [],
+          months: {},
+          weeks: {}
+        };
 
-      rows.forEach(r => {
-        if (!filters.months[r.year]) filters.months[r.year] = new Set();
-        filters.months[r.year].add(r.month);
+        rows.forEach(r => {
+          if (!filters.years.includes(r.year)) {
+            filters.years.push(r.year);
+          }
 
-        const weekNum = Math.floor((r.day - 1) / 7) + 1;
-        const key = `${r.year}-${r.month}`;
-        if (!filters.weeks[key]) filters.weeks[key] = new Set();
-        filters.weeks[key].add(weekNum);
-      });
+          if (!filters.months[r.year]) filters.months[r.year] = new Set();
+          filters.months[r.year].add(r.month);
 
-      for (let y in filters.months)
-        filters.months[y] = [...filters.months[y]];
+          const weekNum = Math.floor((r.day - 1) / 7) + 1;
+          const key = `${r.year}-${r.month}`;
+          if (!filters.weeks[key]) filters.weeks[key] = new Set();
+          filters.weeks[key].add(weekNum);
+        });
 
-      for (let k in filters.weeks)
-        filters.weeks[k] = [...filters.weeks[k]];
+        for (let y in filters.months)
+          filters.months[y] = [...filters.months[y]];
 
-      socket.emit("filterOptions", filters);
-    }
-  );
+        for (let k in filters.weeks)
+          filters.weeks[k] = [...filters.weeks[k]];
+
+        targetSocket.emit("filterOptions", filters);
+      }
+    );
+  };
+
+
+  let lastMaxDate = null;
+
+  const watchDatabase = () => {
+    db.query(
+      `SELECT MAX(appointment_date) AS maxDate FROM appointments`,
+      (err, r) => {
+        if (err) return;
+
+        const currentMaxDate = r[0].maxDate;
+
+        if (currentMaxDate !== lastMaxDate) {
+          lastMaxDate = currentMaxDate;
+
+          sendDashboardStats();
+          sendFilterOptions(io);
+
+          io.emit("databaseUpdated");
+        }
+      }
+    );
+  };
+
+  // check every 1 second
+  setInterval(watchDatabase, 5000);
+
+
+  /* ==========================
+     SEND STATS ON CONNECT
+  ========================== */
+  sendDashboardStats();
+  sendFilterOptions(socket);
+
 
   /* ==========================
    RECENT APPOINTMENTS
