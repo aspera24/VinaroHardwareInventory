@@ -1,6 +1,7 @@
 let dashboard = document.getElementById('dashboard');
 let add_customer = document.getElementById('add_customer');
 let appointments = document.getElementById('appointments');
+window.socket = io(); 
 
 
 let menuItems = [dashboard, add_customer, appointments];

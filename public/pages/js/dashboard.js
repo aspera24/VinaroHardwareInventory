@@ -1,14 +1,15 @@
 (function () {
-  if (!isOnline()) {
-    alert("No internet connection. Please try again later.");
-    return;
-  }
+  // if (!isOnline()) {
+  //   alert("No internet connection. Please try again later.");
+  //   return;
+  // }
 
   const loading = document.getElementById("dashboard-loading");
 
   loading.style.display = "flex";
 
-  const socket = io();
+  const socket = window.socket;
+
 
   var total_customers = document.getElementById("total-customers");
   var total_appointments = document.getElementById("total-appointments");

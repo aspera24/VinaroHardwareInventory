@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
   /* ==========================
      UPDATE STATS EVERY 5 SECONDs
   ========================== */
-  const interval = setInterval(sendDashboardStats, 5000);
+  const interval = setInterval(sendDashboardStats, 1000);
 
   /* ==========================
      FILTER DASHBOARD (CHART ONLY)
@@ -161,7 +161,7 @@ io.on("connection", (socket) => {
   };
 
   // check every 1 second
-  setInterval(watchDatabase, 5000);
+  setInterval(watchDatabase, 1000);
 
 
   /* ==========================
