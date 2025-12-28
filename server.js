@@ -160,7 +160,7 @@ io.on("connection", (socket) => {
 
         // get total count (for total pages)
         db.query(
-          `SELECT COUNT(*) AS total FROM appointments WHERE status = 'pending'`,
+          `SELECT COUNT(*) AS total FROM appointments WHERE status = 'completed'`,
           (err2, countResult) => {
             if (err2) return;
 

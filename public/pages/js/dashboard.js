@@ -34,19 +34,15 @@
     const weekNum = parseInt(weekFilter.value);
 
     const startDay = (weekNum - 1) * 7 + 1;
-    const monthEnd = new Date(year, month, 0).getDate(); // last day of month
-    console.log(month)
+    const monthEnd = new Date(year, month, 0).getDate(); 
 
     return values.map((val, index) => {
       const dayNumber = startDay + index;
 
-      // if dayNumber exceeds monthEnd, ignore
       if (dayNumber > monthEnd) return null;
 
       const dateObj = new Date(year, month - 1, dayNumber);
       const dayName = dateObj.toLocaleDateString("en-US", { weekday: "long" });
-
-      console.log(dayNumber + " + " + dayName);
 
       return {
         label: `${dayNumber} (${dayName})`,
@@ -342,6 +338,7 @@
 
   /* EVENTS */
   prevBtn.addEventListener("click", () => {
+    console.log("PREV CLICKED", currentPage);
     if (currentPage > 1) {
       currentPage--;
       loadRecentAppointments();
@@ -349,6 +346,7 @@
   });
 
   nextBtn.addEventListener("click", () => {
+    console.log("NEXT CLICKED", currentPage);
     const totalPages = Math.ceil(totalRows / limit);
     if (currentPage < totalPages) {
       currentPage++;
