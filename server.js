@@ -213,101 +213,152 @@ io.on("connection", (socket) => {
 
 
 
-  socket.on("getStatDetailsPaginated", ({ type, page, limit }) => {
+  socket.on("getStatDetailsPaginated", ({
+    type,
+    page,
+    limit,
+    search = "",
+    status = ""
+  }) => {
 
     let dataQuery = "";
     let countQuery = "";
     let title = "";
+    let params = [];
+    let countParams = [];
 
     const offset = (page - 1) * limit;
+    const searchLike = `%${search}%`;
 
     switch (type) {
 
+      // ✅ TOTAL CUSTOMERS
       case "total-customer":
         title = "Total Customers";
         dataQuery = `
         SELECT name
         FROM customers
+        WHERE name LIKE ?
         ORDER BY name ASC
         LIMIT ? OFFSET ?
       `;
-        countQuery = `SELECT COUNT(*) AS total FROM customers`;
+        countQuery = `
+        SELECT COUNT(*) AS total
+        FROM customers
+        WHERE name LIKE ?
+      `;
+        params = [searchLike, limit, offset];
+        countParams = [searchLike];
         break;
 
+      // ✅ TOTAL APPOINTMENTS (with STATUS FILTER)
       case "total-appointments":
         title = "Total Appointments";
+
+        let statusFilter = "";
+        if (status) {
+          statusFilter = "AND a.status = ?";
+        }
+
         dataQuery = `
         SELECT 
-          c.name AS customer,
+          c.name,
           a.appointment_date,
           a.status
         FROM appointments a
         JOIN customers c ON a.customer_id = c.id
+        WHERE c.name LIKE ?
+        ${statusFilter}
         ORDER BY a.appointment_date DESC
         LIMIT ? OFFSET ?
       `;
-        countQuery = `SELECT COUNT(*) AS total FROM appointments`;
+
+        countQuery = `
+        SELECT COUNT(*) AS total
+        FROM appointments a
+        JOIN customers c ON a.customer_id = c.id
+        WHERE c.name LIKE ?
+        ${statusFilter}
+      `;
+
+        params = status
+          ? [searchLike, status, limit, offset]
+          : [searchLike, limit, offset];
+
+        countParams = status
+          ? [searchLike, status]
+          : [searchLike];
+
         break;
 
+      // ✅ UPCOMING TODAY
       case "upcoming-today":
         title = "Upcoming Today";
         dataQuery = `
-        SELECT 
-          c.name AS customer,
-          a.appointment_date
+        SELECT c.name, a.appointment_date
         FROM appointments a
         JOIN customers c ON a.customer_id = c.id
-        WHERE a.appointment_date = CURDATE()
+        WHERE DATE(a.appointment_date) = CURDATE()
+        AND c.name LIKE ?
         ORDER BY a.appointment_date ASC
         LIMIT ? OFFSET ?
       `;
         countQuery = `
         SELECT COUNT(*) AS total
-        FROM appointments
-        WHERE appointment_date = CURDATE()
+        FROM appointments a
+        JOIN customers c ON a.customer_id = c.id
+        WHERE DATE(a.appointment_date) = CURDATE()
+        AND c.name LIKE ?
       `;
+        params = [searchLike, limit, offset];
+        countParams = [searchLike];
         break;
 
+      // ✅ PENDING APPROVAL
       case "pending-approval":
         title = "Pending Approvals";
         dataQuery = `
-        SELECT 
-          c.name AS customer,
-          a.appointment_date,
-          a.status
+        SELECT c.name, a.status
         FROM appointments a
         JOIN customers c ON a.customer_id = c.id
         WHERE a.status = 'pending'
-        ORDER BY a.appointment_date DESC
+        AND c.name LIKE ?
+        ORDER BY c.name ASC
         LIMIT ? OFFSET ?
       `;
         countQuery = `
         SELECT COUNT(*) AS total
-        FROM appointments
-        WHERE status = 'pending'
+        FROM appointments a
+        JOIN customers c ON a.customer_id = c.id
+        WHERE a.status = 'pending'
+        AND c.name LIKE ?
       `;
+        params = [searchLike, limit, offset];
+        countParams = [searchLike];
         break;
 
       default:
         return;
     }
 
-    db.query(countQuery, (err, countResult) => {
+    db.query(countQuery, countParams, (err, countResult) => {
       if (err) return console.error(err);
 
       const total = countResult[0].total;
 
-      db.query(dataQuery, [limit, offset], (err2, rows) => {
+      db.query(dataQuery, params, (err2, rows) => {
         if (err2) return console.error(err2);
 
         socket.emit("statDetailsPaginated", {
           title,
           rows,
-          total
+          total,
+          type
         });
       });
     });
   });
+
 
 
 

@@ -1,10 +1,7 @@
 (function () {
-  // if (!isOnline()) {
-  //   alert("No internet connection. Please try again later.");
-  //   return;
-  // }
 
   const loading = document.getElementById("dashboard-loading");
+  
 
   loading.style.display = "flex";
 
@@ -89,6 +86,8 @@
     total_appointments.innerText = stats.totalAppointments;
     upcoming_today.innerText = stats.upcomingToday;
     pending_appointments.innerText = stats.pendingApproval;
+
+    loading.style.display = "none";
   });
 
 
@@ -230,6 +229,10 @@
   const modalNext = document.getElementById("modal-next");
   const modalPageInfo = document.getElementById("modal-page-info");
   const modalLimitSelect = document.getElementById("modal-limit");
+  const modalSearch = document.getElementById("modal-search");
+  const modalStatus = document.getElementById("modal-status-filter");
+
+
 
 
   cards.forEach(card => {
@@ -248,39 +251,51 @@
     socket.emit("getStatDetailsPaginated", {
       type: modalType,
       page: modalPage,
-      limit: modalLimit
+      limit: modalLimit,
+      search: modalSearch.value,
+      status: modalStatus.value
     });
   }
 
 
-  socket.on("statDetailsPaginated", ({ title, rows, total }) => {
+
+  socket.on("statDetailsPaginated", ({ title, rows, total, type }) => {
+    const txtLabel = document.getElementById("txtLabel");
+    const modalPagination = document.getElementById("modal-pagination");
     modalTotal = total;
 
+    modalStatus.style.display =
+      type === "total-appointments" ? "inline-block" : "none";
+
     if (!rows.length) {
-      modalBody.innerHTML = `<h3>${title}</h3><p>No data</p>`;
+      txtLabel.textContent = title;
+      modalBody.innerHTML = `<p class='noData'>No data</p>`;
+      modalPagination.style.display = 'none';
       return;
     }
 
-    // Detect columns dynamically
-    const hasName = rows[0].name || rows[0].customer;
+    modalPagination.style.display = 'flex';
     const hasDate = rows[0].appointment_date;
+    const hasStatus = rows[0].status;
+    
+
+    txtLabel.textContent = title;
 
     modalBody.innerHTML = `
-    <h3>${title}</h3>
-
     <table class="table">
       <thead>
         <tr>
-          ${hasName ? "<th>Name</th>" : ""}
+          <th>Name</th>
           ${hasDate ? "<th>Date</th>" : ""}
+          ${hasStatus ? "<th>Status</th>" : ""}
         </tr>
       </thead>
-
       <tbody>
         ${rows.map(r => `
           <tr>
-            ${hasName ? `<td>${r.name || r.customer}</td>` : ""}
+            <td>${r.name}</td>
             ${hasDate ? `<td>${r.appointment_date.slice(0, 10)}</td>` : ""}
+            ${hasStatus ? `<td>${r.status}</td>` : ""}
           </tr>
         `).join("")}
       </tbody>
@@ -292,6 +307,16 @@
 
     modalPrev.disabled = modalPage === 1;
     modalNext.disabled = modalPage === totalPages;
+  });
+
+  modalSearch.addEventListener("input", () => {
+    modalPage = 1;
+    loadModalData();
+  });
+
+  modalStatus.addEventListener("change", () => {
+    modalPage = 1;
+    loadModalData();
   });
 
 
@@ -406,10 +431,6 @@
 
   /* INITIAL LOAD */
   loadRecentAppointments();
-
-  loading.style.display = "none";
-
-
 
 })();
 
