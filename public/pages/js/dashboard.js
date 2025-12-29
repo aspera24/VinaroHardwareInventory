@@ -62,11 +62,11 @@
     axisY: { title: "Number of Customers", includeZero: true },
     data: [{
       type: "splineArea",
-      lineThickness: 2,
+      lineThickness: 0,
       markerSize: 6,
       color: "#760000ff",
-      labelFontColor: "#000000ff",
-      fillOpacity: 0.5,
+      // labelFontColor: "#000000ff",
+      fillOpacity: 0.25,
       dataPoints: generateDataPoints([0, 0, 0, 0, 0, 0, 0])
     }]
   });
@@ -187,9 +187,6 @@
       month: monthFilter.value,
       week: weekFilter.value
     });
-
-    // refresh recent table
-    loadRecentAppointments();
   });
 
 
@@ -390,7 +387,14 @@
       recentTable.innerHTML += `
       <tr>
         <td>${r.customer}</td>
-        <td>${new Date(r.date).toISOString().slice(0, 10)}</td>
+        <td>
+          ${new Date(r.date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          })}
+        </td>
+
         <td>
           <span class="status ${r.status}">
             ${r.status}

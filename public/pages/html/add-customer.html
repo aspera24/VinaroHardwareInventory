@@ -1,3 +1,8 @@
+<!-- GLOBAL LOADING -->
+<div id="loading">
+    <div class="loader"></div>
+    <p>Loading...</p>
+</div>
 <div class="card">
     <h2>Add Customer</h2>
 
@@ -17,25 +22,3 @@
         <button type="submit">Save Customer</button>
     </form>
 </div>
-
-<!-- <script>
-document.getElementById("customerForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const data = {
-        name: document.getElementById("name").value,
-        purpose: document.getElementById("purpose").value,
-        date: document.getElementById("date").value,
-        time: document.getElementById("time").value,
-    };
-
-    const res = await fetch("/api/customer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
-
-    const output = await res.json();
-    alert(output.message || "Saved!");
-});
-</script> -->

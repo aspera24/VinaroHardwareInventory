@@ -48,11 +48,6 @@ io.on("connection", (socket) => {
 
 
   /* ==========================
-     UPDATE STATS EVERY 5 SECONDs
-  ========================== */
-  const interval = setInterval(sendDashboardStats, 1000);
-
-  /* ==========================
      FILTER DASHBOARD (CHART ONLY)
   ========================== */
   socket.on("filterDashboard", ({ year, month, week }) => {
@@ -167,7 +162,6 @@ io.on("connection", (socket) => {
   /* ==========================
      SEND STATS ON CONNECT
   ========================== */
-  sendDashboardStats();
   sendFilterOptions(socket);
 
 
@@ -364,7 +358,7 @@ io.on("connection", (socket) => {
 
 
   socket.on("disconnect", () => {
-    clearInterval(interval);
+    // clearInterval(interval);
     console.log("Socket disconnected:", socket.id);
   });
 });
