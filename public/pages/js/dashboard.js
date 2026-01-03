@@ -1,7 +1,7 @@
 (function () {
 
   const loading = document.getElementById("dashboard-loading");
-  
+
 
   loading.style.display = "flex";
 
@@ -92,11 +92,15 @@
 
 
 
+  let firstLoad = true;
+
   socket.on("dashboardChart", data => {
-    chart.options.animationEnabled = true;
+    chart.options.animationEnabled = firstLoad;
     chart.options.data[0].dataPoints = generateDataPoints(data.weekData);
     chart.render();
+    firstLoad = false;
   });
+
 
 
 
@@ -129,7 +133,7 @@
 
     loadMonths(filters, yearFilter.value, prevMonth);
 
-    // 🔥 restore week AFTER everything
+    // restore week AFTER everything
     if (prevWeek) weekFilter.value = prevWeek;
 
     requestChartUpdate();
@@ -190,13 +194,18 @@
   });
 
 
+  let chartTimeout;
   function requestChartUpdate() {
-    socket.emit("filterDashboard", {
-      year: yearFilter.value,
-      month: monthFilter.value,
-      week: weekFilter.value
-    });
+    clearTimeout(chartTimeout);
+    chartTimeout = setTimeout(() => {
+      socket.emit("filterDashboard", {
+        year: yearFilter.value,
+        month: monthFilter.value,
+        week: weekFilter.value
+      });
+    }, 300);
   }
+
 
   yearFilter.addEventListener("change", () => {
     loadMonths(cachedFilters, yearFilter.value);
@@ -274,7 +283,7 @@
     modalPagination.style.display = 'flex';
     const hasDate = rows[0].appointment_date;
     const hasStatus = rows[0].status;
-    
+
 
     txtLabel.textContent = title;
 
@@ -389,10 +398,10 @@
         <td>${r.customer}</td>
         <td>
           ${new Date(r.date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-          })}
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      })}
         </td>
 
         <td>

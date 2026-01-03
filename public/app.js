@@ -1,7 +1,20 @@
 let dashboard = document.getElementById('dashboard');
 let add_customer = document.getElementById('add_customer');
 let appointments = document.getElementById('appointments');
-window.socket = io(); 
+window.socket = io();
+
+const toggleBtn = document.getElementById("nav-toggle");
+const container = document.querySelector(".container");
+
+toggleBtn.addEventListener("click", () => {
+    container.classList.toggle("nav-hidden");
+
+    toggleBtn.innerHTML = container.classList.contains("nav-hidden")
+        ? '<i class="fa-solid fa-bars"></i>'
+        : '<i class="fa-solid fa-xmark"></i>';
+});
+
+
 
 
 let menuItems = [dashboard, add_customer, appointments];

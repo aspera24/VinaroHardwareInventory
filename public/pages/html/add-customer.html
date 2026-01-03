@@ -1,24 +1,31 @@
-<!-- GLOBAL LOADING -->
-<div id="loading">
-    <div class="loader"></div>
-    <p>Loading...</p>
-</div>
-<div class="card">
-    <h2>Add Customer</h2>
+<div class="main">
+    <!-- GLOBAL LOADING -->
+    <div id="loading">
+        <div class="loader"></div>
+        <p>Loading...</p>
+    </div>
+    <div class="card">
+        <div id="left-card">
+            <h2>Add Customer</h2>
 
-    <form id="customerForm">
-        <label>Customer Name:</label><br>
-        <input type="text" id="name" required><br><br>
+            <form id="customerForm">
+                <label>Customer Name:</label><br>
+                <input type="text" id="name" required><br><br>
 
-        <label>Purpose:</label><br>
-        <input type="text" id="purpose" required><br><br>
+                <label>Purpose:</label><br>
+                <input type="text" id="purpose" required><br><br>
 
-        <label>Available Date:</label><br>
-        <input type="date" id="date" required><br><br>
+                <label>Available Date:</label><br>
+                <input type="date" id="date" required><br><br>
 
-        <label>Available Time:</label><br>
-        <input type="time" id="time" required><br><br>
+                <label>Available Time:</label><br>
+                <input type="time" id="time" required><br><br>
 
-        <button type="submit">Save Customer</button>
-    </form>
+                <button type="submit">Save Customer</button>
+            </form>
+        </div>
+        <div id="right-card">
+            <table id="customerList"></table>
+        </div>
+    </div>
 </div>
