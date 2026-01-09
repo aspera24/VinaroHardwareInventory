@@ -2,70 +2,50 @@
     margin: auto;
     min-width: 1000px;
     position: relative;
-    height: 100%;
+    max-width: 1500px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     /* align-items: center; */
+    height: 1000px;
+    min-height: 1000px;
 }
 
 .card {
     display: grid;
-    grid-template-columns: repeat(1fr, 2);
+    grid-template-columns: repeat(3, 1fr);
     width: 100%;
     height: 100%;
-    min-height: 80%;
-    overflow: hidden;
+
 }
 
 #left-card{
     grid-column: 1/2;
-    background: blue;
+    border: 1px solid gray;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+#left-card label{
+    color: #555;
+    font-size: 12px;
+}
+
+#left-card input{
+    height: 25px;
+    padding: 0 5px;
+    outline: none;
+    border: 1px solid #555;
 }
 
 #right-card{
-    grid-column: 2/3;
-    background: red;
-}
-
-
-
-
-
-
-/* For Loading */
-/* ADD CUSTOMER LOADING OVERLAY */
-#loading {
-    inset: 0;
-    width: 100%;
-    margin: auto;
-    min-width: 1000px;
-    position: relative;
-    z-index: 10;
+    grid-column: 2/4;
+    height: 500px;
+    border: 1px solid gray;
     display: flex;
-    justify-content: left;
-    align-items: center;
+    flex-direction: column;
+    padding: 15px;
 }
 
-#loading p {
-    font-size: 12px;
-    letter-spacing: 2px;
-    color: #555;
-    margin-left: 10px;
-}
-
-/* Spinner */
-.loader {
-    width: 40px;
-    height: 40px;
-    border: 5px solid #ddd;
-    border-top-color: #760000ff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}

@@ -26,22 +26,28 @@ body {
 /* Toggle button */
 #nav-toggle {
     position: fixed;
-    top: 15px;
-    left: 15px;
+    top: 50%;
+    left: 227px;
     z-index: 20000;
     background: #303641;
     color: white;
     border: none;
-    padding: 10px 12px;
-    border-radius: 5px;
+    padding: 10px 5px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
 
 /* Hide sidebar */
 .nav-hidden nav {
     width: 0;
     overflow: hidden;
+}
+
+.nav-hidden > #nav-toggle{
+    left: 0px;
 }
 
 /* Adjust main content when nav is hidden */
@@ -62,6 +68,7 @@ nav {
     height: 100%;
     flex-shrink: 0;
     z-index: 10000;
+    overflow: hidden;
     transition: all 0.3s ease;
 }
 
@@ -105,12 +112,9 @@ nav ul li a {
 
 #main-content {
     flex-grow: 1;
-    /* fill remaining space */
     overflow: auto;
-    /* ONLY this section scrolls */
     padding: 20px;
     min-width: 300px;
-    /* IMPORTANT: allows proper horizontal scroll */
     width: calc(100% - 227px);
     transition: all 0.3s ease;
 }
@@ -120,4 +124,42 @@ nav ul li a {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* For Loading */
+/* DASHBOARD LOADING OVERLAY */
+#dashboard-loading {
+    inset: 0;
+    width: 100%;
+    margin: auto;
+    min-width: 1000px;
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#dashboard-loading p {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #555;
+    margin-left: 10px;
+}
+
+/* Spinner */
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-top-color: #760000ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

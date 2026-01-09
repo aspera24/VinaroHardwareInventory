@@ -6,12 +6,16 @@ window.socket = io();
 const toggleBtn = document.getElementById("nav-toggle");
 const container = document.querySelector(".container");
 
+toggleBtn.innerHTML = container.classList.contains("nav-hidden")
+    ? '<i class="fa-solid fa-chevron-right"></i>'
+    : '<i class="fa-solid fa-chevron-left"></i>';
+
 toggleBtn.addEventListener("click", () => {
     container.classList.toggle("nav-hidden");
 
     toggleBtn.innerHTML = container.classList.contains("nav-hidden")
-        ? '<i class="fa-solid fa-bars"></i>'
-        : '<i class="fa-solid fa-xmark"></i>';
+        ? '<i class="fa-solid fa-chevron-right"></i>'
+        : '<i class="fa-solid fa-chevron-left"></i>';
 });
 
 
@@ -33,7 +37,7 @@ function setActive(page) {
 
 function loadPage(page) {
     // Update button states
-    updateButtonState(page);
+    // updateButtonState(page);
 
     fetch(`/pages/html/${page}.html`)
         .then(res => res.text())
@@ -58,22 +62,22 @@ function loadPage(page) {
 
 
 
-function updateButtonState(activePage) {
-    menuItems.forEach(item => {
-        // Identify which button corresponds to which page
-        let page = item.id === 'dashboard' ? 'dashboard' :
-            item.id === 'add_customer' ? 'add-customer' :
-                item.id === 'appointments' ? 'appointments' : '';
+// function updateButtonState(activePage) {
+//     menuItems.forEach(item => {
+//         // Identify which button corresponds to which page
+//         let page = item.id === 'dashboard' ? 'dashboard' :
+//             item.id === 'add_customer' ? 'add-customer' :
+//                 item.id === 'appointments' ? 'appointments' : '';
 
-        if (page === activePage) {
-            item.disabled = true; // disable current page button
-            item.style.pointerEvents = "none";
-        } else {
-            item.disabled = false; // enable other buttons
-            item.style.pointerEvents = "auto";
-        }
-    });
-}
+//         if (page === activePage) {
+//             item.disabled = true; // disable current page button
+//             item.style.pointerEvents = "none";
+//         } else {
+//             item.disabled = false; // enable other buttons
+//             item.style.pointerEvents = "auto";
+//         }
+//     });
+// }
 
 
 
@@ -117,8 +121,10 @@ function navigate(page) {
         alert("Invalid route!");
         return;
     }
-    history.pushState({}, "", "/page/" + page);
-    router();
+
+    window.location.href = "/page/" + page;
+    // history.pushState({}, "", "/page/" + page);
+    // router();
 }
 
 

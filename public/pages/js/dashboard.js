@@ -50,7 +50,7 @@
 
   // Initialize chart with dummy data
   const chart = new CanvasJS.Chart("appointmentsChart", {
-    animationEnabled: true,
+    animationEnabled: fal,
     backgroundColor: "transparent",
     axisX: {
       title: "Day of Week",
@@ -203,7 +203,7 @@
         month: monthFilter.value,
         week: weekFilter.value
       });
-    }, 300);
+    }, 1000);
   }
 
 
