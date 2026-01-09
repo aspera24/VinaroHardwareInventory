@@ -50,7 +50,7 @@
 
   // Initialize chart with dummy data
   const chart = new CanvasJS.Chart("appointmentsChart", {
-    animationEnabled: fal,
+    animationEnabled: false,
     backgroundColor: "transparent",
     axisX: {
       title: "Day of Week",
