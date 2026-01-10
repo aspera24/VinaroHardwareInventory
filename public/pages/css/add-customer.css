@@ -1,14 +1,12 @@
 .main {
     margin: auto;
-    min-width: 1000px;
+    min-width: 1100px;
+    max-width: 1100px;
     position: relative;
-    max-width: 1500px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* align-items: center; */
-    height: 1000px;
-    min-height: 1000px;
+    display: none;
 }
 
 .card {
@@ -16,36 +14,61 @@
     grid-template-columns: repeat(3, 1fr);
     width: 100%;
     height: 100%;
-
+    background: white;
 }
 
-#left-card{
+#left-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    height: auto;
     grid-column: 1/2;
-    border: 1px solid gray;
-    height: 500px;
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
 }
 
-#left-card label{
-    color: #555;
-    font-size: 12px;
-}
-
-#left-card input{
-    height: 25px;
-    padding: 0 5px;
-    outline: none;
-    border: 1px solid #555;
-}
-
-#right-card{
+#right-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    height: auto;
     grid-column: 2/4;
-    height: 500px;
-    border: 1px solid gray;
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
 }
 
+#left-card input,
+#left-card select,
+#right-card input,
+#right-card select,
+#right-card textarea {
+    width: 100%;
+    height: 32px;
+    margin-bottom: 12px;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#right-card textarea {
+    height: auto;
+}
+
+.profile-section {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.profile-section h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#left-card button {
+    margin-top: 15px;
+    padding: 10px;
+    background: #760000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#left-card button:hover {
+    background: #760000;
+}

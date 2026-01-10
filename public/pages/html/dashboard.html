@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-</head>
-
 <body>
-
-
-
+    <!-- GLOBAL LOADING -->
+    <div id="dashboard-loading">
+        <div class="loader"></div>
+        <p>Loading...</p>
+    </div>
+    
     <div class="dashboard-wrapper">
-        <!-- GLOBAL LOADING -->
-        <div id="dashboard-loading">
-            <div class="loader"></div>
-            <p>Loading...</p>
-        </div>
-
         <h2 class="title">Dashboard Overview</h2>
         <p class="title-p">Track appointments, customer statistics, and recent activities.</p>
 
@@ -69,7 +60,7 @@
                 <select id="weekFilter"></select>
             </div>
 
-            <div id="appointmentsChart" style="height: 250px;"></div>
+            <canvas id="appointmentsChart"></canvas>
 
         </div>
 

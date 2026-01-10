@@ -1,9 +1,10 @@
 .dashboard-wrapper {
     width: 100%;
     margin: auto;
-    min-width: 1000px;
-    max-width: 1500px;
+    min-width: 1100px;
+    max-width: 1100px;
     position: relative;
+    display: none;
 }
 
 .title {
@@ -38,6 +39,7 @@
     flex: 1 1 220px;
     /* flexible card width */
     cursor: pointer;
+    overflow: hidden;
 }
 
 .stat-card:hover {
@@ -74,14 +76,16 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    height: 350px;
 }
 
 #appointmentsChart {
     overflow: hidden;
+    margin-bottom: 50px;
 }
 
 .chart-filters {
@@ -112,6 +116,7 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
+    overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -137,7 +142,7 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 2000;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -185,13 +190,13 @@
     outline: none;
 }
 
-.limitCont{
+.limitCont {
     display: flex;
     align-items: center;
     margin: 5px 0;
 }
 
-.limitCont p{
+.limitCont p {
     font-size: 10px;
     color: rgb(0, 0, 0);
     margin-left: 5px;
@@ -207,13 +212,13 @@
 }
 
 #modal-pagination {
-   display: flex;
+    display: flex;
     justify-content: left;
     align-items: center;
     margin: 10px;
 }
 
-#modal-pagination button{
+#modal-pagination button {
     font-size: 10px;
     width: 50px;
     height: 20px;
@@ -223,7 +228,7 @@
     border: none;
 }
 
-#modal-page-info{
+#modal-page-info {
     font-size: 10px;
     margin: 0 10px;
 }
@@ -339,7 +344,3 @@
 td {
     font-size: 12px;
 }
-
-
-
-

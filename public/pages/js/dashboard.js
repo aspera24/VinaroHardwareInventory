@@ -1,7 +1,8 @@
 (function () {
 
   const loading = document.getElementById("dashboard-loading");
-
+  const dashboardWrapper = document.querySelector(".dashboard-wrapper");
+  dashboardWrapper.style.display = "none";
 
   loading.style.display = "flex";
 
@@ -18,7 +19,7 @@
   const weekFilter = document.getElementById("weekFilter");
 
 
-  function generateDataPoints(values) {
+  function generateChartData(values) {
     const year = parseInt(yearFilter.value);
     const month = parseInt(monthFilter.value); // 1–12
     const weekNum = parseInt(weekFilter.value);
@@ -26,50 +27,69 @@
     const startDay = (weekNum - 1) * 7 + 1;
     const monthEnd = new Date(year, month, 0).getDate();
 
-    return values.map((val, index) => {
-      const dayNumber = startDay + index;
+    const labels = [];
+    const data = [];
 
-      if (dayNumber > monthEnd) return null;
+    values.forEach((val, index) => {
+      const dayNumber = startDay + index;
+      if (dayNumber > monthEnd) return;
 
       const dateObj = new Date(year, month - 1, dayNumber);
       const dayName = dateObj.toLocaleDateString("en-US", { weekday: "long" });
 
-      return {
-        label: `${dayNumber} (${dayName})`,
-        y: typeof val === "number" ? val : 0
-      };
+      labels.push(`${dayNumber} (${dayName})`);
+      data.push(typeof val === "number" ? val : 0);
+    });
 
-
-    }).filter(dp => dp !== null); // remove nulls
-
-
+    return { labels, data };
   }
 
 
 
 
-  // Initialize chart with dummy data
-  const chart = new CanvasJS.Chart("appointmentsChart", {
-    animationEnabled: false,
-    backgroundColor: "transparent",
-    axisX: {
-      title: "Day of Week",
-      labelFontSize: 12,
-      labelFontColor: "#000000ff",
-      tickThickness: 20,
-      lineThickness: 1,
+
+  const ctx = document.getElementById("appointmentsChart").getContext("2d");
+
+  const chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: [],
+      datasets: [{
+        label: "Number of Customers",
+        data: [],
+        tension: 0.1,
+        fill: true,
+        pointRadius: 5,
+        borderWidth: 2,
+        backgroundColor: "rgba(118, 0, 0, 0.25)",
+        borderColor: "#760000"
+      }]
     },
-    axisY: { title: "Number of Customers", includeZero: true },
-    data: [{
-      type: "splineArea",
-      lineThickness: 0,
-      markerSize: 6,
-      color: "#760000ff",
-      // labelFontColor: "#000000ff",
-      fillOpacity: 0.25,
-      dataPoints: generateDataPoints([0, 0, 0, 0, 0, 0, 0])
-    }]
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false, // IMPORTANT: no lag
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: "Day of Week", color: "black" },
+          ticks: {
+            color: "black"
+          },
+        },
+        y: {
+          title: { display: true, text: "Number of Customers", color: "black" },
+          beginAtZero: true,
+          ticks: {
+            color: "black"
+          },
+        }
+      }
+    }
   });
+
 
 
   socket.off("dashboardStats");
@@ -88,18 +108,20 @@
     pending_appointments.innerText = stats.pendingApproval;
 
     loading.style.display = "none";
+    dashboardWrapper.style.display = "block";
   });
 
 
-
-  let firstLoad = true;
 
   socket.on("dashboardChart", data => {
-    chart.options.animationEnabled = firstLoad;
-    chart.options.data[0].dataPoints = generateDataPoints(data.weekData);
-    chart.render();
-    firstLoad = false;
+    const { labels, data: chartData } = generateChartData(data.weekData);
+
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = chartData;
+
+    chart.update("none"); // no animation = smooth
   });
+
 
 
 

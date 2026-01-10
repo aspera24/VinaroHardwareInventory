@@ -1,22 +1,59 @@
 let dashboard = document.getElementById('dashboard');
 let add_customer = document.getElementById('add_customer');
 let appointments = document.getElementById('appointments');
+let browserTitle = document.getElementById('browserTitle');
 window.socket = io();
+
+let lastScrollTop = 0;
+const mainContent = document.getElementById("main-content");
+
+mainContent.addEventListener("scroll", () => {
+    let st = mainContent.scrollTop;
+
+    if (st > lastScrollTop) {
+        // scrolling DOWN
+        document.body.classList.add("hide-browser-bar");
+    } else {
+        // scrolling UP
+        document.body.classList.remove("hide-browser-bar");
+    }
+
+    lastScrollTop = st <= 0 ? 0 : st;
+});
+
+
 
 const toggleBtn = document.getElementById("nav-toggle");
 const container = document.querySelector(".container");
 
-toggleBtn.innerHTML = container.classList.contains("nav-hidden")
-    ? '<i class="fa-solid fa-chevron-right"></i>'
-    : '<i class="fa-solid fa-chevron-left"></i>';
+function updateNavByScreen() {
+    if (window.innerWidth <= 768) {
+        container.classList.add("nav-hidden");
+    } else {
+        container.classList.remove("nav-hidden");
+    }
 
-toggleBtn.addEventListener("click", () => {
-    container.classList.toggle("nav-hidden");
+    updateToggleIcon();
+}
 
+function updateToggleIcon() {
     toggleBtn.innerHTML = container.classList.contains("nav-hidden")
         ? '<i class="fa-solid fa-chevron-right"></i>'
         : '<i class="fa-solid fa-chevron-left"></i>';
+}
+
+// Initial check
+updateNavByScreen();
+
+// On resize
+window.addEventListener("resize", updateNavByScreen);
+
+// Toggle click
+toggleBtn.addEventListener("click", () => {
+    container.classList.toggle("nav-hidden");
+    updateToggleIcon();
 });
+
 
 
 
@@ -29,10 +66,20 @@ function setActive(page) {
         item.style.background = "transparent";
     });
 
+    const appName = "Customer Service";
+    var pageName = page.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
+
     // Apply highlight to selected page
-    if (page === 'dashboard') dashboard.style.background = "#485161";
-    if (page === 'add-customer') add_customer.style.background = "#485161";
-    if (page === 'appointments') appointments.style.background = "#485161";
+    if (page === 'dashboard') {
+        dashboard.style.background = "#485161";
+        browserTitle.textContent = `${appName} - ${pageName}`;
+    } else if (page === 'add-customer') {
+        add_customer.style.background = "#485161";
+        browserTitle.textContent = `${appName} - ${pageName}`;
+    } else if (page === 'appointments') {
+        appointments.style.background = "#485161";
+        browserTitle.textContent = `${appName} - ${pageName}`;
+    }
 }
 
 function loadPage(page) {
