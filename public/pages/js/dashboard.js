@@ -70,7 +70,14 @@
       maintainAspectRatio: false,
       animation: false, // IMPORTANT: no lag
       plugins: {
-        legend: { display: false }
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              return ` ${context.parsed.y} appointments`;
+            }
+          }
+        }
       },
       scales: {
         x: {
@@ -127,7 +134,6 @@
 
 
   // ================= FILTERS =================
-  // ================= FILTERS =================
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -144,6 +150,10 @@
     const prevYear = yearFilter.value;
     const prevMonth = monthFilter.value;
     const prevWeek = weekFilter.value;
+
+    const title = document.getElementById("chartLabel");
+    title.textContent = `Appointments – ${monthNames[prevMonth - 1]} ${prevYear} | Week ${weekFilter.value}`;
+
 
     loadYears(filters, prevYear);
     loadMonths(filters, yearFilter.value, prevMonth);

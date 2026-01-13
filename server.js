@@ -162,7 +162,7 @@ io.on("connection", (socket) => {
   /* ==========================
      SEND STATS ON CONNECT
   ========================== */
-  // sendFilterOptions(socket);
+  sendFilterOptions(socket);
 
 
   /* ==========================

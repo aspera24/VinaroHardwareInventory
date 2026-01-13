@@ -93,6 +93,117 @@
         font-weight: bold;
     }
 
+
+
+    /* For Windows */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Modal content box */
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        min-width: 350px;
+        max-width: 600px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        height: 600px;
+        overflow: hidden;
+        overflow-y: scroll;
+        scrollbar-color: #303641 transparent;
+    }
+
+    #txtLabel {
+        margin: 10px 0;
+        letter-spacing: 2px;
+    }
+
+    #modal-search {
+        height: 25px;
+        padding: 0 5px;
+        font-size: 12px;
+        border: 1px solid gray;
+        letter-spacing: 2px;
+        outline: none;
+    }
+
+    #modal-status-filter {
+        height: 25px;
+        padding: 0 5px;
+        font-size: 12px;
+        border: 1px solid gray;
+        letter-spacing: 2px;
+        outline: none;
+    }
+
+    .limitCont {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+    }
+
+    .limitCont p {
+        font-size: 10px;
+        color: rgb(0, 0, 0);
+        margin-left: 5px;
+        letter-spacing: 2px;
+    }
+
+    #modal-limit {
+        height: 20px;
+        padding: 0 5px;
+        font-size: 10px;
+        border: 1px solid gray;
+        outline: none;
+    }
+
+    #modal-pagination {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin: 10px;
+    }
+
+    #modal-pagination button {
+        font-size: 10px;
+        width: 50px;
+        height: 20px;
+        cursor: pointer;
+        color: white;
+        background: #760000;
+        border: none;
+    }
+
+    #modal-page-info {
+        font-size: 10px;
+        margin: 0 10px;
+    }
+
+
+    /* Close button */
+    #close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+
+
+
+
     /* Recent Appointments Table */
     .recent-activity {
         background-color: #fff;
