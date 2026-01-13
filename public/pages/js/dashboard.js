@@ -127,119 +127,145 @@
 
 
   // ================= FILTERS =================
+  // ================= FILTERS =================
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
 
   let cachedFilters = null;
+  let updatingFilters = false; // Flag to prevent mobile "synthetic" change events
 
+  // ================= HANDLE FILTER OPTIONS FROM SERVER =================
   socket.on("filterOptions", filters => {
     cachedFilters = filters;
+    updatingFilters = true;
 
     const prevYear = yearFilter.value;
     const prevMonth = monthFilter.value;
     const prevWeek = weekFilter.value;
 
-    yearFilter.innerHTML = "";
-
-    filters.years.forEach(y => {
-      yearFilter.innerHTML += `<option value="${y}">${y}</option>`;
-    });
-
-    if (prevYear && filters.years.includes(Number(prevYear))) {
-      yearFilter.value = prevYear;
-    } else {
-      yearFilter.value = filters.years[0];
-    }
-
+    loadYears(filters, prevYear);
     loadMonths(filters, yearFilter.value, prevMonth);
+    loadWeeks(filters, yearFilter.value, monthFilter.value, prevWeek);
 
-    // restore week AFTER everything
-    if (prevWeek) weekFilter.value = prevWeek;
+    updatingFilters = false;
 
     requestChartUpdate();
   });
 
 
 
+  function loadYears(filters, prevYear = null) {
+    const years = filters.years;
+
+    // Skip updating if options already match
+    const optionsMatch = Array.from(yearFilter.options).map(o => Number(o.value)).join(",") === years.join(",");
+    if (optionsMatch) return;
+
+    yearFilter.innerHTML = "";
+    years.forEach(y => {
+      yearFilter.innerHTML += `<option value="${y}">${y}</option>`;
+    });
+
+    yearFilter.value = prevYear && years.includes(Number(prevYear))
+      ? prevYear
+      : years[0];
+  }
+
+
+
+
+
+
   function loadMonths(filters, year, prevMonth = null) {
-    const prevWeek = weekFilter.value;
+    // Only update if the selected month doesn't exist
+    const currentMonth = monthFilter.value;
+    const monthsForYear = filters.months[year];
+
+    // Skip updating if the options already match
+    const optionsMatch = Array.from(monthFilter.options).map(o => Number(o.value)).join(",") === monthsForYear.join(",");
+    if (optionsMatch) return;
 
     monthFilter.innerHTML = "";
-
-    if (!filters.months[year]) return;
-
-    filters.months[year].forEach(m => {
+    monthsForYear.forEach(m => {
       monthFilter.innerHTML += `<option value="${m}">${monthNames[m - 1]}</option>`;
     });
 
-    if (prevMonth && filters.months[year].includes(Number(prevMonth))) {
-      monthFilter.value = prevMonth;
-    } else {
-      const months = filters.months[year];
-      monthFilter.value = months[months.length - 1];
-    }
-
-    loadWeeks(filters, year, monthFilter.value, prevWeek);
+    monthFilter.value = prevMonth && monthsForYear.includes(Number(prevMonth))
+      ? prevMonth
+      : monthsForYear[monthsForYear.length - 1];
   }
 
 
-
+  // ================= LOAD WEEKS =================
   function loadWeeks(filters, year, month, prevWeek = null) {
-    weekFilter.innerHTML = "";
-
     const monthEnd = new Date(year, month, 0).getDate();
     const totalWeeks = Math.ceil(monthEnd / 7);
 
+    const weekOptions = [];
     for (let w = 1; w <= totalWeeks; w++) {
       const start = (w - 1) * 7 + 1;
       const end = w === totalWeeks ? monthEnd : w * 7;
-      weekFilter.innerHTML += `<option value="${w}">Week ${start}-${end}</option>`;
+      weekOptions.push(`${w}`);
     }
 
-    // PRESERVE WEEK SELECTION
-    if (prevWeek && prevWeek <= totalWeeks) {
-      weekFilter.value = prevWeek;
+    // Skip update if options already match
+    const currentOptions = Array.from(weekFilter.options).map(o => o.value);
+    if (currentOptions.join(",") === weekOptions.join(",")) {
+      // just preserve previous selection
+      if (prevWeek && weekOptions.includes(prevWeek.toString())) {
+        weekFilter.value = prevWeek;
+      }
+      return;
     }
+
+    // Rebuild options
+    weekFilter.innerHTML = "";
+    weekOptions.forEach(w => {
+      const start = (w - 1) * 7 + 1;
+      const end = w == totalWeeks ? monthEnd : w * 7;
+      weekFilter.innerHTML += `<option value="${w}">Week ${start}-${end}</option>`;
+    });
+
+    // Restore previous selection if valid
+    if (prevWeek && prevWeek <= totalWeeks) weekFilter.value = prevWeek;
   }
 
 
+  // ================= REQUEST CHART UPDATE =================
+  let chartTimeout;
+  function requestChartUpdate() {
+    // clearTimeout(chartTimeout);
+    // chartTimeout = setTimeout(() => {
 
-  socket.on("databaseUpdated", () => {
-    // refresh stats
+    // }, 300); // debounce to prevent rapid firing
+
     socket.emit("filterDashboard", {
       year: yearFilter.value,
       month: monthFilter.value,
       week: weekFilter.value
     });
-  });
-
-
-  let chartTimeout;
-  function requestChartUpdate() {
-    clearTimeout(chartTimeout);
-    chartTimeout = setTimeout(() => {
-      socket.emit("filterDashboard", {
-        year: yearFilter.value,
-        month: monthFilter.value,
-        week: weekFilter.value
-      });
-    }, 1000);
   }
 
-
+  // ================= EVENT LISTENERS =================
   yearFilter.addEventListener("change", () => {
+    if (updatingFilters) return; // Ignore programmatic changes
     loadMonths(cachedFilters, yearFilter.value);
     requestChartUpdate();
   });
 
   monthFilter.addEventListener("change", () => {
+    if (updatingFilters) return;
     loadWeeks(cachedFilters, yearFilter.value, monthFilter.value);
     requestChartUpdate();
   });
 
-  weekFilter.addEventListener("change", requestChartUpdate);
+  weekFilter.addEventListener("change", () => {
+    if (updatingFilters) return;
+    requestChartUpdate();
+  });
+
 
 
   // ================= MODAL / CARDS =================
