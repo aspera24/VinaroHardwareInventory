@@ -5,7 +5,47 @@
 
     // show loading initially
     loading.style.display = "flex";
-    
+
+    document.getElementById("customerForm").addEventListener("submit", async (e) => {
+        
+        const data = {
+            name: document.getElementById("name").value,
+            contact: document.getElementById("contact").value,
+            address: document.getElementById("address").value,
+            email: document.getElementById("email").value,
+            customer_type: document.getElementById("customer_type").value,
+            notes: document.getElementById("notes").value,
+            purpose: document.getElementById("purpose").value,
+            amount: document.getElementById("amount").value,
+            date: document.getElementById("date").value,
+            time: document.getElementById("time").value,
+            meeting_mode: document.getElementById("meeting_mode").value,
+            status: document.getElementById("status").value,
+            appointment_note: document.getElementById("notes").value // optional
+        };
+
+        try {
+            const res = await fetch("/api/add-customer", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+
+            if (res.ok) {
+                alert(result.message);
+                document.getElementById("customerForm").reset();
+            } else {
+                alert(result.message || "Failed to save");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server error");
+        }
+    });
+
+
 
     // hide loading after 2 seconds (or whatever delay)
     setTimeout(() => {

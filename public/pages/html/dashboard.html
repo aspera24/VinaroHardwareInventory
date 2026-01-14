@@ -66,7 +66,7 @@
 
         <!-- Recent Appointments -->
         <div class="recent-activity">
-            <h3>Recent Transactions</h3>
+            <h3>Recent Appointments</h3>
             <div class="limit">
                 <p>Select Limit:</p>
                 <select id="pageLimit">
@@ -75,6 +75,7 @@
                     <option value="15">15</option>
                     <option value="20">20</option>
                 </select>
+                <input type="search" placeholder="Search Customer...">
             </div>
             <table>
                 <thead>
@@ -99,7 +100,7 @@
             <div class="modal-content">
                 <span id="close-modal">&times;</span>
                 <h3 id="txtLabel"></h3>
-                <input type="text" id="modal-search" placeholder="Search name..." />
+                <input type="text" id="modal-search" placeholder="Search Customer..." />
 
                 <select id="modal-status-filter" style="display:none">
                     <option value="">All</option>
@@ -115,7 +116,7 @@
                         <option value="15">15</option>
                         <option value="20">20</option>
                     </select>
-                    <p>Entries</p>
+                    <p>displayed customer</p>
                 </div>
 
                 <div id="modal-body"></div>

@@ -244,13 +244,7 @@
 
 
   // ================= REQUEST CHART UPDATE =================
-  let chartTimeout;
   function requestChartUpdate() {
-    // clearTimeout(chartTimeout);
-    // chartTimeout = setTimeout(() => {
-
-    // }, 300); // debounce to prevent rapid firing
-
     socket.emit("filterDashboard", {
       year: yearFilter.value,
       month: monthFilter.value,
@@ -418,12 +412,16 @@
 
 
 
-
+  // For recent appointments
   const recentTable = document.getElementById("recent-appointments");
   const prevBtn = document.getElementById("prevPage");
   const nextBtn = document.getElementById("nextPage");
   const pageInfo = document.getElementById("pageInfo");
   const pageLimitSelect = document.getElementById("pageLimit");
+
+  const searchInput = document.querySelector(".limit input[type='search']");
+  let searchTerm = "";
+
 
   let currentPage = 1;
   let limit = 5;
@@ -432,9 +430,17 @@
   function loadRecentAppointments() {
     socket.emit("getRecentAppointments", {
       page: currentPage,
-      limit
+      limit,
+      search: searchTerm
     });
   }
+
+  searchInput.addEventListener("input", () => {
+    searchTerm = searchInput.value.trim();
+    currentPage = 1;
+    loadRecentAppointments();
+  });
+
 
   socket.on("recentAppointments", data => {
     const { rows, total } = data;
@@ -447,6 +453,7 @@
       <tr>
         <td colspan="3" style="text-align:center;">No recent appointments</td>
       </tr>`;
+      pageInfo.textContent = "Page 0 of 0";
       return;
     }
 
@@ -461,7 +468,6 @@
         day: "numeric"
       })}
         </td>
-
         <td>
           <span class="status ${r.status}">
             ${r.status}
@@ -471,12 +477,14 @@
     `;
     });
 
-    const totalPages = Math.ceil(totalRows / limit);
+    const totalPages = Math.ceil(totalRows / limit) || 1;
+
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
 
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
   });
+
 
   /* EVENTS */
   prevBtn.addEventListener("click", () => {

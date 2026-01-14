@@ -118,10 +118,11 @@ nav ul li a {
     height: 100vh;
     -webkit-overflow-scrolling: touch;
     transition: all 0.3s ease;
+    background-position: center;
+    background: rgb(234, 234, 234);
 }
 
 /* For Loading */
-/* DASHBOARD LOADING OVERLAY */
 #dashboard-loading, #loading {
     inset: 0;
     width: 100%;

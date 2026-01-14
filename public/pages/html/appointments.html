@@ -1,41 +1,32 @@
-<div class="card">
-    <h2>Appointments</h2>
-
-    <table border="1" width="100%" cellpadding="10">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Purpose</th>
-                <th>Date</th>
-                <th>Time</th>
-            </tr>
-        </thead>
-
-        <tbody id="appointmentList">
-            <!-- dynamically loaded -->
-        </tbody>
-    </table>
+<!-- GLOBAL LOADING -->
+<div id="loading">
+    <div class="loader"></div>
+    <p>Loading...</p>
 </div>
 
-<script>
-async function loadAppointments() {
-    const res = await fetch("/api/appointments");
-    const data = await res.json();
+<div class="mainAppoint">
+    <h2 class="title">Scheduled Appointment</h2>
+    <p class="title-p">Monitor and manage customers with scheduled appointments.</p>
 
-    const tbody = document.getElementById("appointmentList");
-    tbody.innerHTML = "";
+    <div class="mainCard">
+        <h2>Appointments</h2>
 
-    data.forEach(a => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${a.name}</td>
-                <td>${a.purpose}</td>
-                <td>${a.date}</td>
-                <td>${a.time}</td>
-            </tr>
-        `;
-    });
-}
+        <table >
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Purpose</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
 
-loadAppointments();
-</script>
+            <tbody id="appointmentList">
+                <!-- dynamically loaded -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script src="/js/appointments.js"></script>

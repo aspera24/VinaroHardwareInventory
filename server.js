@@ -168,32 +168,53 @@ io.on("connection", (socket) => {
   /* ==========================
    RECENT APPOINTMENTS
 ========================== */
-  socket.on("getRecentAppointments", ({ page, limit }) => {
+  socket.on("getRecentAppointments", ({ page, limit, search }) => {
     const offset = (page - 1) * limit;
+
+    let searchQuery = "";
+    let params = [];
+
+    if (search && search.trim() !== "") {
+      searchQuery = "AND c.name LIKE ?";
+      params.push(`%${search}%`);
+    }
 
     // get paginated data
     db.query(
       `
-      SELECT 
-        c.name AS customer,
-        a.appointment_date AS date,
-        a.status
-      FROM appointments a
-      JOIN customers c ON a.customer_id = c.id
-      WHERE a.status = 'completed'
-      ORDER BY a.appointment_date DESC
-      
-      LIMIT ? OFFSET ?
-      `,
-      [limit, offset],
+    SELECT 
+      c.name AS customer,
+      a.appointment_date AS date,
+      a.status
+    FROM appointments a
+    JOIN customers c ON a.customer_id = c.id
+    WHERE a.status = 'completed'
+    ${searchQuery}
+    ORDER BY a.appointment_date DESC
+    LIMIT ? OFFSET ?
+    `,
+      [...params, limit, offset],
       (err, rows) => {
-        if (err) return;
+        if (err) {
+          console.error(err);
+          return;
+        }
 
         // get total count (for total pages)
         db.query(
-          `SELECT COUNT(*) AS total FROM appointments WHERE status = 'completed'`,
+          `
+        SELECT COUNT(*) AS total 
+        FROM appointments a
+        JOIN customers c ON a.customer_id = c.id
+        WHERE a.status = 'completed'
+        ${searchQuery}
+        `,
+          params,
           (err2, countResult) => {
-            if (err2) return;
+            if (err2) {
+              console.error(err2);
+              return;
+            }
 
             socket.emit("recentAppointments", {
               rows,
@@ -204,6 +225,7 @@ io.on("connection", (socket) => {
       }
     );
   });
+
 
 
 
@@ -226,7 +248,7 @@ io.on("connection", (socket) => {
 
     switch (type) {
 
-      // ✅ TOTAL CUSTOMERS
+      // TOTAL CUSTOMERS
       case "total-customer":
         title = "Total Customers";
         dataQuery = `
@@ -245,7 +267,7 @@ io.on("connection", (socket) => {
         countParams = [searchLike];
         break;
 
-      // ✅ TOTAL APPOINTMENTS (with STATUS FILTER)
+      // TOTAL APPOINTMENTS (with STATUS FILTER)
       case "total-appointments":
         title = "Total Appointments";
 
@@ -285,7 +307,7 @@ io.on("connection", (socket) => {
 
         break;
 
-      // ✅ UPCOMING TODAY
+      // UPCOMING TODAY
       case "upcoming-today":
         title = "Upcoming Today";
         dataQuery = `
@@ -308,7 +330,7 @@ io.on("connection", (socket) => {
         countParams = [searchLike];
         break;
 
-      // ✅ PENDING APPROVAL
+      // PENDING APPROVAL
       case "pending-approval":
         title = "Pending Approvals";
         dataQuery = `
@@ -353,6 +375,33 @@ io.on("connection", (socket) => {
     });
   });
 
+  /* ==========================
+   GET ALL APPOINTMENTS (SOCKET)
+========================== */
+  socket.on("getAppointments", () => {
+
+    const query = `
+    SELECT 
+      c.name,
+      ad.purpose,
+      a.appointment_date AS date,
+      a.appointment_time AS time
+    FROM appointments a
+    JOIN customers c ON a.customer_id = c.id
+    JOIN appointment_details ad ON ad.appointment_id = a.id
+    ORDER BY a.appointment_date DESC, a.appointment_time DESC
+  `;
+
+    db.query(query, (err, rows) => {
+      if (err) {
+        console.error("Fetch appointments error:", err);
+        socket.emit("appointmentsData", []);
+        return;
+      }
+
+      socket.emit("appointmentsData", rows);
+    });
+  });
 
 
 
@@ -362,6 +411,144 @@ io.on("connection", (socket) => {
     console.log("Socket disconnected:", socket.id);
   });
 });
+
+
+// For Adding-Customer
+app.post("/api/add-customer", (req, res) => {
+  const {
+    name,
+    contact,
+    address,
+    email,
+    customer_type,
+    notes,
+    purpose,
+    amount,
+    date,
+    time,
+    meeting_mode,
+    status,
+    appointment_note
+  } = req.body;
+
+  // check required fields
+  if (!name || !contact || !purpose || !amount || !date || !time) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  // Insert into customers table
+  const customerQuery = `
+    INSERT INTO customers
+    (name, contact, address, email, customer_type, notes)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    customerQuery,
+    [
+      name,
+      contact,
+      address || "",
+      email || "",
+      customer_type || "new",
+      notes || ""
+    ],
+    (err, customerResult) => {
+      if (err) {
+        console.error("Customer insert error:", err);
+        return res.status(500).json({ message: "Failed to insert customer" });
+      }
+
+      const customerId = customerResult.insertId;
+
+      //Insert into appointments table
+      const appointmentQuery = `
+        INSERT INTO appointments
+        (customer_id, appointment_date, appointment_time, status)
+        VALUES (?, ?, ?, ?)
+      `;
+
+      db.query(
+        appointmentQuery,
+        [customerId, date, time, status],
+        (err2, appointmentResult) => {
+          if (err2) {
+            console.error("Appointment insert error:", err2);
+            return res.status(500).json({ message: "Failed to insert appointment" });
+          }
+
+          const appointmentId = appointmentResult.insertId;
+
+          // Insert into appointment_details table
+          const detailsQuery = `
+            INSERT INTO appointment_details
+            (appointment_id, purpose, amount, meeting_mode)
+            VALUES (?, ?, ?, ?)
+          `;
+
+          db.query(
+            detailsQuery,
+            [appointmentId, purpose, amount, meeting_mode || "walk-in"],
+            (err3) => {
+              if (err3) {
+                console.error("Appointment details insert error:", err3);
+                return res.status(500).json({ message: "Failed to insert appointment details" });
+              }
+
+              // Insert into appointment_status table
+              const statusQuery = `
+                INSERT INTO appointment_status
+                (appointment_id, status)
+                VALUES (?, ?)
+              `;
+
+              db.query(
+                statusQuery,
+                [appointmentId, status || "pending"],
+                (err4) => {
+                  if (err4) {
+                    console.error("Appointment status insert error:", err4);
+                    return res.status(500).json({ message: "Failed to insert status" });
+                  }
+
+                  // Insert note if exists
+                  if (appointment_note) {
+                    const notesQuery = `
+                      INSERT INTO appointment_notes
+                      (appointment_id, note)
+                      VALUES (?, ?)
+                    `;
+
+                    db.query(
+                      notesQuery,
+                      [appointmentId, appointment_note],
+                      (err5) => {
+                        if (err5) {
+                          console.error("Appointment notes insert error:", err5);
+                          return res.status(500).json({ message: "Failed to insert note" });
+                        }
+
+                        // Notify dashboard via socket.io
+                        io.emit("databaseUpdated");
+
+                        return res.json({ message: "Customer & appointment saved successfully" });
+                      }
+                    );
+                  } else {
+                    // no note
+                    io.emit("databaseUpdated");
+                    return res.json({ message: "Customer & appointment saved successfully" });
+                  }
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
+});
+
 
 app.get("*", (req, res) =>
   res.sendFile(__dirname + "/public/index.html")
