@@ -17,7 +17,7 @@
                 <input type="text" id="name" required>
 
                 <label>Contact Number</label>
-                <input type="text" id="contact" required>
+                <input type="text"  id="contact" maxlength="11" required>
 
                 <label>Purpose of Loan</label>
                 <select id="purpose" required>
@@ -40,7 +40,6 @@
                 <label>Mode of Meeting</label>
                 <select id="meeting_mode">
                     <option value="walk-in">Walk-in</option>
-                    <option value="office-visit">Office Visit</option>
                     <option value="online">Online</option>
                 </select>
 
@@ -74,9 +73,7 @@
                 <label>Status</label>
                 <select id="status">
                     <option value="pending">Pending</option>
-                    <option value="contacted">Contacted</option>
                     <option value="approved">Approved</option>
-                    <option value="declined">Declined</option>
                 </select>
             </div>
 

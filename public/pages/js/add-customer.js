@@ -7,7 +7,7 @@
     loading.style.display = "flex";
 
     document.getElementById("customerForm").addEventListener("submit", async (e) => {
-        
+
         const data = {
             name: document.getElementById("name").value,
             contact: document.getElementById("contact").value,
@@ -43,13 +43,10 @@
             console.error(err);
             alert("Server error");
         }
+
     });
 
+    loading.style.display = "none";
+    main.style.display = "block";
 
-
-    // hide loading after 2 seconds (or whatever delay)
-    setTimeout(() => {
-        loading.style.display = "none";
-        main.style.display = "block"; // show main
-    }, 2000); // 2000ms = 2 seconds
 })();

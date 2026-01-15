@@ -3,7 +3,6 @@
   const loading = document.getElementById("dashboard-loading");
   const dashboardWrapper = document.querySelector(".dashboard-wrapper");
   dashboardWrapper.style.display = "none";
-
   loading.style.display = "flex";
 
   const socket = window.socket;
@@ -352,7 +351,7 @@
         ${rows.map(r => `
           <tr>
             <td>${r.name}</td>
-            ${hasDate ? `<td>${r.appointment_date.slice(0, 10)}</td>` : ""}
+            ${hasDate ? `<td>${new Date(r.appointment_date).toLocaleDateString("en-CA") }</td>` : ""}
             ${hasStatus ? `<td>${r.status}</td>` : ""}
           </tr>
         `).join("")}

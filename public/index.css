@@ -2,10 +2,10 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     background: #ececec;
     overflow: hidden;
@@ -13,7 +13,7 @@ body {
 
 :root {
     scrollbar-width: thin;
-    scrollbar-color: #303641 #c0c0c0;
+    scrollbar-color: #303641 transparent;
 }
 
 .container {

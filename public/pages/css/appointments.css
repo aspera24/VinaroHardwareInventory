@@ -13,6 +13,36 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: 600px;
     background: white;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden;
 }
+
+.mainCard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+.mainCard table th,
+.mainCard table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.mainCard table thead {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+}
+
+.mainCard table tbody tr:nth-child(even) {
+    background-color: #f3f3f3;
+}
+
+/* .mainCard table tbody tr:hover {
+    background-color: #e6e6e6;
+} */
+

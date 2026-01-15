@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
 
     db.query(
       `
-    SELECT DAY(appointment_date) AS day,
+    SELECT DAY(DATE(appointment_date)) AS day,
            COUNT(*) AS total
     FROM appointments
     WHERE YEAR(appointment_date) = ?
@@ -381,15 +381,19 @@ io.on("connection", (socket) => {
   socket.on("getAppointments", () => {
 
     const query = `
-    SELECT 
-      c.name,
-      ad.purpose,
-      a.appointment_date AS date,
-      a.appointment_time AS time
-    FROM appointments a
-    JOIN customers c ON a.customer_id = c.id
-    JOIN appointment_details ad ON ad.appointment_id = a.id
-    ORDER BY a.appointment_date DESC, a.appointment_time DESC
+      SELECT 
+        a.id,
+        c.name,
+        ad.purpose,
+        DATE_FORMAT(a.appointment_date, '%Y-%m-%d') AS date,
+        a.appointment_time AS time,
+        a.status,
+        an.note
+      FROM appointments a
+      JOIN customers c ON a.customer_id = c.id
+      JOIN appointment_details ad ON ad.appointment_id = a.id
+      LEFT JOIN appointment_notes an ON an.appointment_id = a.id
+      ORDER BY a.appointment_date DESC, a.appointment_time DESC;
   `;
 
     db.query(query, (err, rows) => {
@@ -403,6 +407,29 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("deleteAppointment", (id) => {
+    db.query("DELETE FROM appointments WHERE id = ?", [id], (err) => {
+      if (err) console.error(err);
+      io.emit("databaseUpdated");
+    });
+  });
+
+  socket.on("deleteAllAppointments", () => {
+    db.query("DELETE FROM appointments", (err) => {
+      if (err) console.error(err);
+      io.emit("databaseUpdated");
+    });
+  });
+
+  socket.on("getSingleAppointment", (id) => {
+    db.query("SELECT * FROM appointments WHERE id = ?", [id], (err, rows) => {
+      if (err) {
+        socket.emit("singleAppointmentData", null);
+      } else {
+        socket.emit("singleAppointmentData", rows[0]);
+      }
+    });
+  });
 
 
 

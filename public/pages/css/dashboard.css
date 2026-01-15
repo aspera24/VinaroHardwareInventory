@@ -21,7 +21,7 @@
 
 .stats-grid {
     display: flex;
-    gap: 20px;
+    gap: 10px;
     justify-content: space-evenly;
 }
 
@@ -79,7 +79,7 @@
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -112,7 +112,7 @@
     outline: none;
     border: 1px solid gray;
     font-size: 10px;
-    
+
 }
 
 /* Recent Appointments Table */
@@ -179,7 +179,7 @@
 #modal-search {
     height: 25px;
     padding: 0 5px;
-    font-size: 12px;
+    font-size: 10px;
     border: 1px solid gray;
     letter-spacing: 2px;
     outline: none;
@@ -188,10 +188,11 @@
 #modal-status-filter {
     height: 25px;
     padding: 0 5px;
-    font-size: 12px;
+    font-size: 10px;
     border: 1px solid gray;
     letter-spacing: 2px;
     outline: none;
+    width: auto;
 }
 
 .limitCont {
@@ -251,7 +252,6 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-
 }
 
 .noData {
@@ -266,8 +266,8 @@
 }
 
 .table thead {
-    background-color: #760000;
-    color: white;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
 }
 
 .table tbody tr:nth-child(even) {
@@ -335,7 +335,7 @@
     letter-spacing: 1px;
 }
 
-.limit input::placeholder{
+.limit input::placeholder {
     color: rgb(78, 78, 78);
 }
 

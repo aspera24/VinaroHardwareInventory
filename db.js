@@ -4,7 +4,8 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "customer-service"
+  database: "customer-service",
+  timezone: "+08:00"
 });
 
 module.exports = db;

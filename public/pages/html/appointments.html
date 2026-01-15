@@ -5,28 +5,59 @@
 </div>
 
 <div class="mainAppoint">
-    <h2 class="title">Scheduled Appointment</h2>
+    <h2 class="title">Scheduled Appointments</h2>
     <p class="title-p">Monitor and manage customers with scheduled appointments.</p>
 
     <div class="mainCard">
-        <h2>Appointments</h2>
 
-        <table >
+        <!-- FILTER BAR -->
+        <div class="table-controls">
+            <input type="text" id="searchName" placeholder="Search Customer...">
+
+            <input type="date" id="filterDate">
+
+            <select id="filterStatus">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="declined">Declined</option>
+            </select>
+
+            <select id="pageLimit">
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="30">30</option>
+            </select>
+
+            <button id="deleteAllBtn" class="danger">Remove All</button>
+        </div>
+
+        <!-- COUNTER -->
+        <p id="customerCount">Total: 0</p>
+
+        <table>
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Purpose</th>
                     <th>Date</th>
                     <th>Time</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
-
-            <tbody id="appointmentList">
-                <!-- dynamically loaded -->
-            </tbody>
+            <tbody id="appointmentList"></tbody>
         </table>
+
+        <!-- PAGINATION -->
+        <div class="pagination">
+            <button id="prevPage">Prev</button>
+            <span id="pageInfo">Page 1</span>
+            <button id="nextPage">Next</button>
+        </div>
     </div>
+
 </div>
-
-
-<script src="/js/appointments.js"></script>

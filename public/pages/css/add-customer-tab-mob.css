@@ -18,14 +18,14 @@
     }
 
     #left-card {
-        border: 1px solid #ddd;
+        /* border: 1px solid #ddd; */
         padding: 20px;
         height: auto;
         grid-column: 1/2;
     }
 
     #right-card {
-        border: 1px solid #ddd;
+        /* border: 1px solid #ddd; */
         padding: 20px;
         height: auto;
         grid-column: 2/3;
