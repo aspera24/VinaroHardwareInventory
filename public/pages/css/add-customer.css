@@ -51,10 +51,17 @@
     letter-spacing: 1px;
     outline: none;
     color: rgb(75, 75, 75);
+    overflow: hidden;
 }
 
 #left-card select{
     cursor: pointer;
+}
+
+#left-card select button{
+    height: auto;
+    width: auto;
+    background: transparent;
 }
 
 #right-card textarea {

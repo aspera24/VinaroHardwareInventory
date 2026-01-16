@@ -16,7 +16,7 @@ io.on("connection", (socket) => {
   const sendDashboardStats = () => {
     const stats = {};
 
-    db.query("SELECT COUNT(*) AS total FROM customers", (e, r) => {
+    db.query("SELECT COUNT(DISTINCT name) AS total FROM customers", (e, r) => {
       if (e) return;
       stats.totalCustomers = r[0].total;
 
@@ -252,7 +252,7 @@ io.on("connection", (socket) => {
       case "total-customer":
         title = "Total Customers";
         dataQuery = `
-        SELECT name
+        SELECT DISTINCT(name)
         FROM customers
         WHERE name LIKE ?
         ORDER BY name ASC
@@ -440,9 +440,17 @@ io.on("connection", (socket) => {
 });
 
 
-// For Adding-Customer
+
+
+
+
+
+
+
+// FOR ADDING CUSTOMERS
 app.post("/api/add-customer", (req, res) => {
   const {
+    customer_id,   // gikan sa Select2
     name,
     contact,
     address,
@@ -458,123 +466,155 @@ app.post("/api/add-customer", (req, res) => {
     appointment_note
   } = req.body;
 
-  // check required fields
   if (!name || !contact || !purpose || !amount || !date || !time) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  // Insert into customers table
-  const customerQuery = `
-    INSERT INTO customers
-    (name, contact, address, email, customer_type, notes)
-    VALUES (?, ?, ?, ?, ?, ?)
+  const insertAppointmentFlow = (customerId) => {
+    // 1. Insert into appointments
+    const appointmentQuery = `
+      INSERT INTO appointments
+      (customer_id, appointment_date, appointment_time, status)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(
+      appointmentQuery,
+      [customerId, date, time, status || "pending"],
+      (err2, appointmentResult) => {
+        if (err2) {
+          console.error("Appointment insert error:", err2);
+          return res.status(500).json({ message: "Failed to insert appointment" });
+        }
+
+        const appointmentId = appointmentResult.insertId;
+
+        // 2. Insert into appointment_details
+        const detailsQuery = `
+          INSERT INTO appointment_details
+          (appointment_id, purpose, amount, meeting_mode)
+          VALUES (?, ?, ?, ?)
+        `;
+
+        db.query(
+          detailsQuery,
+          [appointmentId, purpose, amount, meeting_mode || "walk-in"],
+          (err3) => {
+            if (err3) {
+              console.error("Appointment details insert error:", err3);
+              return res.status(500).json({ message: "Failed to insert appointment details" });
+            }
+
+            // 3. Insert into appointment_status
+            const statusQuery = `
+              INSERT INTO appointment_status
+              (appointment_id, status)
+              VALUES (?, ?)
+            `;
+
+            db.query(
+              statusQuery,
+              [appointmentId, status || "pending"],
+              (err4) => {
+                if (err4) {
+                  console.error("Appointment status insert error:", err4);
+                  return res.status(500).json({ message: "Failed to insert appointment status" });
+                }
+
+                // 4. Insert note if exists
+                if (appointment_note && appointment_note.trim() !== "") {
+                  const notesQuery = `
+                    INSERT INTO appointment_notes
+                    (appointment_id, note)
+                    VALUES (?, ?)
+                  `;
+
+                  db.query(
+                    notesQuery,
+                    [appointmentId, appointment_note],
+                    (err5) => {
+                      if (err5) {
+                        console.error("Appointment notes insert error:", err5);
+                        return res.status(500).json({ message: "Failed to insert appointment note" });
+                      }
+
+                      io.emit("databaseUpdated");
+                      return res.json({ message: "Customer & appointment saved successfully" });
+                    }
+                  );
+                } else {
+                  // no note
+                  io.emit("databaseUpdated");
+                  return res.json({ message: "Customer & appointment saved successfully" });
+                }
+              }
+            );
+          }
+        );
+      }
+    );
+  };
+
+  // ================================
+  // MAIN LOGIC
+  // ================================
+
+  if (customer_id) {
+    // ✅ EXISTING CUSTOMER
+    insertAppointmentFlow(customer_id);
+
+  } else {
+    // ✅ NEW CUSTOMER
+    const customerQuery = `
+      INSERT INTO customers
+      (name, contact, address, email, customer_type)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+
+    db.query(
+      customerQuery,
+      [
+        name,
+        contact,
+        address || "",
+        email || "",
+        customer_type || "New"
+      ],
+      (err, result) => {
+        if (err) {
+          console.error("Customer insert error:", err);
+          return res.status(500).json({ message: "Failed to insert customer" });
+        }
+
+        const newCustomerId = result.insertId;
+        insertAppointmentFlow(newCustomerId);
+      }
+    );
+  }
+});
+
+
+app.get("/api/customers", (req, res) => {
+  const search = req.query.search || "";
+
+  const query = `
+    SELECT id, name, contact
+    FROM customers
+    WHERE name LIKE ?
+    GROUP BY name, contact
+    ORDER BY name ASC
+    LIMIT 20;
   `;
 
-  db.query(
-    customerQuery,
-    [
-      name,
-      contact,
-      address || "",
-      email || "",
-      customer_type || "new",
-      notes || ""
-    ],
-    (err, customerResult) => {
-      if (err) {
-        console.error("Customer insert error:", err);
-        return res.status(500).json({ message: "Failed to insert customer" });
-      }
-
-      const customerId = customerResult.insertId;
-
-      //Insert into appointments table
-      const appointmentQuery = `
-        INSERT INTO appointments
-        (customer_id, appointment_date, appointment_time, status)
-        VALUES (?, ?, ?, ?)
-      `;
-
-      db.query(
-        appointmentQuery,
-        [customerId, date, time, status],
-        (err2, appointmentResult) => {
-          if (err2) {
-            console.error("Appointment insert error:", err2);
-            return res.status(500).json({ message: "Failed to insert appointment" });
-          }
-
-          const appointmentId = appointmentResult.insertId;
-
-          // Insert into appointment_details table
-          const detailsQuery = `
-            INSERT INTO appointment_details
-            (appointment_id, purpose, amount, meeting_mode)
-            VALUES (?, ?, ?, ?)
-          `;
-
-          db.query(
-            detailsQuery,
-            [appointmentId, purpose, amount, meeting_mode || "walk-in"],
-            (err3) => {
-              if (err3) {
-                console.error("Appointment details insert error:", err3);
-                return res.status(500).json({ message: "Failed to insert appointment details" });
-              }
-
-              // Insert into appointment_status table
-              const statusQuery = `
-                INSERT INTO appointment_status
-                (appointment_id, status)
-                VALUES (?, ?)
-              `;
-
-              db.query(
-                statusQuery,
-                [appointmentId, status || "pending"],
-                (err4) => {
-                  if (err4) {
-                    console.error("Appointment status insert error:", err4);
-                    return res.status(500).json({ message: "Failed to insert status" });
-                  }
-
-                  // Insert note if exists
-                  if (appointment_note) {
-                    const notesQuery = `
-                      INSERT INTO appointment_notes
-                      (appointment_id, note)
-                      VALUES (?, ?)
-                    `;
-
-                    db.query(
-                      notesQuery,
-                      [appointmentId, appointment_note],
-                      (err5) => {
-                        if (err5) {
-                          console.error("Appointment notes insert error:", err5);
-                          return res.status(500).json({ message: "Failed to insert note" });
-                        }
-
-                        // Notify dashboard via socket.io
-                        io.emit("databaseUpdated");
-
-                        return res.json({ message: "Customer & appointment saved successfully" });
-                      }
-                    );
-                  } else {
-                    // no note
-                    io.emit("databaseUpdated");
-                    return res.json({ message: "Customer & appointment saved successfully" });
-                  }
-                }
-              );
-            }
-          );
-        }
-      );
+  db.query(query, [`%${search}%`], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json([]);
     }
-  );
+    res.json(rows);
+  });
 });
+
 
 
 app.get("*", (req, res) =>

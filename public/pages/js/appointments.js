@@ -55,13 +55,6 @@
         const status = filterStatus.value;
 
         filteredData = allData.filter(a => {
-
-            console.log("DB date:", a.date);
-            console.log("Formatted:", formatDateInput(a.date));
-            console.log("Input date:", date);
-            console.log("Match?:", formatDateInput(a.date) === date);
-            console.log("----------------------");
-
             const matchName = a.name.toLowerCase().includes(search);
             const matchStatus = status ? a.status === status : true;
             const matchDate = date ? formatDateInput(a.date) === date : true;

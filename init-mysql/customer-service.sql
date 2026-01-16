@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 14, 2026 at 07:55 AM
+-- Generation Time: Jan 16, 2026 at 09:12 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -41,7 +41,10 @@ CREATE TABLE `appointments` (
 
 INSERT INTO `appointments` (`id`, `customer_id`, `appointment_date`, `appointment_time`, `status`) VALUES
 (108, 12, '2026-01-15', '09:00:00', 'pending'),
-(109, 13, '2026-01-20', '10:00:00', 'pending');
+(109, 13, '2026-01-20', '10:00:00', 'pending'),
+(110, 14, '2026-01-16', '13:00:00', 'pending'),
+(111, 15, '2026-01-17', '13:00:00', 'pending'),
+(112, 14, '2026-01-17', '08:00:00', 'pending');
 
 -- --------------------------------------------------------
 
@@ -63,7 +66,10 @@ CREATE TABLE `appointment_details` (
 
 INSERT INTO `appointment_details` (`id`, `appointment_id`, `purpose`, `amount`, `meeting_mode`) VALUES
 (1, 108, 'personal', 5000.00, 'walk-in'),
-(2, 109, 'personal', 500000.00, 'walk-in');
+(2, 109, 'personal', 500000.00, 'walk-in'),
+(3, 110, 'personal', 5000.00, 'walk-in'),
+(4, 111, 'tuition', 30000.00, 'walk-in'),
+(5, 112, 'business', 100000.00, 'walk-in');
 
 -- --------------------------------------------------------
 
@@ -77,6 +83,13 @@ CREATE TABLE `appointment_notes` (
   `note` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `appointment_notes`
+--
+
+INSERT INTO `appointment_notes` (`id`, `appointment_id`, `note`, `created_at`) VALUES
+(1, 111, 'Para sa iyang tuition sa school sa CTU Barili Campus.', '2026-01-16 05:54:51');
 
 -- --------------------------------------------------------
 
@@ -97,7 +110,10 @@ CREATE TABLE `appointment_status` (
 
 INSERT INTO `appointment_status` (`id`, `appointment_id`, `status`, `updated_at`) VALUES
 (1, 108, 'pending', '2026-01-14 06:02:39'),
-(2, 109, 'pending', '2026-01-14 06:16:03');
+(2, 109, 'pending', '2026-01-14 06:16:03'),
+(3, 110, 'pending', '2026-01-15 03:32:17'),
+(4, 111, 'pending', '2026-01-16 05:54:51'),
+(5, 112, 'pending', '2026-01-16 06:32:36');
 
 -- --------------------------------------------------------
 
@@ -112,7 +128,6 @@ CREATE TABLE `customers` (
   `address` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `customer_type` enum('New','Old') DEFAULT NULL,
-  `notes` text DEFAULT NULL,
   `created_at` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -120,9 +135,11 @@ CREATE TABLE `customers` (
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`id`, `name`, `contact`, `address`, `email`, `customer_type`, `notes`, `created_at`) VALUES
-(12, 'Rodel John Aspera', '09280641714', '', '', 'New', '', '0000-00-00'),
-(13, 'Adrienne Amigable', '09154520163', '', '', 'New', '', '0000-00-00');
+INSERT INTO `customers` (`id`, `name`, `contact`, `address`, `email`, `customer_type`, `created_at`) VALUES
+(12, 'Rodel John Aspera', '09280641714', '', '', 'New', '0000-00-00'),
+(13, 'Adrienne Amigable', '09154520163', '', '', 'New', '0000-00-00'),
+(14, 'Cham Mercado', '09123456789', '', '', 'New', '0000-00-00'),
+(15, 'Rodel John Aspera', '09123456789', 'Bolocboloc', 'asperarodelj@gmail.com', '', '0000-00-00');
 
 --
 -- Indexes for dumped tables
@@ -170,31 +187,31 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=113;
 
 --
 -- AUTO_INCREMENT for table `appointment_details`
 --
 ALTER TABLE `appointment_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `appointment_notes`
 --
 ALTER TABLE `appointment_notes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `appointment_status`
 --
 ALTER TABLE `appointment_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables

@@ -6,10 +6,46 @@
     // show loading initially
     loading.style.display = "flex";
 
+    $(document).ready(function () {
+        $("#name").select2({
+            placeholder: "Select or type customer...",
+            allowClear: true,
+            ajax: {
+                url: "/api/customers",
+                dataType: "json",
+                delay: 250,
+                data: function (params) {
+                    return {
+                        search: params.term || ""
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(c => ({
+                            id: c.id,
+                            text: c.name,
+                            contact: c.contact
+                        }))
+                    };
+                }
+            }
+        });
+
+        // When customer selected, auto-fill contact
+        $("#name").on("select2:select", function (e) {
+            const data = e.params.data;
+            if (data.contact) {
+                $("#contact").val(data.contact);
+            }
+        });
+    });
+
+
     document.getElementById("customerForm").addEventListener("submit", async (e) => {
 
         const data = {
-            name: document.getElementById("name").value,
+            customer_id: $("#name").val() || null,
+            name: $("#name option:selected").text() || $("#name").val(),
             contact: document.getElementById("contact").value,
             address: document.getElementById("address").value,
             email: document.getElementById("email").value,

@@ -16,6 +16,7 @@
   const yearFilter = document.getElementById("yearFilter");
   const monthFilter = document.getElementById("monthFilter");
   const weekFilter = document.getElementById("weekFilter");
+  
 
 
   function generateChartData(values) {
@@ -56,7 +57,7 @@
       datasets: [{
         label: "Number of Customers",
         data: [],
-        tension: 0.1,
+        tension: 0.5,
         fill: true,
         pointRadius: 5,
         borderWidth: 2,
