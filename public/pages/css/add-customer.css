@@ -24,7 +24,8 @@
     grid-column: 1/2;
 }
 
-#left-card label, #right-card label{
+#left-card label,
+#right-card label {
     font-size: 12px;
     color: rgb(90, 90, 90);
     letter-spacing: 1px;
@@ -43,22 +44,80 @@
 #right-card select,
 #right-card textarea {
     width: 100%;
-    height: 32px;
+    height: 25px;
     margin-bottom: 12px;
     padding: 5px 8px;
-    border: 1px solid #ccc;
     margin-top: 3px;
     letter-spacing: 1px;
-    outline: none;
+    font-size: 10px;
     color: rgb(75, 75, 75);
     overflow: hidden;
+    border: none;
+    border-bottom: 1px solid gray;
+    outline: none !important;
 }
 
-#left-card select{
+/* main container */
+.select2-container {
+    width: 100% !important;
+    height: 25px !important;
+    margin-bottom: 12px !important;
+    outline: none !important;
+}
+
+/* select box */
+.select2-container--default .select2-selection--single {
+    width: 100%;
+    height: 100% !important;
+    border: 1px solid gray !important;
+    letter-spacing: 1px;
+    outline: none !important;
+    color: rgb(75, 75, 75);
+    overflow: hidden;
+    border-radius: none !important;
+    font-size: 10px !important;
+}
+
+[type=search] {
+    outline-offset: 0px;
+    outline: none;
+    -webkit-appearance: none;
+    font-size: 10px;
+}
+
+#right-card textarea {
+    border: 1px solid gray;
+}
+
+/* text inside */
+.select2-container--default
+.select2-selection--single
+.select2-selection__rendered {
+    color: rgb(75, 75, 75) !important;
+    font-size: 10px !important;
+    line-height: normal;
+    outline: none !important;
+}
+
+
+/* arrow */
+.select2-container--default
+.select2-selection--single
+.select2-selection__arrow {
+    height: 20px;
+}
+
+.select2-container--focus
+.select2-selection--single {
+    border-color: #760000;
+}
+
+
+#left-card select {
     cursor: pointer;
 }
 
-#left-card select button{
+#left-card select button {
     height: auto;
     width: auto;
     background: transparent;
@@ -66,6 +125,7 @@
 
 #right-card textarea {
     height: auto;
+    resize: none;
 }
 
 .profile-section {
@@ -88,12 +148,10 @@
     border-radius: 4px;
     cursor: pointer;
     letter-spacing: 2px;
+    transition: .1s all ease-in-out;
 }
 
 #left-card button:hover {
     background: #760000;
-}
-
-textarea{
-    resize: none;
+    transform: scale(.98);
 }

@@ -9,7 +9,7 @@
     $(document).ready(function () {
         $("#name").select2({
             placeholder: "Select or type customer...",
-            allowClear: true,
+            allowClear: false,
             ajax: {
                 url: "/api/customers",
                 dataType: "json",

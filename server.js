@@ -393,6 +393,7 @@ io.on("connection", (socket) => {
       JOIN customers c ON a.customer_id = c.id
       JOIN appointment_details ad ON ad.appointment_id = a.id
       LEFT JOIN appointment_notes an ON an.appointment_id = a.id
+      WHERE a.status = 'pending'
       ORDER BY a.appointment_date DESC, a.appointment_time DESC;
   `;
 
@@ -410,14 +411,14 @@ io.on("connection", (socket) => {
   socket.on("deleteAppointment", (id) => {
     db.query("DELETE FROM appointments WHERE id = ?", [id], (err) => {
       if (err) console.error(err);
-      io.emit("databaseUpdated");
+      io.emit("appointmentUpdate");
     });
   });
 
   socket.on("deleteAllAppointments", () => {
     db.query("DELETE FROM appointments", (err) => {
       if (err) console.error(err);
-      io.emit("databaseUpdated");
+      io.emit("appointmentUpdate");
     });
   });
 
@@ -538,13 +539,13 @@ app.post("/api/add-customer", (req, res) => {
                         return res.status(500).json({ message: "Failed to insert appointment note" });
                       }
 
-                      io.emit("databaseUpdated");
+                      io.emit("appointmentUpdate");
                       return res.json({ message: "Customer & appointment saved successfully" });
                     }
                   );
                 } else {
                   // no note
-                  io.emit("databaseUpdated");
+                  io.emit("appointmentUpdate");
                   return res.json({ message: "Customer & appointment saved successfully" });
                 }
               }
@@ -598,7 +599,7 @@ app.get("/api/customers", (req, res) => {
   const search = req.query.search || "";
 
   const query = `
-    SELECT id, name, contact
+    SELECT min(id) as id, name, contact
     FROM customers
     WHERE name LIKE ?
     GROUP BY name, contact

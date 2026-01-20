@@ -33,7 +33,7 @@
         main.style.display = "flex";
     });
 
-    socket.on("databaseUpdated", () => {
+    socket.on("appointmentUpdate", () => {
         socket.emit("getAppointments");
     });
 
@@ -92,7 +92,7 @@
                         <td>${formatDate(a.date)}</td>
                         <td>${formatTime(a.time)}</td>
                         <td>${a.status}</td>
-                        <td>${a.note ? a.note : "Empty"}</td>
+                        <td>${a.note ? a.note : "NA"}</td>
                         <td>
                             <button class="viewBtn" data-id="${a.id}">View</button>
                             <button class="editBtn" data-id="${a.id}">Update</button>
@@ -135,21 +135,21 @@
 
     /* ================= ACTION BUTTONS ================= */
 
-    // tbody.addEventListener("click", (e) => {
-    //     const id = e.target.dataset.id;
+    tbody.addEventListener("click", (e) => {
+        const id = e.target.dataset.id;
 
-    //     if (e.target.classList.contains("viewBtn")) {
-    //         viewAppointment(id);
-    //     }
+        if (e.target.classList.contains("viewBtn")) {
+            viewAppointment(id);
+        }
 
-    //     if (e.target.classList.contains("editBtn")) {
-    //         updateAppointment(id);
-    //     }
+        if (e.target.classList.contains("editBtn")) {
+            updateAppointment(id);
+        }
 
-    //     if (e.target.classList.contains("deleteBtn")) {
-    //         deleteAppointment(id);
-    //     }
-    // });
+        if (e.target.classList.contains("deleteBtn")) {
+            deleteAppointment(id);
+        }
+    });
 
     function viewAppointment(id) {
         socket.emit("getSingleAppointment", id);
