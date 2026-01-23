@@ -16,7 +16,7 @@
   const yearFilter = document.getElementById("yearFilter");
   const monthFilter = document.getElementById("monthFilter");
   const weekFilter = document.getElementById("weekFilter");
-  
+
 
 
   function generateChartData(values) {
@@ -55,7 +55,7 @@
     data: {
       labels: [],
       datasets: [{
-        label: "Number of Customers",
+        label: "Number of Clients",
         data: [],
         tension: 0.5,
         fill: true,
@@ -87,7 +87,7 @@
           },
         },
         y: {
-          title: { display: true, text: "Number of Customers", color: "black" },
+          title: { display: true, text: "Number of Clients", color: "black" },
           beginAtZero: true,
           ticks: {
             color: "black"
@@ -109,14 +109,13 @@
 
   // ================= DASHBOARD DATA =================
   socket.on("dashboardStats", stats => {
-    total_customers.innerText = stats.totalCustomers;
-    total_appointments.innerText = stats.totalAppointments;
-    upcoming_today.innerText = stats.upcomingToday;
-    pending_appointments.innerText = stats.pendingApproval;
-
-    loading.style.display = "none";
-    dashboardWrapper.style.display = "block";
+    console.log(stats);  // inspect server payload
+    total_customers.innerText = (stats?.totalClients ?? 0) || 0;
+    total_appointments.innerText = (stats?.totalAppointments ?? 0) || 0;
+    upcoming_today.innerText = (stats?.upcomingToday ?? 0) || 0;
+    pending_appointments.innerText = (stats?.pendingApproval ?? 0) || 0;
   });
+
 
 
 
@@ -352,7 +351,7 @@
         ${rows.map(r => `
           <tr>
             <td>${r.name}</td>
-            ${hasDate ? `<td>${new Date(r.appointment_date).toLocaleDateString("en-CA") }</td>` : ""}
+            ${hasDate ? `<td>${new Date(r.appointment_date).toLocaleDateString("en-CA")}</td>` : ""}
             ${hasStatus ? `<td>${r.status}</td>` : ""}
           </tr>
         `).join("")}
@@ -510,6 +509,9 @@
 
   /* INITIAL LOAD */
   loadRecentAppointments();
+
+  loading.style.display = "none";
+  dashboardWrapper.style.display = "block";
 
 })();
 

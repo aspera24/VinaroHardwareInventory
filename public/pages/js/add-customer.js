@@ -7,11 +7,28 @@
     loading.style.display = "flex";
 
     $(document).ready(function () {
+        let externalCustomers = [];
+
+        $.ajax({
+            type: 'GET',
+            url: 'https://bplcapi.doitcebutech.com/borrower/all?is_active=1',
+            success: function (res) {
+                if (!res.isError) {
+                    externalCustomers = res.data.map(v => ({
+                        id: v.fullname,   // string id is OK
+                        text: v.fullname
+                    }));
+                }
+            }
+        });
+
+
         $("#name").select2({
             placeholder: "Select or type customer...",
             allowClear: false,
+            // tags: true,
             ajax: {
-                url: "/api/customers",
+                url: "/page/customers",
                 dataType: "json",
                 delay: 250,
                 data: function (params) {
@@ -19,15 +36,41 @@
                         search: params.term || ""
                     };
                 },
-                processResults: function (data) {
+                processResults: function (data, params) {
+                    const term = (params.term || "").toLowerCase();
+
+                    // Filter external customers
+                    const filteredExternal = externalCustomers.filter(c =>
+                        c.text.toLowerCase().includes(term)
+                    );
+
+                    // Local DB customers (from API) - can filter as well or leave all
+                    const apiCustomers = data.map(c => ({
+                        id: c.id,
+                        text: c.name,
+                        contact: c.contact,
+                        source: 'local'
+                    }));
+
                     return {
-                        results: data.map(c => ({
-                            id: c.id,
-                            text: c.name,
-                            contact: c.contact
-                        }))
+                        results: [
+                            ...filteredExternal,   // only matching external
+                            ...apiCustomers        // can leave all or filter by term if you want
+                        ]
                     };
                 }
+            },
+
+            createTag: function (params) {
+                const term = $.trim(params.term);
+
+                if (term === "") return null;
+
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true
+                };
             }
         });
 
@@ -38,11 +81,12 @@
                 $("#contact").val(data.contact);
             }
         });
+
     });
 
 
     document.getElementById("customerForm").addEventListener("submit", async (e) => {
-
+        e.preventDefault(); 
         const data = {
             customer_id: $("#name").val() || null,
             name: $("#name option:selected").text() || $("#name").val(),
@@ -59,25 +103,26 @@
             status: document.getElementById("status").value,
             appointment_note: document.getElementById("notes").value // optional
         };
+        if(document.getElementById("amount").value != ""){
+            try {
+                const res = await fetch("/page/add-customer-data", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
 
-        try {
-            const res = await fetch("/api/add-customer", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
+                const result = await res.json();
 
-            const result = await res.json();
-
-            if (res.ok) {
-                alert(result.message);
-                document.getElementById("customerForm").reset();
-            } else {
-                alert(result.message || "Failed to save");
+                if (res.ok) {
+                    alert(result.message);
+                    document.getElementById("customerForm").reset();
+                } else {
+                    alert(result.message || "Failed to save");
+                }
+            } catch (err) {
+                console.error(err);
+                // alert("Server error");return false;
             }
-        } catch (err) {
-            console.error(err);
-            alert("Server error");
         }
 
     });

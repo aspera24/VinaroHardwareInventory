@@ -17,26 +17,22 @@ io.on("connection", (socket) => {
     const stats = {};
 
     db.query("SELECT COUNT(DISTINCT name) AS total FROM customers", (e, r) => {
-      if (e) return;
-      stats.totalCustomers = r[0].total;
+      stats.totalClients = r?.[0]?.total ?? 0;
 
       db.query("SELECT COUNT(*) AS total FROM appointments", (e2, r2) => {
-        if (e2) return;
-        stats.totalAppointments = r2[0].total;
+        stats.totalAppointments = r2?.[0]?.total ?? 0;
 
         db.query(
           "SELECT COUNT(*) AS total FROM appointments WHERE appointment_date = CURDATE()",
           (e3, r3) => {
-            if (e3) return;
-            stats.upcomingToday = r3[0].total;
+            stats.upcomingToday = r3?.[0]?.total ?? 0;
 
             db.query(
               "SELECT COUNT(*) AS total FROM appointments WHERE status = 'pending'",
               (e4, r4) => {
-                if (e4) return;
-                stats.pendingApproval = r4[0].total;
+                stats.pendingApproval = r4?.[0]?.total ?? 0;
 
-                // ONE EMIT = FULL STATS
+                // emit full stats
                 socket.emit("dashboardStats", stats);
               }
             );
@@ -45,6 +41,7 @@ io.on("connection", (socket) => {
       });
     });
   };
+
 
 
   /* ==========================
@@ -449,7 +446,7 @@ io.on("connection", (socket) => {
 
 
 // FOR ADDING CUSTOMERS
-app.post("/api/add-customer", (req, res) => {
+app.post("/page/add-customer-data", (req, res) => {
   const {
     customer_id,   // gikan sa Select2
     name,
@@ -560,42 +557,44 @@ app.post("/api/add-customer", (req, res) => {
   // MAIN LOGIC
   // ================================
 
-  if (customer_id) {
-    // ✅ EXISTING CUSTOMER
-    insertAppointmentFlow(customer_id);
+  // ================================
+  // MAIN LOGIC (safer for external customers)
+  // ================================
 
-  } else {
-    // ✅ NEW CUSTOMER
-    const customerQuery = `
-      INSERT INTO customers
-      (name, contact, address, email, customer_type)
-      VALUES (?, ?, ?, ?, ?)
-    `;
-
-    db.query(
-      customerQuery,
-      [
-        name,
-        contact,
-        address || "",
-        email || "",
-        customer_type || "New"
-      ],
-      (err, result) => {
+  const insertOrGetCustomerId = (customerId, name, contact, address, email, customer_type, callback) => {
+    if (customer_id && !isNaN(customer_id)) {
+      // Existing customer
+      insertAppointmentFlow(customer_id);
+    } else {
+      // New or external customer
+      const insertCustomerQuery = `
+    INSERT INTO customers (name, contact, address, email, customer_type)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+      db.query(insertCustomerQuery, [name, contact || "", address || "", email || "", customer_type || "New"], (err, result) => {
         if (err) {
           console.error("Customer insert error:", err);
           return res.status(500).json({ message: "Failed to insert customer" });
         }
 
-        const newCustomerId = result.insertId;
+        const newCustomerId = result.insertId; // numeric id from DB
         insertAppointmentFlow(newCustomerId);
-      }
-    );
-  }
+      });
+    }
+
+  };
+
+  // Use the function
+  insertOrGetCustomerId(customer_id, name, contact, address, email, customer_type, (finalCustomerId, err) => {
+    if (err) return res.status(500).json({ message: "Failed to insert customer" });
+
+    insertAppointmentFlow(finalCustomerId); // safe now
+  });
+
 });
 
 
-app.get("/api/customers", (req, res) => {
+app.get("/page/customers", (req, res) => {
   const search = req.query.search || "";
 
   const query = `
