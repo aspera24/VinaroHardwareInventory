@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
         stats.totalAppointments = r2?.[0]?.total ?? 0;
 
         db.query(
-          "SELECT COUNT(*) AS total FROM appointments WHERE appointment_date = CURDATE()",
+          "SELECT COUNT(DISTINCT customer_id) AS total FROM appointments WHERE appointment_date = CURDATE()",
           (e3, r3) => {
             stats.upcomingToday = r3?.[0]?.total ?? 0;
 
@@ -54,20 +54,19 @@ io.on("connection", (socket) => {
 
     db.query(
       `
-    SELECT DAY(DATE(appointment_date)) AS day,
-           COUNT(*) AS total
-    FROM appointments
-    WHERE YEAR(appointment_date) = ?
-      AND MONTH(appointment_date) = ?
-      AND DAY(appointment_date) BETWEEN ? AND ?
-    GROUP BY day
-    ORDER BY day
-    `,
+  SELECT DAY(appointment_date) AS day,
+         COUNT(DISTINCT customer_id) AS total
+  FROM appointments
+  WHERE YEAR(appointment_date) = ?
+    AND MONTH(appointment_date) = ?
+    AND DAY(appointment_date) BETWEEN ? AND ?
+  GROUP BY day
+  ORDER BY day
+  `,
       [year, month, startDay, endDay],
       (err, rows) => {
         if (err) return console.error(err);
 
-        // Initialize array with zeros
         const weekData = [];
         for (let d = startDay; d <= endDay; d++) {
           const row = rows.find(r => r.day === d);
@@ -77,6 +76,7 @@ io.on("connection", (socket) => {
         socket.emit("dashboardChart", { weekData });
       }
     );
+
   });
 
 
@@ -247,7 +247,7 @@ io.on("connection", (socket) => {
 
       // TOTAL CUSTOMERS
       case "total-customer":
-        title = "Total Customers";
+        title = "Total Clients";
         dataQuery = `
         SELECT DISTINCT(name)
         FROM customers
@@ -256,7 +256,7 @@ io.on("connection", (socket) => {
         LIMIT ? OFFSET ?
       `;
         countQuery = `
-        SELECT COUNT(*) AS total
+        SELECT COUNT(DISTINCT name) AS total
         FROM customers
         WHERE name LIKE ?
       `;
@@ -448,7 +448,7 @@ io.on("connection", (socket) => {
 // FOR ADDING CUSTOMERS
 app.post("/page/add-customer-data", (req, res) => {
   const {
-    customer_id,   // gikan sa Select2
+    customer_id,
     name,
     contact,
     address,
@@ -456,7 +456,6 @@ app.post("/page/add-customer-data", (req, res) => {
     customer_type,
     notes,
     purpose,
-    amount,
     date,
     time,
     meeting_mode,
@@ -464,7 +463,7 @@ app.post("/page/add-customer-data", (req, res) => {
     appointment_note
   } = req.body;
 
-  if (!name || !contact || !purpose || !amount || !date || !time) {
+  if (!name || !contact || !purpose || !date || !time) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
@@ -490,13 +489,13 @@ app.post("/page/add-customer-data", (req, res) => {
         // 2. Insert into appointment_details
         const detailsQuery = `
           INSERT INTO appointment_details
-          (appointment_id, purpose, amount, meeting_mode)
-          VALUES (?, ?, ?, ?)
+          (appointment_id, purpose, meeting_mode)
+          VALUES (?, ?, ?)
         `;
 
         db.query(
           detailsQuery,
-          [appointmentId, purpose, amount, meeting_mode || "walk-in"],
+          [appointmentId, purpose, meeting_mode || "walk-in"],
           (err3) => {
             if (err3) {
               console.error("Appointment details insert error:", err3);
@@ -561,35 +560,43 @@ app.post("/page/add-customer-data", (req, res) => {
   // MAIN LOGIC (safer for external customers)
   // ================================
 
-  const insertOrGetCustomerId = (customerId, name, contact, address, email, customer_type, callback) => {
-    if (customer_id && !isNaN(customer_id)) {
-      // Existing customer
-      insertAppointmentFlow(customer_id);
-    } else {
-      // New or external customer
-      const insertCustomerQuery = `
-    INSERT INTO customers (name, contact, address, email, customer_type)
-    VALUES (?, ?, ?, ?, ?)
-  `;
-      db.query(insertCustomerQuery, [name, contact || "", address || "", email || "", customer_type || "New"], (err, result) => {
-        if (err) {
-          console.error("Customer insert error:", err);
-          return res.status(500).json({ message: "Failed to insert customer" });
+  const insertOrGetCustomerId = () => {
+    db.query(
+      "SELECT id FROM customers WHERE name = ? LIMIT 1",
+      [name],
+      (err, rows) => {
+        if (err) return res.status(500).json({ message: "DB error" });
+
+        if (rows.length > 0) {
+          // Existing customer
+          insertAppointmentFlow(rows[0].id);
+        } else {
+          // Insert new customer
+          db.query(
+            `INSERT INTO customers (name, contact, address, email, customer_type)
+           VALUES (?, ?, ?, ?, ?)`,
+            [name, contact, address || "", email || "", customer_type || "New"],
+            (err2, result) => {
+              if (err2) return res.status(500).json({ message: "Customer insert failed" });
+
+              insertAppointmentFlow(result.insertId);
+            }
+          );
         }
-
-        const newCustomerId = result.insertId; // numeric id from DB
-        insertAppointmentFlow(newCustomerId);
-      });
-    }
-
+      }
+    );
   };
 
-  // Use the function
-  insertOrGetCustomerId(customer_id, name, contact, address, email, customer_type, (finalCustomerId, err) => {
-    if (err) return res.status(500).json({ message: "Failed to insert customer" });
+  insertOrGetCustomerId();
 
-    insertAppointmentFlow(finalCustomerId); // safe now
-  });
+
+
+  // Use the function
+  // insertOrGetCustomerId(customer_id, name, contact, address, email, customer_type, (finalCustomerId, err) => {
+  //   if (err) return res.status(500).json({ message: "Failed to insert customer" });
+
+  //   insertAppointmentFlow(finalCustomerId); // safe now
+  // });
 
 });
 

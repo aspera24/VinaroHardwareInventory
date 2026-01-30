@@ -1,3 +1,4 @@
+
 <!-- GLOBAL LOADING -->
 <div id="loading">
     <div class="loader"></div>
@@ -12,10 +13,6 @@
 
         <!-- FILTER BAR -->
         <div class="table-controls">
-            <input type="text" id="searchName" placeholder="Search Customer...">
-
-            <input type="date" id="filterDate">
-
             <select id="filterStatus">
                 <option value="">All Status</option>
                 <option value="pending">Pending</option>
@@ -23,21 +20,13 @@
                 <option value="declined">Declined</option>
             </select>
 
-            <select id="pageLimit">
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-                <option value="25">25</option>
-                <option value="30">30</option>
-            </select>
-
             <button id="deleteAllBtn" class="danger">Remove All</button>
         </div>
 
         <!-- COUNTER -->
-        <p id="customerCount">Total: 0</p>
+        <p id="customerCount">0 customer</p>
 
-        <table>
+        <table id="appTable">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -51,13 +40,6 @@
             </thead>
             <tbody id="appointmentList"></tbody>
         </table>
-
-        <!-- PAGINATION -->
-        <div class="pagination">
-            <button id="prevPage">Prev</button>
-            <span id="pageInfo">Page 1</span>
-            <button id="nextPage">Next</button>
-        </div>
     </div>
 
 </div>

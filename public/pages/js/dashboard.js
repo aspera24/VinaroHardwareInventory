@@ -74,7 +74,8 @@
         tooltip: {
           callbacks: {
             label: function (context) {
-              return ` ${context.parsed.y} appointments`;
+              const value = context.parsed.y;
+              return `${value} ${value <= 1 ? 'client' : 'clients'}`;
             }
           }
         }
@@ -139,7 +140,9 @@
   ];
 
   let cachedFilters = null;
-  let updatingFilters = false; // Flag to prevent mobile "synthetic" change events
+  let updatingFilters = false;
+  let autoWeekSet = false;
+
 
   // ================= HANDLE FILTER OPTIONS FROM SERVER =================
   socket.on("filterOptions", filters => {
@@ -157,6 +160,8 @@
     loadYears(filters, prevYear);
     loadMonths(filters, yearFilter.value, prevMonth);
     loadWeeks(filters, yearFilter.value, monthFilter.value, prevWeek);
+    setCurrentWeekIfApplicable(yearFilter.value, monthFilter.value);
+
 
     updatingFilters = false;
 
@@ -240,6 +245,28 @@
     // Restore previous selection if valid
     if (prevWeek && prevWeek <= totalWeeks) weekFilter.value = prevWeek;
   }
+
+
+  function setCurrentWeekIfApplicable(year, month) {
+    if (autoWeekSet) return; 
+
+    const today = new Date();
+
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+    const currentDay = today.getDate();
+
+    if (Number(year) === currentYear && Number(month) === currentMonth) {
+      const currentWeek = Math.ceil(currentDay / 7);
+
+      const options = Array.from(weekFilter.options).map(o => Number(o.value));
+      if (options.includes(currentWeek)) {
+        weekFilter.value = currentWeek;
+        autoWeekSet = true; 
+      }
+    }
+  }
+
 
 
   // ================= REQUEST CHART UPDATE =================

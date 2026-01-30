@@ -15,7 +15,7 @@
         flex-shrink: 0;
         z-index: 1000;
         overflow: hidden;
-        transition: all 0.3s ease;
+        transition: all 0.3s ease-in-out;
     }
 
     nav h2 {
@@ -46,16 +46,25 @@
         position: absolute;
         top: 50%;
         left: 150px;
-        z-index: 1000;
-        background: #303641;
-        color: white;
+        z-index: 1001;
+        background: #303641 !important;
+        color: white !important;
         border: none;
         /* padding: 10px 5px; */
+        height: 40px;
+        width: 15px;
         cursor: pointer;
-        font-size: 12px;
-        transition: all 0.3s ease;
-        border-top-right-radius: 15px;
-        border-bottom-right-radius: 15px;
+        font-size: 10px;
+        transition: all 0.3s ease-in-out;
+        border-top-right-radius: 15px !important;
+        border-bottom-right-radius: 15px !important;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .nav-hidden>#nav-toggle {
+        left: 0px;
+    
     }
 
     /* Main content */

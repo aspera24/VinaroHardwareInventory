@@ -27,7 +27,6 @@
 #left-card label,
 #right-card label {
     font-size: 12px;
-    color: rgb(90, 90, 90);
     letter-spacing: 1px;
 }
 
@@ -113,7 +112,7 @@
 }
 
 
-#left-card select {
+#left-card select, #right-card select {
     cursor: pointer;
 }
 
@@ -141,11 +140,10 @@
 
 #left-card button {
     margin-top: 15px;
-    padding: 10px;
+    padding: 6px 10px;
     background: #760000;
     color: #fff;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
     letter-spacing: 2px;
     transition: .1s all ease-in-out;
@@ -154,4 +152,18 @@
 #left-card button:hover {
     background: #760000;
     transform: scale(.98);
+}
+
+.select2-selection .select2-selection--single{
+    border: none !important;
+    border-bottom: 1px solid gray !important;
+    border-radius: 0px;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable{
+    background:  #303641 !important;
+}
+
+.select2-results__option--selectable{
+    font-size: 10px !important;
 }

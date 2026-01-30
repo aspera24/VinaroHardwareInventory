@@ -81,6 +81,10 @@
         width: 100%;
     }
 
+    .chart-container h3 {
+        font-size: 15px;
+    }
+
     .stat-card h3 {
         margin: 0;
         font-size: .65rem;

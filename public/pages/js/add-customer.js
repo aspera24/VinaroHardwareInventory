@@ -86,7 +86,7 @@
 
 
     document.getElementById("customerForm").addEventListener("submit", async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         const data = {
             customer_id: $("#name").val() || null,
             name: $("#name option:selected").text() || $("#name").val(),
@@ -96,33 +96,31 @@
             customer_type: document.getElementById("customer_type").value,
             notes: document.getElementById("notes").value,
             purpose: document.getElementById("purpose").value,
-            amount: document.getElementById("amount").value,
             date: document.getElementById("date").value,
             time: document.getElementById("time").value,
             meeting_mode: document.getElementById("meeting_mode").value,
             status: document.getElementById("status").value,
             appointment_note: document.getElementById("notes").value // optional
         };
-        if(document.getElementById("amount").value != ""){
-            try {
-                const res = await fetch("/page/add-customer-data", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                });
 
-                const result = await res.json();
+        try {
+            const res = await fetch("/page/add-customer-data", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
 
-                if (res.ok) {
-                    alert(result.message);
-                    document.getElementById("customerForm").reset();
-                } else {
-                    alert(result.message || "Failed to save");
-                }
-            } catch (err) {
-                console.error(err);
-                // alert("Server error");return false;
+            const result = await res.json();
+
+            if (res.ok) {
+                alert(result.message);
+                document.getElementById("customerForm").reset();
+            } else {
+                alert(result.message || "Failed to save");
             }
+        } catch (err) {
+            console.error(err);
+            // alert("Server error");return false;
         }
 
     });

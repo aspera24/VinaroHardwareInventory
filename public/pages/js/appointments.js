@@ -1,34 +1,62 @@
 (function () {
     const loading = document.getElementById("loading");
     const main = document.querySelector(".mainAppoint");
-    const tbody = document.getElementById("appointmentList");
 
-    const searchInput = document.getElementById("searchName");
-    const filterDate = document.getElementById("filterDate");
     const filterStatus = document.getElementById("filterStatus");
-    const pageLimitSelect = document.getElementById("pageLimit");
-
-    const customerCount = document.getElementById("customerCount");
-    const prevPageBtn = document.getElementById("prevPage");
-    const nextPageBtn = document.getElementById("nextPage");
-    const pageInfo = document.getElementById("pageInfo");
-
     const deleteAllBtn = document.getElementById("deleteAllBtn");
 
-    let allData = [];
-    let filteredData = [];
-    let currentPage = 1;
-    let pageLimit = 10;
+    const socket = window.socket;
+
 
     main.style.display = "none";
     loading.style.display = "flex";
 
-    const socket = window.socket;
+    /* ================= DATATABLE INIT ================= */
+
+    const table = $('#appTable').DataTable({
+        pageLength: 10,
+        ordering: true,
+        searching: true,
+        columnDefs: [
+            { targets: 6, orderable: false } // actions column
+        ],
+        language: {
+            emptyTable: "No appointments found"
+        }
+    });
+
+    /* ================= POPULATE TABLE ================= */
+
+    function populateTable(data) {
+        table.clear();
+
+        data.forEach(a => {
+            table.row.add([
+                a.name,
+                a.purpose,
+                formatDate(a.date),
+                formatTime(a.time),
+                a.status,
+                a.note || "NA",
+                `
+                <img class="viewBtn" data-id="${a.id}" src="../graphics/detail.svg"/>
+                <img class="editBtn" data-id="${a.id}" src="../graphics/update.svg"/>
+                <img class="deleteBtn" data-id="${a.id}" src="../graphics/delete.svg"/>
+                `
+            ]);
+        });
+
+        table.draw();
+    }
+
+    /* ================= SOCKET ================= */
+
     socket.emit("getAppointments");
 
     socket.on("appointmentsData", (data) => {
         allData = data || [];
-        applyFilters();
+        populateTable(allData);
+
         loading.style.display = "none";
         main.style.display = "flex";
     });
@@ -37,133 +65,32 @@
         socket.emit("getAppointments");
     });
 
-    /* ================= FILTERS ================= */
 
-    searchInput.addEventListener("input", applyFilters);
-    filterDate.addEventListener("change", applyFilters);
-    filterStatus.addEventListener("change", applyFilters);
-
-    pageLimitSelect.addEventListener("change", () => {
-        pageLimit = parseInt(pageLimitSelect.value);
-        currentPage = 1;
-        renderTable();
+    filterStatus.addEventListener("change", function () {
+        const val = this.value;
+        table.column(4).search(val).draw(); // Status column
     });
 
-    function applyFilters() {
-        const search = searchInput.value.toLowerCase();
-        const date = filterDate.value;
-        const status = filterStatus.value;
-
-        filteredData = allData.filter(a => {
-            const matchName = a.name.toLowerCase().includes(search);
-            const matchStatus = status ? a.status === status : true;
-            const matchDate = date ? formatDateInput(a.date) === date : true;
-
-            return matchName && matchStatus && matchDate;
-        });
-
-
-        currentPage = 1;
-        renderTable();
-    }
-
-    /* ================= RENDER ================= */
-
-    function renderTable() {
-        tbody.innerHTML = "";
-
-        const start = (currentPage - 1) * pageLimit;
-        const end = start + pageLimit;
-        const pageData = filteredData.slice(start, end);
-
-        if (pageData.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" style="text-align:center;">No appointments found</td>
-                </tr>
-            `;
-        } else {
-            let html = "";
-            pageData.forEach(a => {
-                html += `
-                    <tr>
-                        <td>${a.name}</td>
-                        <td>${a.purpose}</td>
-                        <td>${formatDate(a.date)}</td>
-                        <td>${formatTime(a.time)}</td>
-                        <td>${a.status}</td>
-                        <td>${a.note ? a.note : "NA"}</td>
-                        <td>
-                            <button class="viewBtn" data-id="${a.id}">View</button>
-                            <button class="editBtn" data-id="${a.id}">Update</button>
-                            <button class="deleteBtn" data-id="${a.id}">Delete</button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tbody.innerHTML = html;
-        }
-
-        // count label
-        customerCount.textContent = `Total: ${filteredData.length}`;
-
-        // pagination info
-        const totalPages = Math.ceil(filteredData.length / pageLimit) || 1;
-        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-
-        prevPageBtn.disabled = currentPage === 1;
-        nextPageBtn.disabled = currentPage === totalPages;
-    }
-
-    /* ================= PAGINATION ================= */
-
-    prevPageBtn.addEventListener("click", () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderTable();
-        }
-    });
-
-    nextPageBtn.addEventListener("click", () => {
-        const totalPages = Math.ceil(filteredData.length / pageLimit);
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderTable();
-        }
-    });
 
     /* ================= ACTION BUTTONS ================= */
 
-    tbody.addEventListener("click", (e) => {
-        const id = e.target.dataset.id;
+    $('#appTable tbody').on('click', 'img', function () {
+        const id = this.dataset.id;
 
-        if (e.target.classList.contains("viewBtn")) {
-            viewAppointment(id);
+        if (this.classList.contains("viewBtn")) {
+            socket.emit("getSingleAppointment", id);
         }
 
-        if (e.target.classList.contains("editBtn")) {
-            updateAppointment(id);
+        if (this.classList.contains("editBtn")) {
+            window.location.href = `edit-appointment.html?id=${id}`;
         }
 
-        if (e.target.classList.contains("deleteBtn")) {
-            deleteAppointment(id);
+        if (this.classList.contains("deleteBtn")) {
+            if (confirm("Are you sure you want to delete this appointment?")) {
+                socket.emit("deleteAppointment", id);
+            }
         }
     });
-
-    function viewAppointment(id) {
-        socket.emit("getSingleAppointment", id);
-    }
-
-    function updateAppointment(id) {
-        window.location.href = `edit-appointment.html?id=${id}`;
-    }
-
-    function deleteAppointment(id) {
-        if (confirm("Are you sure you want to delete this appointment?")) {
-            socket.emit("deleteAppointment", id);
-        }
-    }
 
     deleteAllBtn.addEventListener("click", () => {
         if (confirm("Are you sure you want to delete ALL appointments?")) {
@@ -178,13 +105,7 @@
             year: "numeric",
             month: "long",
             day: "numeric"
-        })
-    }
-
-    function formatDateInput(dateStr) {
-        // const d = new Date(dateStr);
-        // return d.toISOString().split("T")[0];
-        return dateStr.substring(0, 10);
+        });
     }
 
     function formatTime(timeStr) {
