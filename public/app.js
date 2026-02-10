@@ -106,59 +106,41 @@ function loadPage(page) {
     setActive(page);
 }
 
-
-
-
-// function updateButtonState(activePage) {
-//     menuItems.forEach(item => {
-//         // Identify which button corresponds to which page
-//         let page = item.id === 'dashboard' ? 'dashboard' :
-//             item.id === 'add_customer' ? 'add-customer' :
-//                 item.id === 'appointments' ? 'appointments' : '';
-
-//         if (page === activePage) {
-//             item.disabled = true; // disable current page button
-//             item.style.pointerEvents = "none";
-//         } else {
-//             item.disabled = false; // enable other buttons
-//             item.style.pointerEvents = "auto";
-//         }
-//     });
-// }
-
-
-
-let validRoutes = ["dashboard", "add-customer", "appointments"];
+let validRoutes = ["dashboard", "add-customer", "appointments", "profile"];
 
 function router() {
+
     if (location.hash) {
         document.getElementById("main-content").innerHTML = `
             <h2 style="color:red;">400 Bad Request</h2>
-            <p>Hashes are not allowed. Use /page/dashboard, /page/add-customer, or /page/appointments.</p>
+            <p>Hashes are not allowed.</p>
         `;
-        menuItems.forEach(item => item.style.background = "transparent");
         return;
     }
 
-    // Getting path after /page/
-    let path = location.pathname.replace("/page/", "");
+    let fullPath = location.pathname.replace("/page/", "");
+    let segments = fullPath.split("/");
+    let path = segments.pop();
 
-    if (path === "" || path === "/") path = "dashboard"; // default page
+    if (!path) path = "dashboard";
 
-    // Check if path is valid
     if (!validRoutes.includes(path)) {
         document.getElementById("main-content").innerHTML = `
             <h2 style="color:red;">400 Bad Request</h2>
-            <p>Invalid route. Please use /page/dashboard, /page/add-customer, or /page/appointments.</p>
+            <p>Invalid route.</p>
         `;
-        menuItems.forEach(item => item.style.background = "transparent");
         return;
     }
-
-    // Load page if valid
     loadPage(path);
-    setActive(path);
+
+    // highlight only main menu
+    if (path === "profile") {
+        setActive("appointments"); 
+    } else {
+        setActive(path);
+    }
 }
+
 
 
 

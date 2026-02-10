@@ -19,14 +19,22 @@
     /* border-radius: 10px; */
     overflow: hidden;
     position: relative;
-    overflow-x: scroll;
+    /* overflow-x: scroll; */
 }
 
-.mainCard #customerCount {
-    font-size: 12px;
+.table-controls {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    position: relative;
+}
+
+.table-controls #customerCount {
+    font-size: 10px;
     letter-spacing: 2px;
-    margin: 10px 10px 0px 10px;
-    color: gray;
+    color: rgb(142, 142, 142);
+    position: absolute;
+    right: 0;
 }
 
 
@@ -53,7 +61,8 @@
     cursor: pointer;
     letter-spacing: 2px;
     transition: .1s all ease-in-out;
-    padding: 0 10px;
+    padding: 0 5px;
+    height: 20px;
 }
 
 .table-controls button:hover {
@@ -120,14 +129,6 @@
     font-size: 10px;
 }
 
-/* .dt-paging-button.current {
-    border: 2px solid #303641 !important;
-}
-
-div.dt-container .dt-paging .dt-paging-button.current:hover{
-    color: inherit !important;
-    color: white !important;
-} */
 .dt-input {
     height: 25px;
     padding: 0 5px;
@@ -137,7 +138,7 @@ div.dt-container .dt-paging .dt-paging-button.current:hover{
     outline: none;
 }
 
-#filterStatus{
+#filterStatus {
     height: 25px;
     padding: 0 5px;
     font-size: 10px;
@@ -148,7 +149,7 @@ div.dt-container .dt-paging .dt-paging-button.current:hover{
 
 /* All paging buttons */
 .dt-paging-button {
-    color: #303641;               /* normal text color */
+    color: #303641;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 20%;
@@ -162,28 +163,32 @@ div.dt-container .dt-paging .dt-paging-button.current:hover{
 /* Hover effect for all buttons */
 .dt-paging-button:hover {
     background: #303641 !important;
-    color: white !important;                  /* text becomes white on hover */
+    color: white !important;
     border: 2px solid transparent !important;
 }
 
 /* Current page button */
 .dt-paging-button.current {
-    color: #303641 !important;       /* default text color */
-    background: #d1d1d1 !important;  /* optional bg */
+    color: #303641 !important;
+    /* default text color */
+    background: #d1d1d1 !important;
+    /* optional bg */
     border: 2px solid #303641 !important;
 }
+
 /* Current page button hover */
 #appTable_paginate .dt-paging-button.current:hover,
 #appTable_paginate .dt-paging-button.current:hover * {
-    color: white !important;           /* force all child text to white */
+    color: white !important;
+    /* force all child text to white */
     background-color: #303641 !important;
     border-color: #303641 !important;
 }
 
-label{
+label {
     font-size: 12px !important;
 }
 
-.dt-info{
+.dt-info {
     font-size: 12px;
 }

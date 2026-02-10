@@ -110,7 +110,6 @@
 
   // ================= DASHBOARD DATA =================
   socket.on("dashboardStats", stats => {
-    console.log(stats);  // inspect server payload
     total_customers.innerText = (stats?.totalClients ?? 0) || 0;
     total_appointments.innerText = (stats?.totalAppointments ?? 0) || 0;
     upcoming_today.innerText = (stats?.upcomingToday ?? 0) || 0;
@@ -248,7 +247,7 @@
 
 
   function setCurrentWeekIfApplicable(year, month) {
-    if (autoWeekSet) return; 
+    if (autoWeekSet) return;
 
     const today = new Date();
 
@@ -262,7 +261,7 @@
       const options = Array.from(weekFilter.options).map(o => Number(o.value));
       if (options.includes(currentWeek)) {
         weekFilter.value = currentWeek;
-        autoWeekSet = true; 
+        autoWeekSet = true;
       }
     }
   }
@@ -362,6 +361,8 @@
     const hasDate = rows[0].appointment_date;
     const hasStatus = rows[0].status;
 
+    console.log(rows);
+
 
     txtLabel.textContent = title;
 
@@ -377,7 +378,7 @@
       <tbody>
         ${rows.map(r => `
           <tr>
-            <td>${r.name}</td>
+            <td onclick="window.location='/profile.html?id=${r.id}'">${r.name}</td>
             ${hasDate ? `<td>${new Date(r.appointment_date).toLocaleDateString("en-CA")}</td>` : ""}
             ${hasStatus ? `<td>${r.status}</td>` : ""}
           </tr>

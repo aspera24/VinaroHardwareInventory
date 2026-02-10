@@ -249,11 +249,12 @@ io.on("connection", (socket) => {
       case "total-customer":
         title = "Total Clients";
         dataQuery = `
-        SELECT DISTINCT(name)
+        SELECT DISTINCT id, name
         FROM customers
         WHERE name LIKE ?
         ORDER BY name ASC
         LIMIT ? OFFSET ?
+
       `;
         countQuery = `
         SELECT COUNT(DISTINCT name) AS total
@@ -275,6 +276,7 @@ io.on("connection", (socket) => {
 
         dataQuery = `
         SELECT 
+          c.id,
           c.name,
           a.appointment_date,
           a.status
@@ -308,7 +310,7 @@ io.on("connection", (socket) => {
       case "upcoming-today":
         title = "Upcoming Today";
         dataQuery = `
-        SELECT c.name, a.appointment_date
+        SELECT c.id, c.name, a.appointment_date
         FROM appointments a
         JOIN customers c ON a.customer_id = c.id
         WHERE DATE(a.appointment_date) = CURDATE()
@@ -331,7 +333,7 @@ io.on("connection", (socket) => {
       case "pending-approval":
         title = "Pending Approvals";
         dataQuery = `
-        SELECT c.name, a.status
+        SELECT c.id, c.name, a.status
         FROM appointments a
         JOIN customers c ON a.customer_id = c.id
         WHERE a.status = 'pending'
@@ -621,6 +623,7 @@ app.get("/page/customers", (req, res) => {
     res.json(rows);
   });
 });
+
 
 
 

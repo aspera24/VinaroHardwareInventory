@@ -28,11 +28,11 @@
 .stat-card {
     background-color: #fff;
     padding: 20px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
     transition: transform 0.2s ease;
     width: 100%;
     flex: 1 1 220px;
@@ -78,10 +78,10 @@
 .chart-container {
     background-color: #fff;
     padding: 20px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     margin-top: 10px;
     margin-bottom: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
     overflow: hidden;
     height: 350px;
 }
@@ -123,9 +123,9 @@
 .recent-activity {
     background-color: #fff;
     padding: 20px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
 }
 
 .recent-activity table {
@@ -274,12 +274,13 @@
     color: rgb(0, 0, 0);
 }
 
-.table tbody tr:nth-child(even) {
-    background-color: #f3f3f3;
+.table tbody tr:hover{
+    cursor: pointer;
+    background-color: #e6e6e6;
 }
 
-.table tbody tr:hover {
-    background-color: #e6e6e6;
+.table tbody tr:nth-child(even) {
+    background-color: #f3f3f3;
 }
 
 .pagination-controls {

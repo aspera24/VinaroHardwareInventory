@@ -4,6 +4,7 @@
 
     const filterStatus = document.getElementById("filterStatus");
     const deleteAllBtn = document.getElementById("deleteAllBtn");
+    let customerCount = document.getElementById("customerCount");
 
     const socket = window.socket;
 
@@ -39,14 +40,18 @@
                 a.status,
                 a.note || "NA",
                 `
-                <img class="viewBtn" data-id="${a.id}" src="../graphics/detail.svg"/>
-                <img class="editBtn" data-id="${a.id}" src="../graphics/update.svg"/>
-                <img class="deleteBtn" data-id="${a.id}" src="../graphics/delete.svg"/>
+                <img title="Profile" class="viewBtn" data-id="${a.id}" src="../graphics/detail.svg"/>
+                <img title="Update" class="editBtn" data-id="${a.id}" src="../graphics/update.svg"/>
+                <img title="Delete" class="deleteBtn" data-id="${a.id}" src="../graphics/delete.svg"/>
                 `
             ]);
         });
 
         table.draw();
+
+        let cusCount = table.rows({ filter: 'applied' }).count();
+
+        customerCount.textContent = `${cusCount} ${cusCount <= 1 ? "client" : "clients"}`;
     }
 
     /* ================= SOCKET ================= */
@@ -78,7 +83,9 @@
         const id = this.dataset.id;
 
         if (this.classList.contains("viewBtn")) {
-            socket.emit("getSingleAppointment", id);
+            // socket.emit("getSingleAppointment", id);
+            history.pushState({}, "", `/page/appointments/profile?id=${id}`);
+            router();
         }
 
         if (this.classList.contains("editBtn")) {
