@@ -84,7 +84,7 @@
 
         if (this.classList.contains("viewBtn")) {
             // socket.emit("getSingleAppointment", id);
-            history.pushState({}, "", `/page/appointments/profile?id=${id}`);
+            window.location=`/profile.html?id=${id}`;
             router();
         }
 

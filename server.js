@@ -165,20 +165,9 @@ io.on("connection", (socket) => {
   /* ==========================
    RECENT APPOINTMENTS
 ========================== */
-  socket.on("getRecentAppointments", ({ page, limit, search }) => {
-    const offset = (page - 1) * limit;
+  socket.on("getRecentAppointments", () => {
 
-    let searchQuery = "";
-    let params = [];
-
-    if (search && search.trim() !== "") {
-      searchQuery = "AND c.name LIKE ?";
-      params.push(`%${search}%`);
-    }
-
-    // get paginated data
-    db.query(
-      `
+    db.query(`
     SELECT 
       c.name AS customer,
       a.appointment_date AS date,
@@ -186,42 +175,20 @@ io.on("connection", (socket) => {
     FROM appointments a
     JOIN customers c ON a.customer_id = c.id
     WHERE a.status = 'completed'
-    ${searchQuery}
     ORDER BY a.appointment_date DESC
-    LIMIT ? OFFSET ?
-    `,
-      [...params, limit, offset],
-      (err, rows) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
+    LIMIT 5
+  `, (err, rows) => {
 
-        // get total count (for total pages)
-        db.query(
-          `
-        SELECT COUNT(*) AS total 
-        FROM appointments a
-        JOIN customers c ON a.customer_id = c.id
-        WHERE a.status = 'completed'
-        ${searchQuery}
-        `,
-          params,
-          (err2, countResult) => {
-            if (err2) {
-              console.error(err2);
-              return;
-            }
-
-            socket.emit("recentAppointments", {
-              rows,
-              total: countResult[0].total
-            });
-          }
-        );
+      if (err) {
+        console.error(err);
+        return;
       }
-    );
+
+      socket.emit("recentAppointments", rows);
+    });
+
   });
+
 
 
 

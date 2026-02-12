@@ -67,17 +67,7 @@
         <!-- Recent Appointments -->
         <div class="recent-activity">
             <h3>Recent Appointments</h3>
-            <div class="limit">
-                <p>Select Limit:</p>
-                <select id="pageLimit">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                </select>
-                <input type="search" placeholder="Search Customer...">
-            </div>
-            <table>
+            <table id="recentTable">
                 <thead>
                     <tr>
                         <th>Customer</th>
@@ -85,15 +75,8 @@
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="recent-appointments">
-                    <!-- dynamic data from DB -->
-                </tbody>
+                <tbody id="recent-appointments"></tbody>
             </table>
-            <div class="pagination-controls">
-                <button id="prevPage">Prev</button>
-                <span id="pageInfo">Page 1</span>
-                <button id="nextPage">Next</button>
-            </div>
         </div>
 
         <div id="modal" class="modal" style="display:none">

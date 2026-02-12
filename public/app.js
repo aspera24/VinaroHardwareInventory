@@ -152,8 +152,6 @@ function navigate(page) {
     }
 
     window.location.href = "/page/" + page;
-    // history.pushState({}, "", "/page/" + page);
-    // router();
 }
 
 

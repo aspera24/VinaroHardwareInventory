@@ -238,7 +238,7 @@
     weekOptions.forEach(w => {
       const start = (w - 1) * 7 + 1;
       const end = w == totalWeeks ? monthEnd : w * 7;
-      weekFilter.innerHTML += `<option value="${w}">Week ${start}-${end}</option>`;
+      weekFilter.innerHTML += `<option value="${w}">Day ${start}-${end}</option>`;
     });
 
     // Restore previous selection if valid
@@ -439,100 +439,45 @@
 
 
 
-  // For recent appointments
-  const recentTable = document.getElementById("recent-appointments");
-  const prevBtn = document.getElementById("prevPage");
-  const nextBtn = document.getElementById("nextPage");
-  const pageInfo = document.getElementById("pageInfo");
-  const pageLimitSelect = document.getElementById("pageLimit");
-
-  const searchInput = document.querySelector(".limit input[type='search']");
-  let searchTerm = "";
-
-
-  let currentPage = 1;
-  let limit = 5;
-  let totalRows = 0;
-
   function loadRecentAppointments() {
-    socket.emit("getRecentAppointments", {
-      page: currentPage,
-      limit,
-      search: searchTerm
-    });
+    socket.emit("getRecentAppointments");
   }
 
-  searchInput.addEventListener("input", () => {
-    searchTerm = searchInput.value.trim();
-    currentPage = 1;
-    loadRecentAppointments();
+  const table = $('#recentTable').DataTable({
+
+    paging: true,
+    searching: true,
+    info: true,
+    ordering: true,
+
+    language: {
+      emptyTable: "No appointments found"
+    }
   });
 
+  socket.once("recentAppointments", rows => {
 
-  socket.on("recentAppointments", data => {
-    const { rows, total } = data;
-    totalRows = total;
-
-    recentTable.innerHTML = "";
+    table.clear();
 
     if (!rows.length) {
-      recentTable.innerHTML = `
-      <tr>
-        <td colspan="3" style="text-align:center;">No recent appointments</td>
-      </tr>`;
-      pageInfo.textContent = "Page 0 of 0";
+      table.draw();
       return;
     }
 
-    rows.forEach(r => {
-      recentTable.innerHTML += `
-      <tr>
-        <td>${r.customer}</td>
-        <td>
-          ${new Date(r.date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      })}
-        </td>
-        <td>
-          <span class="status ${r.status}">
-            ${r.status}
-          </span>
-        </td>
-      </tr>
-    `;
-    });
+    table.rows.add(
+      rows.map(r => ([
+        r.customer,
+        new Date(r.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }),
+        `<span class="status ${r.status}">
+        ${r.status}✔
+      </span>`
+      ]))
+    ).draw();
 
-    const totalPages = Math.ceil(totalRows / limit) || 1;
-
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
-  });
-
-
-  /* EVENTS */
-  prevBtn.addEventListener("click", () => {
-    if (currentPage > 1) {
-      currentPage--;
-      loadRecentAppointments();
-    }
-  });
-
-  nextBtn.addEventListener("click", () => {
-    const totalPages = Math.ceil(totalRows / limit);
-    if (currentPage < totalPages) {
-      currentPage++;
-      loadRecentAppointments();
-    }
-  });
-
-  pageLimitSelect.addEventListener("change", () => {
-    limit = parseInt(pageLimitSelect.value);
-    currentPage = 1;
-    loadRecentAppointments();
   });
 
   /* INITIAL LOAD */
@@ -540,6 +485,7 @@
 
   loading.style.display = "none";
   dashboardWrapper.style.display = "block";
+
 
 })();
 
