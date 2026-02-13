@@ -1,4 +1,4 @@
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
     .mainAppoint {
         margin: auto;
         min-width: 100%;
@@ -33,12 +33,21 @@
         text-align: left;
     }
 
+    .mainCard table th:nth-child(1),
+    .mainCard table td:nth-child(1) {
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
+        text-align: left;
+    }
+
     .mainCard table th:nth-child(6),
     .mainCard table td:nth-child(6) {
-        width: 100px;
+        width: 100%;
         min-width: 100px;
         max-width: 100px;
     }
+
 
     .mainCard table th:nth-child(7),
     .mainCard table td:nth-child(7) {
@@ -60,5 +69,124 @@
         text-align: center;
         cursor: pointer;
         font-size: 10px;
+    }
+}
+
+
+@media (max-width: 820px) {
+    .mainCard table th,
+    .mainCard table td {
+        padding: 4px 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-size: 15px !important;
+    }
+
+    .mainCard table th:nth-child(1),
+    .mainCard table td:nth-child(1) {
+        width: 50%;
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .mainCard table th:nth-child(2),
+    .mainCard table td:nth-child(2) {
+        display: none;
+    }
+
+    .mainCard table th:nth-child(5),
+    .mainCard table td:nth-child(5) {
+        display: none;
+    }
+
+    .mainCard table th:nth-child(3),
+    .mainCard table td:nth-child(3) {
+        width: 50%;
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .mainCard table th:nth-child(4),
+    .mainCard table td:nth-child(4) {
+        width: 50%;
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .mainCard table th:nth-child(6),
+    .mainCard table td:nth-child(6) {
+        width: 130px;
+        min-width: 130px;
+        max-width: 130px;
+    }
+
+    .mainCard table th:nth-child(7),
+    .mainCard table td:nth-child(7) {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .mainCard table th,
+    .mainCard table td {
+        padding: 4px 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 450px) {
+    .mainCard table th,
+    .mainCard table td {
+        padding: 4px 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-size: 10px !important;
+    }
+
+    .mainCard table th:nth-child(1),
+    .mainCard table td:nth-child(1) {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+    }
+
+    .mainCard table th:nth-child(3),
+    .mainCard table td:nth-child(3) {
+        width: 50%;
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .mainCard table th:nth-child(4),
+    .mainCard table td:nth-child(4) {
+        width: 50%;
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .mainCard table th:nth-child(6),
+    .mainCard table td:nth-child(6) {
+        width: 50%;
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .mainCard table th:nth-child(7),
+    .mainCard table td:nth-child(7) {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+    }
+}
+
+@media(max-width: 375px) {
+    .mainCard table th,
+    .mainCard table td {
+        padding: 4px 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-size: 9px !important; 
     }
 }

@@ -84,7 +84,7 @@
 
         if (this.classList.contains("viewBtn")) {
             // socket.emit("getSingleAppointment", id);
-            window.location=`/profile.html?id=${id}`;
+            window.location.href = `/profile.html?id=${id}`;
             router();
         }
 

@@ -43,6 +43,11 @@
             <i class="fa-solid fa-bars"></i>
         </button>
 
+        <div class="profileCont">
+            <img src="/graphics/profile.svg" alt="">
+            <p id="accName">Charmaine Mercado</p>
+        </div>
+
         <nav id="sidebar">
             <h2>CUSTOMER SERVICE</h2>
             <ul>
@@ -63,12 +68,27 @@
                         <i class="fa-solid fa-calendar-check"></i> Appointments
                     </a>
                 </li>
+
+                <li class="account">
+                    <a id="account" href="javascript:void(0)" onclick="navigate('account')">
+                        <i class="fa-solid fa-user-circle"></i> Your Account
+                    </a>
+                </li>
+
+                <li>
+                    <a id="settings" href="javascript:void(0)" onclick="navigate('settings')">
+                        <i class="fa-solid fa-gear"></i> Settings
+                    </a>
+                </li>
             </ul>
+
+            <input class="logout" type="button" value="Logout">
         </nav>
 
         <div id="main-content"></div>
     </div>
 
+    
     <script src="/socket.io/socket.io.js"></script>
     <script src="/app.js"></script>
     

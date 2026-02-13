@@ -1,5 +1,5 @@
 /* Responsive: Tablets & Phones */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
 
     /* Sidebar nav */
     nav {
@@ -44,7 +44,7 @@
         position: absolute;
         top: 50%;
         left: 227px;
-        z-index: 1001;
+        /* z-index: 1001 !important; */
         background: #303641 !important;
         color: white !important;
         border: none;
@@ -57,8 +57,36 @@
 
     .nav-hidden>#nav-toggle {
         left: 0px !important;
-    
+
     }
+
+    .profileCont {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        background: #303641;
+        height: 40px;
+        width: auto;
+        display: flex;
+        align-items: center;
+        z-index: 1002;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .profileCont img {
+        height: 30px;
+        width: 30px;
+    }
+
+    .profileCont p {
+        display: none;
+    }
+
+    .profileCont:hover>p {
+        color: rgb(126, 206, 255);
+    }
+
 
     /* Main content */
     #main-content {
@@ -67,6 +95,10 @@
         padding: 12px;
         width: 100%;
         scroll-behavior: smooth;
+    }
+
+    #sidebar {
+        position: fixed;
     }
 
     .hide-browser-bar {
@@ -79,4 +111,35 @@
         height: 100%;
     } */
 
+}
+
+@media (max-width: 800px) {
+    .profileCont {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: #303641;
+        height: 40px;
+        width: auto;
+        display: flex;
+        align-items: center;
+        z-index: 1002;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .profileCont img {
+        height: 30px;
+        width: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .profileCont{
+        display: none;
+    }
+
+    .account{
+        display: flex;
+    }
 }

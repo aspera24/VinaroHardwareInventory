@@ -154,6 +154,7 @@ io.on("connection", (socket) => {
 
   // check every 1 second
   setInterval(watchDatabase, 1000);
+  sendDashboardStats();
 
 
   /* ==========================

@@ -80,6 +80,22 @@
     text-align: left;
 }
 
+.mainCard table th:nth-child(1),
+.mainCard table td:nth-child(1) {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    text-align: left;
+}
+
+.mainCard table th:nth-child(3),
+.mainCard table td:nth-child(3) {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    text-align: center;
+}
+
 .mainCard table th:nth-child(6),
 .mainCard table td:nth-child(6) {
     width: 280px;
@@ -143,17 +159,17 @@
     outline: none;
 }
 
-.dt-layout-row{
+.dt-layout-row {
     display: flex !important;
     flex-direction: column;
 }
 
-.dt-layout-row{
+.dt-layout-row {
     display: flex;
     flex-direction: row;
 }
 
-nav{
+nav {
     display: flex;
     flex-direction: row;
     background: transparent;
@@ -180,7 +196,7 @@ nav .dt-paging-button:hover {
     background: #76000012 !important;
 }
 
-.dt-paging-button.disabled{
+.dt-paging-button.disabled {
     color: #760000 !important;
     border: 1px solid #b5b5b5 !important;
 }

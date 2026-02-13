@@ -106,7 +106,7 @@ function loadPage(page) {
     setActive(page);
 }
 
-let validRoutes = ["dashboard", "add-customer", "appointments", "profile"];
+let validRoutes = ["dashboard", "add-customer", "appointments", "profile", "settings"];
 
 function router() {
 
@@ -135,7 +135,7 @@ function router() {
 
     // highlight only main menu
     if (path === "profile") {
-        setActive("appointments"); 
+        setActive("appointments");
     } else {
         setActive(path);
     }
@@ -151,7 +151,13 @@ function navigate(page) {
         return;
     }
 
-    window.location.href = "/page/" + page;
+    if(page === "settings"){
+         window.location.href = "/settings.html";
+    }else{
+         window.location.href = "/page/" + page;
+    }
+
+
 }
 
 
