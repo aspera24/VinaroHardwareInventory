@@ -189,7 +189,7 @@ body {
     -webkit-overflow-scrolling: touch;
     transition: all 0.3s ease-in-out;
     background-position: center;
-    background: rgb(231, 231, 231);
+    background: rgb(238, 238, 238);
 }
 
 /* For Loading */

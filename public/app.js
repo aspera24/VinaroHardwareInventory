@@ -1,6 +1,7 @@
 let dashboard = document.getElementById('dashboard');
 let add_customer = document.getElementById('add_customer');
 let appointments = document.getElementById('appointments');
+let settings = document.getElementById('settings');
 let browserTitle = document.getElementById('browserTitle');
 window.socket = io();
 
@@ -58,7 +59,7 @@ toggleBtn.addEventListener("click", () => {
 
 
 
-let menuItems = [dashboard, add_customer, appointments];
+let menuItems = [dashboard, add_customer, appointments, settings];
 
 function setActive(page) {
     // Remove highlight from all
@@ -78,6 +79,9 @@ function setActive(page) {
         browserTitle.textContent = `${appName} - ${pageName}`;
     } else if (page === 'appointments') {
         appointments.style.background = "#485161";
+        browserTitle.textContent = `${appName} - ${pageName}`;
+    } else if (page === 'settings') {
+        settings.style.background = "#485161";
         browserTitle.textContent = `${appName} - ${pageName}`;
     }
 }
@@ -151,13 +155,7 @@ function navigate(page) {
         return;
     }
 
-    if(page === "settings"){
-         window.location.href = "/settings.html";
-    }else{
-         window.location.href = "/page/" + page;
-    }
-
-
+    window.location.href = "/page/" + page;
 }
 
 

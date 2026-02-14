@@ -28,15 +28,13 @@
 .stat-card {
     background-color: #fff;
     padding: 20px;
-    /* border-radius: 10px; */
     display: flex;
     align-items: center;
     gap: 15px;
-    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    box-shadow:0 10px 40px rgba(0,0,0,0.08);
     transition: transform 0.2s ease;
     width: 100%;
     flex: 1 1 220px;
-    /* flexible card width */
     cursor: pointer;
     overflow: hidden;
 }
@@ -58,7 +56,6 @@
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    /* key! prevents shrinking */
     font-size: 1.5rem;
 }
 
@@ -78,10 +75,9 @@
 .chart-container {
     background-color: #fff;
     padding: 20px;
-    /* border-radius: 10px; */
     margin-top: 10px;
     margin-bottom: 10px;
-    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    box-shadow:0 10px 40px rgba(0,0,0,0.08);
     overflow: hidden;
     height: 350px;
 }
@@ -123,9 +119,8 @@
 .recent-activity {
     background-color: #fff;
     padding: 20px;
-    /* border-radius: 10px; */
     overflow: hidden;
-    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    box-shadow:0 10px 40px rgba(0,0,0,0.08);
 }
 
 .recent-activity table {

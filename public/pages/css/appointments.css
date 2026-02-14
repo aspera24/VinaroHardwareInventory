@@ -16,10 +16,9 @@
     height: auto;
     background: white;
     padding: 10px;
-    /* border-radius: 10px; */
     overflow: hidden;
     position: relative;
-    /* overflow-x: scroll; */
+    box-shadow:0 10px 40px rgba(0,0,0,0.08);
 }
 
 .table-controls {
