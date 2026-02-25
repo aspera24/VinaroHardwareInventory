@@ -45,20 +45,16 @@
 #right-card textarea {
     width: 100%;
     margin-bottom: 12px;
-    padding: 5px 8px;
+    padding: 4px 7px;
     margin-top: 3px;
     letter-spacing: 1px;
-    color: rgb(75, 75, 75);
+    color: rgb(69, 69, 69);
     overflow: hidden;
-    border: none;
-    border-bottom: 1px solid gray;
     outline: none !important;
-
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid rgb(69, 69, 69);
     outline: none;
     transition: .2s;
+    font-size: 12px;
 }
 
 .select2-container {
@@ -85,12 +81,12 @@
     border: 1px solid #ddd;
     outline: none;
     transition: .2s; */
-     margin-bottom: 100px;
+    margin-bottom: 100px;
 }
 
 span.select2-selection.select2-selection--single {
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    border-radius: 0px;
+    border: 1px solid rgb(69, 69, 69);
     /* border: none; */
     outline: none;
     transition: .2s;
@@ -99,14 +95,14 @@ span.select2-selection.select2-selection--single {
     margin-bottom: 100px;
 }
 
-.select2.select2-container.select2-container--default{
+.select2.select2-container.select2-container--default {
     height: 40px;
     margin-bottom: 25px !important;
 }
 
-.select2-results__option.select2-results__message{
+.select2-results__option.select2-results__message {
     font-size: 10px !important;
-}   
+}
 
 .select2-selection__rendered {
 
@@ -118,8 +114,8 @@ span.select2-selection.select2-selection--single {
 
 }
 
-.select2-results__options{
-    border: 1px solid rgb(232, 232, 232);
+.select2-results__options {
+    border: 1px solid rgb(69, 69, 69) !important;
 }
 
 .select2-selection__arrow {
@@ -134,7 +130,7 @@ span.select2-selection.select2-selection--single {
 }
 
 #right-card textarea {
-    border: 1px solid gray;
+    border: 1px solid rgb(69, 69, 69);
 }
 
 
@@ -173,7 +169,7 @@ span.select2-selection.select2-selection--single {
 .profile-section {
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px dashed #ddd;
+    /* border-bottom: 1px solid rgb(69, 69, 69); */
 }
 
 .profile-section h4 {
@@ -200,7 +196,7 @@ span.select2-selection.select2-selection--single {
 
 .select2-selection .select2-selection--single {
     border: none !important;
-    border-bottom: 1px solid gray !important;
+    /* border-bottom: 1px solid rgb(69, 69, 69) !important; */
     border-radius: 0px;
 }
 
@@ -212,6 +208,6 @@ span.select2-selection.select2-selection--single {
     font-size: 10px !important;
 }
 
-.select2-dropdown.select2-dropdown--below{
-    border: 1px solid rgb(218, 218, 218);
+.select2-dropdown.select2-dropdown--below {
+      border: 1px solid rgb(69, 69, 69) !important;
 }
