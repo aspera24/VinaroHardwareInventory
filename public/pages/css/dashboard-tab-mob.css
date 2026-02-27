@@ -60,7 +60,7 @@
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background-color: #d4d4d4;
+        background-color: rgb(238, 238, 238);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -94,7 +94,8 @@
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: 1.5rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 
 
@@ -245,7 +246,8 @@
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: .9rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 
     .dt-length-0 {
@@ -277,7 +279,8 @@
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: 1.2rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 }
 
@@ -291,21 +294,23 @@
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: 1.5rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 }
 
 @media(max-width: 430px) {
     .stat-card h3 {
         margin: 0;
-        font-size: .62rem;
-        color: #555;
+        font-size: .57rem;
+        color: black;
     }
 
     .stat-card p {
         margin: 5px 0 0 0;
-        font-size: .9rem;
-        font-weight: bold;
+        font-size: 1.2rem;
+        font-weight: normal;
+        color: #555;
     }
 
     .dt-length-0 {
@@ -323,45 +328,48 @@
     }
 }
 
-@media(max-width: 412px) {
+@media(max-width: 414px) {
     .stat-card h3 {
         margin: 0;
-        font-size: .61rem;
-        color: #555;
+        font-size: .46rem;
+        color: black;
     }
 
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 }
 
 @media(max-width: 390px) {
     .stat-card h3 {
         margin: 0;
-        font-size: .50rem;
-        color: #555;
+        font-size: .40rem;
+        color: black;
     }
 
     .stat-card p {
         margin: 5px 0 0 0;
-        font-size: .9rem;
-        font-weight: bold;
+        font-size: 1.1rem;
+        font-weight: normal;
+        color: #555;
     }
 }
 
 @media(max-width: 375px) {
     .stat-card h3 {
         margin: 0;
-        font-size: .45rem;
-        color: #555;
+        font-size: .33rem;
+        color: black;
     }
 
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 
     .dt-length-0 {
@@ -382,27 +390,29 @@
 @media(max-width: 360px) {
     .stat-card h3 {
         margin: 0;
-        font-size: .40rem;
-        color: #555;
+        font-size: .28rem;
+        color: black;
     }
 
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 }
 
 @media(max-width: 350px) {
     .stat-card h3 {
         margin: 0;
-        font-size: .32rem;
-        color: #555;
+        font-size: .20rem;
+        color: black;
     }
 
     .stat-card p {
         margin: 5px 0 0 0;
         font-size: 1rem;
-        font-weight: bold;
+        font-weight: normal;
+        color: #555;
     }
 }

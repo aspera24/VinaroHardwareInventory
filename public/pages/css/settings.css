@@ -1,10 +1,10 @@
-.mainSettings{
-   width: 100%;
-    margin: auto;
-    min-width: 1100px;
-    max-width: 1100px;
-    position: relative;
-    /* display: none; */
+.mainSettings {
+  width: 100%;
+  margin: auto;
+  min-width: 1100px;
+  max-width: 1100px;
+  position: relative;
+  /* display: none; */
 }
 
 .settings-container {
@@ -42,25 +42,24 @@
 .settings-menu li {
   padding: 6px 15px;
   cursor: pointer;
-  transition: 0.1s ease-in-out;
+  transition: 0.1s ease;
   font-size: 14px;
   letter-spacing: .5px;
   border-radius: 5px;
-  border: 1px solid transparent;
+  border: 1px solid white;
   margin: 5px;
 }
 
 .settings-menu li:hover {
+  background: linear-gradient(to bottom, rgb(237, 237, 237), white);
   color: #3b4352;
-  border: 1px solid #adb5c5;
+  box-shadow: 0px 2px 5px rgb(189, 189, 189);
 }
 
 .settings-menu .active {
-  /* background: #3b4352; */
- 
+  background: linear-gradient(to bottom, rgb(237, 237, 237), white);
   color: #3b4352;
-  border: 1px solid #adb5c5;
-  
+  box-shadow: 0px 2px 5px rgb(189, 189, 189);
 }
 
 /* RIGHT CONTENT */

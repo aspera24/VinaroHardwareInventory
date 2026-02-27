@@ -28,7 +28,7 @@
 #right-card label {
     font-size: 13px;
     margin-bottom: 6px;
-    color: #555;
+    color: #282828;
 }
 
 
@@ -51,7 +51,7 @@
     color: rgb(69, 69, 69);
     overflow: hidden;
     outline: none !important;
-    border: 1px solid rgb(69, 69, 69);
+    border: 1px solid rgb(177, 177, 177);
     outline: none;
     transition: .2s;
     font-size: 12px;
@@ -86,7 +86,7 @@
 
 span.select2-selection.select2-selection--single {
     border-radius: 0px;
-    border: 1px solid rgb(69, 69, 69);
+    border: 1px solid rgb(177, 177, 177);
     /* border: none; */
     outline: none;
     transition: .2s;
@@ -115,7 +115,7 @@ span.select2-selection.select2-selection--single {
 }
 
 .select2-results__options {
-    border: 1px solid rgb(69, 69, 69) !important;
+    border: 1px solid rgb(177, 177, 177) !important;
 }
 
 .select2-selection__arrow {
@@ -128,11 +128,6 @@ span.select2-selection.select2-selection--single {
     -webkit-appearance: none;
     font-size: 10px;
 }
-
-#right-card textarea {
-    border: 1px solid rgb(69, 69, 69);
-}
-
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: rgb(75, 75, 75) !important;
@@ -169,7 +164,7 @@ span.select2-selection.select2-selection--single {
 .profile-section {
     margin-bottom: 20px;
     padding-bottom: 10px;
-    /* border-bottom: 1px solid rgb(69, 69, 69); */
+    border-bottom: 1px dashed rgb(127, 127, 127);
 }
 
 .profile-section h4 {
@@ -182,8 +177,9 @@ span.select2-selection.select2-selection--single {
     background: #760000;
     color: white;
     border: none;
-    padding: 12px 22px;
-    border-radius: 10px;
+    padding: 5px 15px;
+    width: 100px;
+    /* border-radius: 10px; */
     cursor: pointer;
     transition: .25s;
     font-weight: 500;
@@ -209,5 +205,5 @@ span.select2-selection.select2-selection--single {
 }
 
 .select2-dropdown.select2-dropdown--below {
-      border: 1px solid rgb(69, 69, 69) !important;
+      border: 1px solid rgb(177, 177, 177) !important;
 }
