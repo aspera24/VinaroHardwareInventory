@@ -51,7 +51,7 @@
   const ctx = document.getElementById("appointmentsChart").getContext("2d");
 
   const chart = new Chart(ctx, {
-    type: "bar",
+    type: "line",
     data: {
       labels: [],
       datasets: [{
@@ -82,7 +82,7 @@
       },
       scales: {
         x: {
-          title: { display: true, text: "Day of Week", color: "black" },
+          title: { display: true, text: "Days of Week", color: "black" },
           ticks: {
             color: "black"
           },

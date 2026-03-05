@@ -86,7 +86,7 @@
 
 
     document.getElementById("customerForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         const data = {
             customer_id: $("#name").val() || null,
             name: $("#name option:selected").text() || $("#name").val(),
@@ -113,8 +113,8 @@
             const result = await res.json();
 
             if (res.ok) {
-                alert(result.message);
                 document.getElementById("customerForm").reset();
+                alert(result.message);
             } else {
                 alert(result.message || "Failed to save");
             }

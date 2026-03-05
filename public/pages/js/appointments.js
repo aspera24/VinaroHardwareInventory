@@ -83,13 +83,14 @@
         const id = this.dataset.id;
 
         if (this.classList.contains("viewBtn")) {
-            // socket.emit("getSingleAppointment", id);
+
             window.location.href = `/profile.html?id=${id}`;
             router();
         }
 
         if (this.classList.contains("editBtn")) {
-            window.location.href = `edit-appointment.html?id=${id}`;
+            window.history.pushState({}, "", `/page/appointments/update?id=${id}`);
+            router();
         }
 
         if (this.classList.contains("deleteBtn")) {

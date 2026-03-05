@@ -389,6 +389,34 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("updateAppointment", (data) => {
+
+    const sql = `
+    UPDATE appointments
+    SET name=?, purpose=?, date=?, time=?, status=?, note=?
+    WHERE id=?
+  `;
+
+    db.query(sql, [
+      data.name,
+      data.purpose,
+      data.date,
+      data.time,
+      data.status,
+      data.note,
+      data.id
+    ], (err) => {
+
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      socket.emit("appointmentUpdated");
+      io.emit("appointmentUpdate");
+    });
+  });
+
   socket.on("getSingleAppointment", (id) => {
     db.query("SELECT * FROM appointments WHERE id = ?", [id], (err, rows) => {
       if (err) {
@@ -411,6 +439,65 @@ io.on("connection", (socket) => {
 
 
 
+app.get("/page/appointment/:id", (req, res) => {
+  const { id } = req.params;
+
+  const query = `
+      SELECT 
+        a.id,
+        a.customer_id,
+        c.name AS customer_name,
+        a.appointment_date,
+        a.appointment_time,
+        a.status,
+        ad.purpose,
+        an.note
+      FROM appointments a
+      JOIN customers c ON a.customer_id = c.id
+      LEFT JOIN appointment_details ad ON ad.appointment_id = a.id
+      LEFT JOIN appointment_notes an ON an.appointment_id = a.id
+      WHERE a.id = ?
+    `;
+
+  db.query(query, [id], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Database error" });
+    }
+
+    if (!rows.length) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.json(rows[0]); // send combined object
+  });
+});
+
+app.put("/page/update-appointment/:id", (req, res) => {
+  const { id } = req.params;
+  const {
+    name,
+    purpose,
+    date,
+    time,
+    status,
+    note
+  } = req.body;
+
+  const sql = `
+    UPDATE appointments
+    SET name=?, purpose=?, date=?, time=?, status=?, note=?
+    WHERE id=?
+  `;
+
+  db.query(sql, [name, purpose, date, time, status, note, id], (err) => {
+    if (err) {
+      return res.status(500).json({ message: "Update failed" });
+    }
+
+    res.json({ message: "Appointment updated successfully" });
+  });
+});
 
 
 

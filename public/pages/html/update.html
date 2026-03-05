@@ -1,28 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
+<div class="updateCont">
+    <h2 class="title">Update</h2>
+    <p class="title-p">Update client's transaction.</p>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/profile.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <title>Document</title>
-</head>
+    <div class="centView">
+        <h3 id="name"></h3>
+        <p class="nameLabel">Name of Client</p>
+        <form id="updateForm">
+            <input type="text" id="contact" placeholder="Contact Number" required />
+            <select type="text" id="purpose" required>
+                <option value="">Select</option>
+                <option value="personal">Personal</option>
+                <option value="business">Business</option>
+                <option value="emergency">Emergency</option>
+                <option value="tuition">Tuition</option>
+                <option value="other">Other</option>
+            </select>
+            <input type="date" id="date" required />
+            <input type="time" id="time" required />
 
-<body>
-    <div class="profileCont">
-        <h2 class="title">Update</h2>
-        <p class="title-p">Update client's transaction.</p>
+            <select id="status">
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Completed">Completed</option>
+            </select>
 
-        <div class="profile">
+            <textarea id="note" placeholder="Note"></textarea>
 
-        </div>
+            <button type="submit">Update</button>
+        </form>
 
         <button id="backBtn">Back</button>
     </div>
-
-    <script src="/profile.js"></script>
-</body>
-
-</html>
+</div>

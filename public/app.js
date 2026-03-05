@@ -110,7 +110,7 @@ function loadPage(page) {
     setActive(page);
 }
 
-let validRoutes = ["dashboard", "add-customer", "appointments", "profile", "settings"];
+let validRoutes = ["dashboard", "add-customer", "appointments", "profile", "settings", "update"];
 
 function router() {
 
@@ -138,7 +138,7 @@ function router() {
     loadPage(path);
 
     // highlight only main menu
-    if (path === "profile") {
+    if (path === "profile" || path === "update") {
         setActive("appointments");
     } else {
         setActive(path);
