@@ -14,7 +14,7 @@
 
     /* ================= DATATABLE INIT ================= */
 
-    const table = $('#appTable').DataTable({
+    const table = $('#appTable').dataTable({
         pageLength: 10,
         ordering: true,
         searching: true,
@@ -29,10 +29,13 @@
     /* ================= POPULATE TABLE ================= */
 
     function populateTable(data) {
-        table.clear();
+
+        const api = table.api(); // kuhaon ang API instance
+
+        api.clear();
 
         data.forEach(a => {
-            table.row.add([
+            api.row.add([
                 a.name,
                 a.purpose,
                 formatDate(a.date),
@@ -40,16 +43,16 @@
                 a.status,
                 a.note || "NA",
                 `
-                <img title="Profile" class="viewBtn" data-id="${a.id}" src="../graphics/detail.svg"/>
-                <img title="Update" class="editBtn" data-id="${a.id}" src="../graphics/update.svg"/>
-                <img title="Delete" class="deleteBtn" data-id="${a.id}" src="../graphics/delete.svg"/>
-                `
+            <img title="Profile" class="viewBtn" data-id="${a.id}" src="../graphics/detail.svg"/>
+            <img title="Update" class="editBtn" data-id="${a.id}" src="../graphics/update.svg"/>
+            <img title="Delete" class="deleteBtn" data-id="${a.id}" src="../graphics/delete.svg"/>
+            `
             ]);
         });
 
-        table.draw();
+        api.draw();
 
-        let cusCount = table.rows({ filter: 'applied' }).count();
+        let cusCount = api.rows({ filter: 'applied' }).count();
 
         customerCount.textContent = `${cusCount} ${cusCount <= 1 ? "client" : "clients"}`;
     }

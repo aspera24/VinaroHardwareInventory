@@ -18,7 +18,7 @@
     padding: 20px;
     overflow: hidden;
     position: relative;
-    box-shadow:0 10px 40px rgba(0,0,0,0.08);
+    /* box-shadow:0 10px 40px rgba(0,0,0,0.08); */
 }
 
 .table-controls {
@@ -74,7 +74,7 @@
 
 .mainCard table th,
 .mainCard table td {
-    padding: 8px 10px;
+    padding: 6px 10px;
     border-bottom: 1px solid #ddd;
     text-align: left;
 }
@@ -89,10 +89,10 @@
 
 .mainCard table th:nth-child(3),
 .mainCard table td:nth-child(3) {
-    width: 200px;
-    min-width: 200px;
-    max-width: 200px;
-    text-align: center;
+    width: 170px;
+    min-width: 170px;
+    max-width: 170px;
+    text-align: left;
 }
 
 .mainCard table th:nth-child(6),
@@ -104,10 +104,11 @@
 
 .mainCard table th:nth-child(7),
 .mainCard table td:nth-child(7) {
-    width: 100px;
-    min-width: 100px;
-    max-width: 100px;
+    width: 110px;
+    min-width: 120px;
+    max-width: 120px;
     text-align: center;
+
 }
 
 
@@ -119,21 +120,37 @@
 
 
 .mainCard table tbody tr:nth-child(even) {
-    background-color: #f3f3f3;
+    background-color: #f7f7f7;
 }
 
-.mainCard table tbody tr:hover {
+/* .mainCard table tbody tr:hover {
     background-color: #e6e6e6;
-}
+} */
 
 .mainCard table tbody img {
-    height: 20px;
+    height: 28px;
+    width: 28px;
     cursor: pointer;
     transition: .2s ease-in-out;
+    /* animation: zoom .9s linear infinite; */
+    border-radius: 50%;
+    padding: 4px;
+    transform: scale(1.0);
 }
 
+/* @keyframes zoom{
+    0% {
+        transform: scale(1.0);
+    }
+    50%{
+        transform: scale(1.1);
+    }
+} */
+
 .mainCard table tbody img:hover {
-    transform: scale(1.1);
+    /* transform: scale(1.1); */
+    animation: none;
+    background: rgb(233, 233, 233);
 }
 
 .dt-column-order {
@@ -168,43 +185,76 @@
     flex-direction: row;
 }
 
-nav {
+
+.pagination {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: row;
-    background: transparent;
-    color: white;
+    padding-left: 0;
+    list-style: none;
+    border-radius: .25rem;
 }
 
-/* All paging buttons */
-nav .dt-paging-button {
-    border: 1px solid !important;
-    /* border-radius: 20%; */
-    text-align: center;
-    cursor: text;
-    height: 25px;
-    width: 25px;
-    font-size: 8px;
-    color: #760000 !important;
+li.paginate_button.page-item {
+    box-sizing: border-box !important;
+    display: inline-block !important;
+    width: 1.5em !important;
+    margin-left: 2px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    color: #333 !important;
+    border: 1px solid #ccc !important;
     border-radius: 0px !important;
-    margin: .5px !important;
+    /* padding: 0px; */
 }
 
-/* Hover effect for all buttons */
-nav .dt-paging-button:hover {
-    color: #760000 !important;
-    background: #76000012 !important;
+/* .dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0;
+    border: none;
+    margin-top: 20px;
+} */
+
+.page-link {
+    /* position: relative; */
+    display: block;
+    /* padding: .5rem .75rem; */
+    margin-left: -1px;
+    /* line-height: 1.25; */
+    color: #007bff;
+    /* font-size: 12px !important; */
+    
 }
 
-.dt-paging-button.disabled {
-    color: #760000 !important;
-    border: 1px solid #b5b5b5 !important;
+a, a:visited {
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    outline: 0;
+    /* font-family: 'Poppins', sans-serif; */
 }
 
-/* Current page button */
-nav .dt-paging-button.current {
-    color: inherit !important;
-    background: #760000 !important;
-    border: 2px solid #760000 !important;
+
+.paginate_button.page-item:hover {
+    background: #eeeeee !important;
+}
+
+.paginate_button.page-item.disabled {
+    border: 1px solid rgb(236, 236, 236);
+
+}
+
+.paginate_button.page-item.active {
+    background-color: #007bff !important;
+    border: 1px solid #007bff !important;
+}
+
+
+.paginate_button.page-item.active .page-link{
+    color: white;
+    
 }
 
 label {

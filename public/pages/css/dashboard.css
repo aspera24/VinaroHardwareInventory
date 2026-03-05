@@ -31,7 +31,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.08);
+    /* box-shadow:0 10px 40px rgba(0,0,0,0.08); */
     transition: transform 0.2s ease;
     width: 100%;
     flex: 1 1 220px;
@@ -80,7 +80,7 @@
     padding: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
-    box-shadow:0 10px 40px rgba(0,0,0,0.08);
+    /* box-shadow:0 10px 40px rgba(0,0,0,0.08); */
     overflow: hidden;
     height: 350px;
 }
@@ -123,7 +123,7 @@
     background-color: #fff;
     padding: 20px;
     overflow: hidden;
-    box-shadow:0 10px 40px rgba(0,0,0,0.08);
+    /* box-shadow:0 10px 40px rgba(0,0,0,0.08); */
 }
 
 .recent-activity table {
@@ -142,7 +142,17 @@
     background-color: #f4f4f4;
 }
 
+#void{
+    background: #a10000;
+    padding: 3px 6px;
+    margin: 0 2px;
+    cursor: pointer;
+    color: white;
+}
 
+#void:hover{
+    background: #770000;
+}
 
 /* For Windows */
 .modal {
@@ -359,8 +369,8 @@
 }
 
 .status.completed {
-    color: rgb(255, 255, 255);
-    background: #760000ff;
+    color: rgb(17, 17, 17);
+    background: yellowgreen;
     padding: 3px 5px;
 }
 
