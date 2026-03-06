@@ -74,11 +74,16 @@
     });
 
 
+    // filterStatus.addEventListener("change", function () {
+    //     const val = this.value;
+    //     table.column(4).search(val).draw(); // Status column
+    // });
+
     filterStatus.addEventListener("change", function () {
         const val = this.value;
-        table.column(4).search(val).draw(); // Status column
-    });
 
+        table.api().column(4).search(val).draw(); // Status column
+    });
 
     /* ================= ACTION BUTTONS ================= */
 

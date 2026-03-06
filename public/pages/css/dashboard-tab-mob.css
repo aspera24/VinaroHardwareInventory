@@ -18,11 +18,9 @@
     .stat-card {
         background-color: #fff;
         padding: 20px;
-        /* border-radius: 10px; */
         display: flex;
         align-items: center;
         gap: 15px;
-        /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
         transition: transform 0.2s ease;
         transition: transform 0.2s ease;
         width: 100%;
@@ -65,17 +63,14 @@
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
-        /* key! prevents shrinking */
         font-size: 1.5rem;
     }
 
     .chart-container {
         background-color: #fff;
-        padding: 10px;
-        /* border-radius: 10px; */
+        padding: 20px;
         margin-top: 10px;
         margin-bottom: 10px;
-        /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
         overflow: hidden;
         height: 300px;
         width: 100%;
@@ -299,7 +294,57 @@
     }
 }
 
-@media(max-width: 430px) {
+@media(max-width: 540px) {
+    .stat-card h3 {
+        margin: 0;
+        font-size: .59rem;
+        color: black;
+    }
+
+    .stat-card p {
+        margin: 5px 0 0 0;
+        font-size: 1.4rem;
+        font-weight: normal;
+        color: #555;
+    }
+}
+
+@media(max-width: 520px) {
+
+    #recentTable th,
+    #recentTable td {
+        padding: 4px 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-size: 10px;
+    }
+
+    #recentTable th:nth-child(1),
+    #recentTable td:nth-child(1) {
+        width: 140px;
+        min-width: 140px;
+        max-width: 140px;
+        text-align: left;
+    }
+
+    #recentTable th:nth-child(2),
+    #recentTable td:nth-child(2) {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        text-align: left;
+    }
+
+    #recentTable th:nth-child(3),
+    #recentTable td:nth-child(3) {
+        width: 130px;
+        min-width: 130px;
+        max-width: 130px;
+        text-align: right;
+    }
+}
+
+@media(max-width: 440px) {
     .stat-card h3 {
         margin: 0;
         font-size: .57rem;
@@ -326,6 +371,14 @@
         font-size: 10px !important;
         text-wrap: wrap;
     }
+
+    #recentTable th:nth-child(1),
+    #recentTable td:nth-child(1) {
+        width: 100px;
+        min-width: 100px;
+        max-width: 100px;
+        text-align: left;
+    }
 }
 
 @media(max-width: 414px) {
@@ -343,6 +396,25 @@
     }
 }
 
+@media (max-width: 400px) {
+
+    #recentTable th,
+    #recentTable td {
+        padding: 4px 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-size: 8px;
+    }
+
+    #recentTable th:nth-child(1),
+    #recentTable td:nth-child(1) {
+        width: 100px;
+        min-width: 100px;
+        max-width: 100px;
+        text-align: left;
+    }
+}
+
 @media(max-width: 390px) {
     .stat-card h3 {
         margin: 0;
@@ -355,6 +427,32 @@
         font-size: 1.1rem;
         font-weight: normal;
         color: #555;
+    }
+}
+
+@media(max-width: 380px) {
+    #recentTable th,
+    #recentTable td {
+        padding: 4px 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-size: 6px;
+    }
+
+    #recentTable th:nth-child(1),
+    #recentTable td:nth-child(1) {
+        width: 80px;
+        min-width: 80px;
+        max-width: 80px;
+        text-align: left;
+    }
+
+    #recentTable th:nth-child(2),
+    #recentTable td:nth-child(2) {
+        width: 30px;
+        min-width: 30px;
+        max-width: 30px;
+        text-align: left;
     }
 }
 

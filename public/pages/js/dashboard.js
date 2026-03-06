@@ -473,8 +473,7 @@
           day: "numeric"
         }),
         `<span class="status ${r.status}">
-          ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}✔
-         </span>
+          ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}✔</span>
          <a id="void">
           Void
        </a>`

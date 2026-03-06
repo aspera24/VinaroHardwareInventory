@@ -142,6 +142,24 @@
     background-color: #f4f4f4;
 }
 
+
+.recent-activity .dataTables_length{
+    float: left !important;
+    width: 50% !important;
+    height: 25px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.recent-activity .dataTables_filter{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
 #void{
     background: #a10000;
     padding: 3px 6px;
@@ -370,7 +388,7 @@
 
 .status.completed {
     color: rgb(17, 17, 17);
-    background: yellowgreen;
+    background: #ffbb00;
     padding: 3px 5px;
 }
 

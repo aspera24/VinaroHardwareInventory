@@ -8,7 +8,12 @@
 body {
     margin: 0;
     background: #ececec;
-    overflow: hidden;
+    /* overflow: hidden; */
+}
+
+html,
+body {
+    height: 100%;
 }
 
 :root {
@@ -19,41 +24,39 @@ body {
 .container {
     display: flex;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
 }
 
 /* Toggle button */
 #nav-toggle {
     position: absolute;
-    top: 50%;
-    left: 205px;
     z-index: 1000;
     background: #303641;
     color: white;
     border: none;
-    width: 40px;
-    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 12px;
-    transition: all 0.3s ease-in-out;
-    /* border-radius: 50%; */
-    border: 4px solid rgb(231, 231, 231);
     user-select: none;
+    border-radius: 50%;
+    top: 50%;
+    right: -50px;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
 }
+
 
 /* Hide sidebar */
 .nav-hidden #sidebar {
-    width: 0;
-    overflow: hidden;
+    transform: translateX(-100%);
 }
 
 .nav-hidden>#nav-toggle {
-    left: 10px;
-    background: transparent;
+
     color: #303641;
 }
 
@@ -99,13 +102,14 @@ body {
     flex-direction: column;
     align-items: center;
     outline: none;
-    width: 227px;
-    position: relative;
+    /* width: 227px; */
+    width: auto;
+    position: fixed;
     height: 100%;
     z-index: 900;
     left: 0;
     top: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
     transition: all 0.3s ease-in-out;
     user-select: none;
 }
@@ -122,7 +126,7 @@ body {
     cursor: pointer;
 }
 
-#sidebar h2:hover{
+#sidebar h2:hover {
     color: #c73140 !important;
 }
 
@@ -187,15 +191,16 @@ body {
 
 #main-content {
     flex-grow: 1;
-    overflow: auto;
     padding: 20px !important;
     min-width: 300px;
-    height: 100vh;
     -webkit-overflow-scrolling: touch;
     transition: all 0.3s ease-in-out;
     background-position: center;
     background: rgb(243, 243, 243);
-    /* background: white; */
+    flex-grow: 1;
+    padding: 20px !important;
+    min-width: 300px;
+    min-height: 100vh;
 }
 
 /* For Loading */
