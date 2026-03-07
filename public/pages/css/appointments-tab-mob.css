@@ -35,25 +35,33 @@
 
     .mainCard table th:nth-child(1),
     .mainCard table td:nth-child(1) {
-        width: 180px;
-        min-width: 180px;
-        max-width: 180px;
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
         text-align: left;
     }
 
     .mainCard table th:nth-child(3),
     .mainCard table td:nth-child(3) {
-        width: 100px;
-        min-width: 100px;
-        max-width: 100px;
+        width: 80px;
+        min-width: 80px;
+        max-width: 80px;
+        text-align: left;
+    }
+
+    .mainCard table th:nth-child(4),
+    .mainCard table td:nth-child(4) {
+        width: 80px;
+        min-width: 80px;
+        max-width: 80px;
         text-align: left;
     }
 
     .mainCard table th:nth-child(6),
     .mainCard table td:nth-child(6) {
         width: 100%;
-        min-width: 100px;
-        max-width: 100px;
+        min-width: 100%;
+        max-width: 100%;
     }
 
 
@@ -84,9 +92,9 @@
 
     .mainCard table th:nth-child(1),
     .mainCard table td:nth-child(1) {
-        width: 150px;
-        min-width: 150px;
-        max-width: 150px;
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
         text-align: left;
     }
 
@@ -117,6 +125,22 @@
         width: 120px;
         min-width: 120px;
         max-width: 120px;
+        text-align: left;
+    }
+
+    .mainCard table th:nth-child(3),
+    .mainCard table td:nth-child(3) {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+        text-align: left;
+    }
+
+    .mainCard table th:nth-child(4),
+    .mainCard table td:nth-child(4) {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
         text-align: left;
     }
 }

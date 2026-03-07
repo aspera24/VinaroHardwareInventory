@@ -28,7 +28,7 @@ const toggleBtn = document.getElementById("nav-toggle");
 const container = document.querySelector(".container");
 
 function updateNavByScreen() {
-    if (window.innerWidth <= 1200) {
+    if (window.innerWidth <= 1900) {
         container.classList.add("nav-hidden");
     } else {
         container.classList.remove("nav-hidden");

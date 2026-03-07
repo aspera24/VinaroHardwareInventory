@@ -8,6 +8,22 @@
 
     const socket = window.socket;
 
+    const screenshotBtn = document.getElementById("screenshotTable");
+
+    screenshotBtn.addEventListener("click", () => {
+
+        html2canvas(document.querySelector(".mainCard")).then(canvas => {
+
+            const link = document.createElement("a");
+            link.download = "appointments.jpg";
+            link.href = canvas.toDataURL();
+
+            link.click();
+
+        });
+
+    });
+
 
     main.style.display = "none";
     loading.style.display = "flex";

@@ -62,7 +62,9 @@
         pointRadius: 5,
         borderWidth: 2,
         backgroundColor: "rgba(118, 0, 0, 0.25)",
-        borderColor: "#760000"
+        borderColor: "#760000",
+        backgroundColor: "#ffbb0029",
+        borderColor: "#ffa600"
       }]
     },
     options: {

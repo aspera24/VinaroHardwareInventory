@@ -1,4 +1,3 @@
-
 <!-- GLOBAL LOADING -->
 <div id="loading">
     <div class="loader"></div>
@@ -11,6 +10,7 @@
 
     <div class="mainCard">
 
+
         <!-- FILTER BAR -->
         <div class="table-controls">
             <select id="filterStatus">
@@ -20,8 +20,12 @@
                 <option value="declined">Declined</option>
             </select>
 
-            <button id="deleteAllBtn" class="danger">Remove All</button>
-            <p id="customerCount">0 customer</p>
+            <div class="report-controls">
+                <p id="customerCount">0 client</p>
+                <a id="deleteAllBtn" class="danger"><img src="../graphics/deleteAll.svg" alt="Delete All"></a>
+                <a id="generateReport"><img src="../graphics/generate.svg" alt="Generate Report"></a>
+                <a id="screenshotTable"><img src="../graphics/screenshot.svg" alt="Screenshot"></a>
+            </div>
         </div>
 
         <table id="appTable">

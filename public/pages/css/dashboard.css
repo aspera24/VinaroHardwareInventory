@@ -1,8 +1,8 @@
 .dashboard-wrapper {
     width: 100%;
     margin: auto;
-    min-width: 1100px;
-    max-width: 1100px;
+    min-width: 1355px;
+    max-width: 1355px;
     position: relative;
     display: none;
 }
@@ -82,7 +82,7 @@
     margin-bottom: 10px;
     /* box-shadow:0 10px 40px rgba(0,0,0,0.08); */
     overflow: hidden;
-    height: 350px;
+    height: 390px;
 }
 
 .chart-container h3{
@@ -176,29 +176,33 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 1005;
+    z-index: 200009;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
+    height: 100vh;
     backdrop-filter: blur(5px);
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 /* Modal content box */
 .modal-content {
     background-color: #fff;
     padding: 20px;
-    min-width: 500px;
-    max-width: 600px;
+    min-width: 400px;
+    max-width: 400px;
+    width: 400px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     position: relative;
     height: 600px;
     overflow: hidden;
     overflow-y: scroll;
     scrollbar-color: #303641 transparent;
+    border-radius: 10px;
 }
 
 #txtLabel {
@@ -388,7 +392,7 @@
 
 .status.completed {
     color: rgb(17, 17, 17);
-    background: #ffbb00;
+    background: #ffbb0029;
     padding: 3px 5px;
 }
 

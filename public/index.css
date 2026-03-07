@@ -8,13 +8,10 @@
 body {
     margin: 0;
     background: #ececec;
-    /* overflow: hidden; */
+    overflow-y: scroll;
 }
 
-html,
-body {
-    height: 100%;
-}
+
 
 :root {
     scrollbar-width: thin;
@@ -25,7 +22,6 @@ body {
     display: flex;
     width: 100%;
     min-height: 100vh;
-    overflow: hidden;
 }
 
 /* Toggle button */
@@ -193,14 +189,15 @@ body {
     flex-grow: 1;
     padding: 20px !important;
     min-width: 300px;
-    -webkit-overflow-scrolling: touch;
-    transition: all 0.3s ease-in-out;
     background-position: center;
     background: rgb(243, 243, 243);
     flex-grow: 1;
     padding: 20px !important;
     min-width: 300px;
     min-height: 100vh;
+    height: 100vh;
+    height: 100%;
+    position: relative;
 }
 
 /* For Loading */
