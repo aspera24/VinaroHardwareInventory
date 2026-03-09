@@ -1,21 +1,97 @@
 .updateCont {
-    width: 100%;
     margin: auto;
-    min-width: 1100px;
-    max-width: 1100px;
+    min-width: 1355px;
+    max-width: 1355px;
     position: relative;
-    /* display: none; */
+    justify-content: center;
 }
 
 .centView {
     background: white;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+}
+
+#updateForm {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, auto);
+    column-gap: 5px;
+    row-gap: 5px;
 }
 
 .nameLabel {
     color: rgb(53, 53, 53);
     font-size: 12px;
-    margin-top: -5px;
+    margin: -2px 0 10px 0;
+    border-top: 1px solid gray;
+    border-top-style: dashed;
+    text-align: center;
+    letter-spacing: 1;
+}
+
+input,
+#purpose,
+#status {
+    height: 30px;
+    margin: 0px 0px 0px 0px;
+    width: 100%;
+    padding: 0 10px;
+    border: 1px solid rgb(177, 177, 177);
+    justify-content: space-around;
+    outline: none;
+}
+
+#contact {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    cursor: text;
+}
+
+#purpose {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    cursor: pointer;
+}
+
+#date {
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+    cursor: pointer;
+}
+
+#time {
+    grid-column: 4 / 5;
+    grid-row: 1 / 2;
+    cursor: pointer;
+}
+
+#status {
+    grid-column: 5 / 6;
+    grid-row: 1 / 2;
+    cursor: pointer;
+}
+
+#note {
+    height: 100px;
+    width: 100%;
+    resize: none;
+    grid-column: 1 / 6;
+    grid-row: 2 / 3;
+    padding: 10px;
+    cursor: text;
+    border: 1px solid rgb(177, 177, 177);
+    outline: none;
+}
+
+#note:focus{
+    border: 1px solid gray;
 }
 
 button {
@@ -25,11 +101,17 @@ button {
     cursor: pointer;
     letter-spacing: 2px;
     transition: .1s all ease-in-out;
-    padding: 0 5px;
-    /* height: 20px; */
     height: 25px;
     padding: 0 5px;
     font-size: 10px;
     border: none;
     outline: none;
+    float: left;
+
+}
+
+#backBtn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
 }
