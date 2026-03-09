@@ -457,7 +457,8 @@
     }
   });
 
-  socket.once("recentAppointments", rows => {
+
+  socket.on("recentAppointments", rows => {
 
     table.clear();
 
@@ -475,14 +476,78 @@
           day: "numeric"
         }),
         `<span class="status ${r.status}">
-          ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}✔</span>
-         <a id="void">
-          Void
+        ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}✔</span>
+       <a href="/page/dashboard/update-status:${r.id}" id="void" class="void-btn" data-id="${r.id}">
+        Void
        </a>`
       ]))
     ).draw();
 
   });
+
+
+
+
+  $('#recentTable tbody').on('click', '.void-btn', async function (e) {
+
+    e.preventDefault();
+
+    console.log("Void button clicked");
+
+    const id = $(this).data("id");
+    console.log("Appointment ID:", id);
+
+    const confirmVoid = confirm("Are you sure you want to void this appointment?");
+    console.log("User confirmation:", confirmVoid);
+
+    if (!confirmVoid) {
+      console.log("User cancelled void");
+      return;
+    }
+
+    try {
+
+      console.log("Sending update request...");
+
+      const res = await fetch(`/page/dashboard/update-status/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          status: "pending"
+        })
+      });
+
+      console.log("Response status:", res.status);
+
+      const result = await res.json();
+      console.log("Server response:", result);
+
+      if (res.ok) {
+
+        console.log("Status successfully updated");
+
+        alert("Appointment voided successfully");
+
+        socket.emit("getRecentAppointments");
+
+      } else {
+
+        console.log("Server returned error");
+        alert(result.message);
+
+      }
+
+    } catch (err) {
+
+      console.error("Fetch error:", err);
+      alert("Server error");
+
+    }
+
+  });
+
 
   /* INITIAL LOAD */
   loadRecentAppointments();

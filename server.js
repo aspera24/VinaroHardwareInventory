@@ -169,7 +169,7 @@ io.on("connection", (socket) => {
   socket.on("getRecentAppointments", () => {
 
     db.query(`
-    SELECT 
+    SELECT a.id,
       c.name AS customer,
       a.appointment_date AS date,
       a.status
@@ -475,105 +475,153 @@ app.get("/page/appointment/:id", (req, res) => {
 });
 
 
+// For void 
+app.put("/page/dashboard/update-status/:id", (req, res) => {
 
-app.put("/page/update-appointment/:id", (req, res) => {
   const { id } = req.params;
-  const { date, time, status, purpose, note } = req.body;
+  const { status } = req.body;
 
-  // Update main appointments
+  console.log("Updating appointment:", id, "to", status);
+
   db.query(
-    `UPDATE appointments 
+    "UPDATE appointments SET status = ? WHERE id = ?",
+    [status, id],
+    (err) => {
+
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      db.query(
+        "UPDATE appointment_status SET status = ? WHERE appointment_id = ?",
+        [status, id]
+      );
+
+      res.json({ message: "Status updated successfully" });
+
+    }
+  );
+
+});
+
+
+app.put("/page/appointments/update-data/:id", (req, res) => {
+  const { id } = req.params;
+  const { date, time, status, purpose, note, contact } = req.body;
+
+  db.query(
+    "SELECT customer_id FROM appointments WHERE id=?",
+    [id],
+    (err, rows) => {
+
+      if (err) return res.status(500).json({ message: "Failed to get customer" });
+
+      const customerId = rows[0].customer_id;
+
+      db.query(
+        "UPDATE customers SET contact=? WHERE id=?",
+        [contact, customerId]
+      );
+
+
+      // Update main appointments
+      db.query(
+        `UPDATE appointments 
      SET appointment_date=?, appointment_time=?, status=? 
      WHERE id=?`,
-    [date, time, status, id],
-    (err) => {
-      if (err) return res.status(500).json({ message: "Failed to update appointment" });
+        [date, time, status, id],
+        (err) => {
+          if (err) return res.status(500).json({ message: "Failed to update appointment" });
 
-      // Update details
-      db.query(
-        `UPDATE appointment_details 
+          // Update details
+          db.query(
+            `UPDATE appointment_details 
          SET purpose=? 
          WHERE appointment_id=?`,
-        [purpose, id],
-        (err2) => {
-          if (err2) return res.status(500).json({ message: "Failed to update purpose" });
+            [purpose, id],
+            (err2) => {
+              if (err2) return res.status(500).json({ message: "Failed to update purpose" });
 
-          // Handle notes safely
-          const handleNote = () => {
-            // Update status table and send response
-            db.query(
-              `UPDATE appointment_status 
+              // Handle notes safely
+              const handleNote = () => {
+                // Update status table and send response
+                db.query(
+                  `UPDATE appointment_status 
                SET status=?, updated_at=NOW()
                WHERE appointment_id=?`,
-              [status, id],
-              (err4) => {
-                if (err4) return res.status(500).json({ message: "Failed to update status" });
+                  [status, id],
+                  (err4) => {
+                    if (err4) return res.status(500).json({ message: "Failed to update status" });
 
-                // Only send response here once
-                res.json({ message: "Appointment updated successfully" });
-              }
-            );
-          };
+                    // Only send response here once
+                    res.json({ message: "Appointment updated successfully" });
+                  }
+                );
+              };
 
-          // Check if input note is empty
-          if (!note || note.trim() === "") {
-            // If input is empty, check if there’s an existing note
-            db.query(
-              `SELECT id FROM appointment_notes WHERE appointment_id=?`,
-              [id],
-              (errCheck, rows) => {
-                if (errCheck) return res.status(500).json({ message: "Failed to check note" });
+              // Check if input note is empty
+              if (!note || note.trim() === "") {
+                // If input is empty, check if there’s an existing note
+                db.query(
+                  `SELECT id FROM appointment_notes WHERE appointment_id=?`,
+                  [id],
+                  (errCheck, rows) => {
+                    if (errCheck) return res.status(500).json({ message: "Failed to check note" });
 
-                if (rows.length > 0) {
-                  // Delete existing note if any
-                  db.query(
-                    `DELETE FROM appointment_notes WHERE appointment_id=?`,
-                    [id],
-                    (errDelete) => {
-                      if (errDelete) return res.status(500).json({ message: "Failed to delete note" });
+                    if (rows.length > 0) {
+                      // Delete existing note if any
+                      db.query(
+                        `DELETE FROM appointment_notes WHERE appointment_id=?`,
+                        [id],
+                        (errDelete) => {
+                          if (errDelete) return res.status(500).json({ message: "Failed to delete note" });
+                          handleNote();
+                        }
+                      );
+                    } else {
+                      // No note to delete
                       handleNote();
                     }
-                  );
-                } else {
-                  // No note to delete
-                  handleNote();
-                }
-              }
-            );
-          } else {
-            // Input is not empty → insert or update
-            db.query(
-              `SELECT id FROM appointment_notes WHERE appointment_id=?`,
-              [id],
-              (err3, rows) => {
-                if (err3) return res.status(500).json({ message: "Failed to check note" });
+                  }
+                );
+              } else {
+                // Input is not empty → insert or update
+                db.query(
+                  `SELECT id FROM appointment_notes WHERE appointment_id=?`,
+                  [id],
+                  (err3, rows) => {
+                    if (err3) return res.status(500).json({ message: "Failed to check note" });
 
-                if (rows.length > 0) {
-                  // Update existing note
-                  db.query(
-                    `UPDATE appointment_notes SET note=? WHERE appointment_id=?`,
-                    [note, id],
-                    (errUpdate) => {
-                      if (errUpdate) return res.status(500).json({ message: "Failed to update note" });
-                      handleNote();
+                    if (rows.length > 0) {
+                      // Update existing note
+                      db.query(
+                        `UPDATE appointment_notes SET note=? WHERE appointment_id=?`,
+                        [note, id],
+                        (errUpdate) => {
+                          if (errUpdate) return res.status(500).json({ message: "Failed to update note" });
+                          handleNote();
+                        }
+                      );
+                    } else {
+                      // Insert new note
+                      db.query(
+                        `INSERT INTO appointment_notes (appointment_id, note) VALUES (?, ?)`,
+                        [id, note],
+                        (errInsert) => {
+                          if (errInsert) return res.status(500).json({ message: "Failed to insert note" });
+                          handleNote();
+                        }
+                      );
                     }
-                  );
-                } else {
-                  // Insert new note
-                  db.query(
-                    `INSERT INTO appointment_notes (appointment_id, note) VALUES (?, ?)`,
-                    [id, note],
-                    (errInsert) => {
-                      if (errInsert) return res.status(500).json({ message: "Failed to insert note" });
-                      handleNote();
-                    }
-                  );
-                }
+                  }
+                );
               }
-            );
-          }
+            }
+          );
         }
       );
+
     }
   );
 });

@@ -62,6 +62,7 @@
         e.preventDefault();
 
         const updatedData = {
+            contact: contact.value,
             purpose: purpose.value,
             date: date.value,
             time: time.value,
@@ -70,7 +71,7 @@
         };
 
         try {
-            const res = await fetch(`/page/update-appointment/${id}`, {
+            const res = await fetch(`/page/appointments/update-data/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedData)
