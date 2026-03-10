@@ -88,6 +88,9 @@
           ticks: {
             color: "black"
           },
+          grid: {
+            color: "#ffffff"   // grid color sa X axis
+          }
         },
         y: {
           title: { display: true, text: "Number of Clients", color: "black" },
@@ -95,6 +98,9 @@
           ticks: {
             color: "black"
           },
+          grid: {
+            color: "#f3f3f3"   // grid color sa X axis
+          }
         }
       }
     }

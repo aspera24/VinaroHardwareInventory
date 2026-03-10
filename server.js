@@ -19,7 +19,7 @@ io.on("connection", (socket) => {
     db.query("SELECT COUNT(DISTINCT name) AS total FROM customers", (e, r) => {
       stats.totalClients = r?.[0]?.total ?? 0;
 
-      db.query("SELECT COUNT(*) AS total FROM appointments", (e2, r2) => {
+      db.query("SELECT COUNT(*) AS total FROM appointments WHERE status IN ('pending', 'approved');", (e2, r2) => {
         stats.totalAppointments = r2?.[0]?.total ?? 0;
 
         db.query(
@@ -237,7 +237,7 @@ io.on("connection", (socket) => {
       case "total-appointments":
         title = "Total Appointments";
 
-        let statusFilter = "";
+        let statusFilter = "AND a.status IN ('pending','approved')";
         if (status) {
           statusFilter = "AND a.status = ?";
         }
