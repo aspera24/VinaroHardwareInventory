@@ -1,6 +1,11 @@
 /* Responsive: Tablets & Phones */
-@media (max-width: 1645px) {
+@media (max-width: 1770px){
+    .gospel{
+        display: none;
+    }
+}
 
+@media (max-width: 1645px) {
     /* Sidebar nav */
     nav {
         background: #303641;
@@ -12,7 +17,6 @@
         height: 100%;
         flex-shrink: 0;
         z-index: 1000;
-        /* overflow: hidden; */
         transition: all 0.3s ease-in-out;
     }
 
@@ -109,36 +113,5 @@
         height: 100%;
     } */
 
-}
-
-@media (max-width: 800px) {
-    .profileCont {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        background: #303641;
-        height: 40px;
-        width: auto;
-        display: flex;
-        align-items: center;
-        z-index: 1002;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .profileCont img {
-        height: 30px;
-        width: 30px;
-    }
-}
-
-@media (max-width: 600px) {
-    .profileCont {
-        display: none;
-    }
-
-    .account {
-        display: flex;
-    }
 }
 

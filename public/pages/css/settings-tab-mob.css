@@ -1,0 +1,11 @@
+@media (max-width: 1400px) {
+    .mainSettings {
+        width: 100%;
+        margin: auto;
+        min-width: 100%;
+        max-width: 100%;
+        position: relative;
+        /* display: none; */
+    }
+
+}

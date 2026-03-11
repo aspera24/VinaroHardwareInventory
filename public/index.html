@@ -46,7 +46,7 @@
         src="https://bplc-staff.doitcebutech.com/assets/dashboard/vendor-js/1.10.19dataTables.bootstrap4.min.js"></script>
     <script src="https://bplc-staff.doitcebutech.com/assets/dashboard/vendor-js/dataTables.responsive.min.js"></script>
 
-    
+
     <!-- For Screenshot -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -54,21 +54,16 @@
 <body>
 
     <div class="container">
-        <div class="profileCont">
-            <!-- Modal -->
-            <div id="successModal" class="modal" style="display:none;">
-                <div class="modal-content">
-                    <span id="closeModal" class="close">&times;</span>
-                    <p id="modalMessage"></p>
-                </div>
-            </div>
+        <div class="gospel">
+                <h2 id="g-title">Title</h2>
+                <p id="g-content">Loading...</p>
         </div>
 
         <nav id="sidebar">
             <button id="nav-toggle">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <h2>CUSTOMER SERVICE</h2>
+            <h2 id="webName" onclick="navigate('dashboard')">CUSTOMER SERVICE</h2>
             <ul>
                 <li>
                     <a id="dashboard" href="/page/dashboard" onclick="navigate('dashboard')">
@@ -101,9 +96,10 @@
     </div>
 
 
+    <script src="/snow.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/app.js"></script>
-
+    
 
 </body>
 

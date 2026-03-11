@@ -10,7 +10,6 @@ body {
     background: #ececec;
     overflow-y: scroll;
     overflow-x: hidden;
-    
 }
 
 
@@ -63,35 +62,36 @@ body {
     color: white;
 }
 
-.profileCont {
+.gospel {
     position: absolute;
     right: 20px;
-    top: 10px;
-    background: #303641;
-    height: 40px;
-    width: auto;
+    top: 94.5px;
+    background: #ffffff;
+    min-height: 300px;
+    height: auto;
+    width: 10%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     z-index: 1002;
-    padding: 10px;
+    padding: 20px;
     cursor: pointer;
 }
 
-.profileCont img {
-    height: 30px;
-    width: 30px;
+.gospel #g-title{
+    width: 100%;
+    font-weight: normal;
+    font-size: 22px;
+    margin-bottom: 10px;
 }
 
-.profileCont p {
-    color: white;
-    letter-spacing: 2px;
+.gospel p {
+    color: rgb(69, 69, 69);
     font-size: 12px;
-    margin: 0 5px;
+    letter-spacing: 1px;
+    text-align: justify;
 }
 
-.profileCont:hover>p {
-    color: rgb(126, 206, 255);
-}
 
 #sidebar {
     background: #303641;

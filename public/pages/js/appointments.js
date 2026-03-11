@@ -8,6 +8,9 @@
 
     const socket = window.socket;
 
+    socket.off("appointmentsData");
+    socket.off("appointmentUpdate");
+
     const screenshotBtn = document.getElementById("screenshotTable");
 
     screenshotBtn.addEventListener("click", () => {

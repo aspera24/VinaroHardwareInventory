@@ -9,15 +9,6 @@
         justify-content: center;
         display: none;
     }
-/* 
-    .mainCard {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: auto;
-        background: white;
-        padding: 10px;
-    } */
 
     .mainCard table {
         width: 100%;

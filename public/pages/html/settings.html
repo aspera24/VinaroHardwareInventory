@@ -20,71 +20,20 @@
     <div class="settings-container">
       <!-- LEFT -->
       <div class="settings-menu">
-
         <ul>
-          <li class="active">Modify Account</li>
-          <li>Security</li>
-          <li>Notifications</li>
-          <li>Appearance</li>
+          <a class="active" data-page="modify-account">Modify Account</a>
+          <a data-page="security">Security</a>
+          <a data-page="notifications">Notifications</a>
+          <a data-page="appearance">Appearance</a>
         </ul>
       </div>
 
-      <!-- RIGHT -->
-      <div class="settings-content">
-
-        <div class="section-title">Account Settings</div>
-
-        <div class="card">
-          <h3>Profile Information</h3>
-
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" placeholder="John Doe">
-          </div>
-
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" placeholder="john@email.com">
-          </div>
-
-          <button class="save-btn">Save Changes</button>
-        </div>
-
-        <div class="card">
-          <h3>Change Password</h3>
-
-          <div class="form-group">
-            <label>Current Password</label>
-            <input type="password">
-          </div>
-
-          <div class="form-group">
-            <label>New Password</label>
-            <input type="password">
-          </div>
-
-          <button class="save-btn">Update Password</button>
-        </div>
-
-        <div class="card">
-          <h3>Notifications</h3>
-
-          <div class="toggle">
-            <span>Email Notifications</span>
-            <div class="switch" onclick="this.classList.toggle('active')"></div>
-          </div>
-
-          <div class="toggle">
-            <span>SMS Alerts</span>
-            <div class="switch active" onclick="this.classList.toggle('active')"></div>
-          </div>
-
-        </div>
-
-      </div>
+      <div class="settings-content" id="settingsContent"></div>
 
     </div>
   </div>
+
+
 </body>
 
 </html>

@@ -3,6 +3,7 @@ let add_customer = document.getElementById('add_customer');
 let appointments = document.getElementById('appointments');
 let settings = document.getElementById('settings');
 let browserTitle = document.getElementById('browserTitle');
+let webName = document.getElementById('webName');
 window.socket = io();
 
 let lastScrollTop = 0;
@@ -59,7 +60,7 @@ toggleBtn.addEventListener("click", () => {
 
 
 
-let menuItems = [dashboard, add_customer, appointments, settings];
+let menuItems = [webName, dashboard, add_customer, appointments, settings];
 
 function setActive(page) {
     // Remove highlight from all
@@ -71,7 +72,7 @@ function setActive(page) {
     var pageName = page.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
 
     // Apply highlight to selected page
-    if (page === 'dashboard') {
+    if (page === 'dashboard' || page === 'webName') {
         dashboard.style.background = "#485161";
         browserTitle.textContent = `${appName} - ${pageName}`;
     } else if (page === 'add-customer') {
@@ -110,38 +111,51 @@ function loadPage(page) {
     setActive(page);
 }
 
-let validRoutes = ["dashboard", "add-customer", "appointments", "profile", "settings", "update"];
+let validRoutes = ["webName", "dashboard", "add-customer", "appointments", "profile", "settings", "update"];
 
 function router() {
+    // Get the current path after "/page/"
+    const fullPath = location.pathname.replace("/page/", "");
+    const segments = fullPath.split("/"); 
+    const mainRoute = segments[0]; // first part of path
 
-    if (location.hash) {
-        document.getElementById("main-content").innerHTML = `
-            <h2 style="color:red;">400 Bad Request</h2>
-            <p>Hashes are not allowed.</p>
-        `;
+    // --- SETTINGS ROUTE ---
+    if (mainRoute === "settings") {
+        loadPage("settings");       // Load settings.html into #main-content
+        setActive("settings");      // Highlight main menu
+
+        // Get tab from URL or default to "modify-account"
+        const tab = segments[1] || "modify-account";
+
+        // Wait a bit for settings.js to initialize, then open tab
+        setTimeout(() => {
+            const link = document.querySelector(`.settings-menu a[data-page="${tab}"]`);
+            if (link) link.click();
+        }, 50);
+
         return;
     }
 
-    let fullPath = location.pathname.replace("/page/", "");
-    let segments = fullPath.split("/");
-    let path = segments.pop();
+    // --- OTHER ROUTES ---
+    let page = mainRoute || "dashboard";
 
-    if (!path) path = "dashboard";
-
-    if (!validRoutes.includes(path)) {
+    // If route is invalid, show error
+    if (!validRoutes.includes(page)) {
         document.getElementById("main-content").innerHTML = `
             <h2 style="color:red;">400 Bad Request</h2>
             <p>Invalid route.</p>
         `;
         return;
     }
-    loadPage(path);
 
-    // highlight only main menu
-    if (path === "profile" || path === "update") {
+    // Load the page
+    loadPage(page);
+
+    // Highlight menu
+    if (page === "profile" || page === "update") {
         setActive("appointments");
     } else {
-        setActive(path);
+        setActive(page);
     }
 }
 
@@ -165,4 +179,14 @@ window.addEventListener("load", router);
 window.addEventListener("popstate", router);
 
 
-
+// --- Daily Verse ---
+fetch('https://beta.ourmanna.com/api/v1/get?format=json&order=daily')
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('g-title').innerText = data.verse.details.reference;
+        document.getElementById('g-content').innerText = data.verse.details.text;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById('g-content').innerText = 'Failed to load verse.';
+    });
