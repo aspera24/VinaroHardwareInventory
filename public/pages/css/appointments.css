@@ -25,6 +25,7 @@
     width: 100%;
     align-items: center;
     position: relative;
+    height: 40px;
 }
 
 
@@ -64,9 +65,8 @@
     gap: 5px;
     justify-content: right;
     align-items: center;
-    height: 40px;
+    height: 100%;
     width: 100%;
-    margin-bottom: 10px;
 }
 
 .report-controls #customerCount {
@@ -209,8 +209,18 @@
     justify-content: left;
 }
 
+#appTable_filter label{
+    display: flex;
+    align-items: center;
+}
+
+.custom-select.custom-select-sm.form-control.form-control-sm{
+    height: 25px;
+}
+
 .dataTables_filter {
     width: 50%;
+    height: 25px;
     display: flex;
     align-items: center;
     justify-content: right;

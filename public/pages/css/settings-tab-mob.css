@@ -9,3 +9,20 @@
     }
 
 }
+
+@media (max-width: 530px) {
+    .settings-menu a {
+        cursor: pointer;
+        height: 30px;
+        overflow: hidden;
+        padding: 4px 8px;
+        transition: 0.1s ease;
+        font-size: 8px;
+        letter-spacing: 1px;
+        display: flex;
+        color: white;
+        background: #303641;
+        align-items: center;
+        justify-content: center;
+    }
+}

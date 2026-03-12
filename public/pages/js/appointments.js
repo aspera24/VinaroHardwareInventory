@@ -49,7 +49,7 @@
 
     function populateTable(data) {
 
-        const api = table.api(); // kuhaon ang API instance
+        const api = table.api(); //getting the API instance
 
         api.clear();
 

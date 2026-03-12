@@ -7,7 +7,7 @@
         <div class="loader"></div>
         <p>Loading...</p>
     </div>
-    
+
     <div class="dashboard-wrapper">
         <h2 class="title">Dashboard Overview</h2>
         <p class="title-p">Track appointments, customer statistics, and recent activities.</p>
@@ -72,7 +72,7 @@
                     <tr>
                         <th>Customer</th>
                         <th>Date</th>
-                        <th>Status</th>
+                        <th>Status/Action</th>
                     </tr>
                 </thead>
                 <tbody id="recent-appointments"></tbody>
@@ -112,6 +112,23 @@
             </div>
         </div>
 
+
+        <div id="msgBox" class="msgBox">
+            <div class="msgContent">
+                <h3 id="msgTitle"></h3>
+                <p id="msgText"></p>
+
+                <div id="msgBtns">
+                    <button id="msgOk">Confirm</button>
+                    <button id="msgCancel">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="msgSuccess">
+            <h3 id="successTitle"></h3>
+            <p id="successText"></p>
+        </div>
     </div>
 </body>
 

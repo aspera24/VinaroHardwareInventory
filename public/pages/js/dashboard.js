@@ -8,6 +8,62 @@
   const socket = window.socket;
 
 
+  const msgBox = document.getElementById("msgBox");
+  const msgTitle = document.getElementById("msgTitle");
+  const msgText = document.getElementById("msgText");
+  const msgBtns = document.getElementById("msgBtns");
+  const msgOk = document.getElementById("msgOk");
+  const msgCancel = document.getElementById("msgCancel");
+  const msgSuccess = document.getElementById("msgSuccess");
+  const successTitle = document.getElementById("successTitle");
+  const successText = document.getElementById("successText");
+
+
+  function showMsg(title, text, confirmFn = null) {
+
+    msgTitle.innerText = title;
+    msgText.innerText = text;
+
+    msgBox.style.display = "flex";
+
+    if (confirmFn) {
+      msgBtns.style.display = "block";
+
+      msgOk.onclick = () => {
+        msgBox.style.display = "none";
+        confirmFn();
+      };
+
+      msgCancel.onclick = () => {
+        msgBox.style.display = "none";
+      };
+
+    } else {
+
+      msgBtns.style.display = "none";
+
+      setTimeout(() => {
+        msgBox.style.display = "none";
+      }, 3000);
+    }
+  }
+
+  function showSuccess(title, text) {
+
+    successTitle.innerText = title;
+    successText.innerText = text;
+
+    // show animation
+    msgSuccess.classList.add("show");
+
+    // auto hide
+    setTimeout(() => {
+      msgSuccess.classList.remove("show");
+    }, 3000);
+
+  }
+
+
   var total_customers = document.getElementById("total-customers");
   var total_appointments = document.getElementById("total-appointments");
   var upcoming_today = document.getElementById("upcoming-today");
@@ -451,13 +507,13 @@
     socket.emit("getRecentAppointments");
   }
 
-  const table = $('#recentTable').DataTable({
-
-    paging: true,
-    searching: true,
-    info: true,
+  const table = $('#recentTable').dataTable({
+    pageLength: 10,
     ordering: true,
-
+    searching: true,
+    columnDefs: [
+      { targets: 2, orderable: false } // actions column
+    ],
     language: {
       emptyTable: "No appointments found"
     }
@@ -466,28 +522,27 @@
 
   socket.on("recentAppointments", rows => {
 
-    table.clear();
+    const api1 = table.api();
 
-    if (!rows.length) {
-      table.draw();
-      return;
-    }
+    api1.clear();
 
-    table.rows.add(
-      rows.map(r => ([
-        r.customer,
-        new Date(r.date).toLocaleDateString("en-US", {
+    rows.forEach(a => {
+      api1.row.add([
+        a.customer,
+        new Date(a.date).toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric"
         }),
-        `<span class="status ${r.status}">
-        ${r.status.charAt(0).toUpperCase() + r.status.slice(1)}✔</span>
-       <a href="/page/dashboard/update-status:${r.id}" id="void" class="void-btn" data-id="${r.id}">
+        `<span class="status ${a.status}">
+        ${a.status.charAt(0).toUpperCase() + a.status.slice(1)}✔</span>
+       <a href="/page/dashboard/update-status:${a.id}" id="void" class="void-btn" data-id="${a.id}">
         Void
        </a>`
-      ]))
-    ).draw();
+      ]);
+    });
+
+    api1.draw();
 
   });
 
@@ -498,60 +553,36 @@
 
     e.preventDefault();
 
-    console.log("Void button clicked");
-
     const id = $(this).data("id");
     console.log("Appointment ID:", id);
 
-    const confirmVoid = confirm("Are you sure you want to void this appointment?");
-    console.log("User confirmation:", confirmVoid);
+    showMsg(
+      "Warning",
+      "Are you sure you want to void this appointment?",
+      async () => {
+        try {
+          const res = await fetch(`/page/dashboard/update-status/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "pending" })
+          });
 
-    if (!confirmVoid) {
-      console.log("User cancelled void");
-      return;
-    }
+          const result = await res.json();
 
-    try {
+          if (res.ok) {
+            // Separate success message
+            showSuccess("Success", "Appointment voided successfully");
 
-      console.log("Sending update request...");
+            socket.emit("getRecentAppointments");
+          } else {
+            showMsg("Error", result.message);
+          }
 
-      const res = await fetch(`/page/dashboard/update-status/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          status: "pending"
-        })
-      });
-
-      console.log("Response status:", res.status);
-
-      const result = await res.json();
-      console.log("Server response:", result);
-
-      if (res.ok) {
-
-        console.log("Status successfully updated");
-
-        alert("Appointment voided successfully");
-
-        socket.emit("getRecentAppointments");
-
-      } else {
-
-        console.log("Server returned error");
-        alert(result.message);
-
+        } catch (err) {
+          showMsg("Error", "Server error");
+        }
       }
-
-    } catch (err) {
-
-      console.error("Fetch error:", err);
-      alert("Server error");
-
-    }
-
+    );
   });
 
 

@@ -177,7 +177,6 @@ io.on("connection", (socket) => {
     JOIN customers c ON a.customer_id = c.id
     WHERE a.status = 'completed'
     ORDER BY a.appointment_date DESC
-    LIMIT 5
   `, (err, rows) => {
 
       if (err) {

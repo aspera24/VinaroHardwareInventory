@@ -116,7 +116,7 @@ let validRoutes = ["webName", "dashboard", "add-customer", "appointments", "prof
 function router() {
     // Get the current path after "/page/"
     const fullPath = location.pathname.replace("/page/", "");
-    const segments = fullPath.split("/"); 
+    const segments = fullPath.split("/");
     const mainRoute = segments[0]; // first part of path
 
     // --- SETTINGS ROUTE ---
@@ -138,6 +138,15 @@ function router() {
 
     // --- OTHER ROUTES ---
     let page = mainRoute || "dashboard";
+
+    // handle nested routes
+    if (mainRoute === "appointments" && segments[1] === "update") {
+        page = "update";
+    }
+
+    if (mainRoute === "appointments" && segments[1] === "profile") {
+        page = "profile";
+    }
 
     // If route is invalid, show error
     if (!validRoutes.includes(page)) {
