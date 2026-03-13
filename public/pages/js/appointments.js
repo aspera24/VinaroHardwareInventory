@@ -11,6 +11,60 @@
     socket.off("appointmentsData");
     socket.off("appointmentUpdate");
 
+    const msgBox = document.getElementById("msgBox");
+    const msgTitle = document.getElementById("msgTitle");
+    const msgText = document.getElementById("msgText");
+    const msgBtns = document.getElementById("msgBtns");
+    const msgOk = document.getElementById("msgOk");
+    const msgCancel = document.getElementById("msgCancel");
+    const msgSuccess = document.getElementById("msgSuccess");
+    const successTitle = document.getElementById("successTitle");
+    const successText = document.getElementById("successText");
+
+    function showMsg(title, text, confirmFn = null) {
+
+        msgTitle.innerText = title;
+        msgText.innerText = text;
+
+        msgBox.style.display = "flex";
+
+        if (confirmFn) {
+            msgBtns.style.display = "block";
+
+            msgOk.onclick = () => {
+                msgBox.style.display = "none";
+                confirmFn();
+            };
+
+            msgCancel.onclick = () => {
+                msgBox.style.display = "none";
+            };
+
+        } else {
+
+            msgBtns.style.display = "none";
+
+            setTimeout(() => {
+                msgBox.style.display = "none";
+            }, 3000);
+        }
+    }
+
+    function showSuccess(title, text) {
+
+        successTitle.innerText = title;
+        successText.innerText = text;
+
+        // show animation
+        msgSuccess.classList.add("show");
+
+        // auto hide
+        setTimeout(() => {
+            msgSuccess.classList.remove("show");
+        }, 3000);
+
+    }
+
     const screenshotBtn = document.getElementById("screenshotTable");
 
     screenshotBtn.addEventListener("click", () => {
@@ -121,9 +175,21 @@
         }
 
         if (this.classList.contains("deleteBtn")) {
-            if (confirm("Are you sure you want to delete this appointment?")) {
-                socket.emit("deleteAppointment", id);
-            }
+            showMsg(
+                "Warning",
+                `Are you sure you want to delete ${id} appointment?`,
+                async () => {
+                    try {
+                        socket.emit("deleteAppointment", id);
+
+                        // Separate success message
+                        showSuccess("Success", `${id} appointment deleted successfully`);
+
+                    } catch (err) {
+                        showMsg("Error", "Server error");
+                    }
+                }
+            );
         }
     });
 

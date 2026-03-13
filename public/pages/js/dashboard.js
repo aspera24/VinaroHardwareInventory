@@ -102,8 +102,6 @@
 
 
 
-
-
   const ctx = document.getElementById("appointmentsChart").getContext("2d");
 
   const chart = new Chart(ctx, {
@@ -120,7 +118,9 @@
         backgroundColor: "rgba(118, 0, 0, 0.25)",
         borderColor: "#760000",
         backgroundColor: "#ffbb0029",
-        borderColor: "#ffa600"
+        borderColor: "#ffa600",
+        barPercentage: 0.6,
+        categoryPercentage: 0.8
       }]
     },
     options: {
@@ -140,6 +140,7 @@
       },
       scales: {
         x: {
+          offset: true,
           title: { display: true, text: "Days of Week", color: "black" },
           ticks: {
             color: "black"
@@ -163,6 +164,25 @@
   });
 
 
+
+  const cTypeBtn = document.getElementById("cType");
+
+  cTypeBtn.addEventListener("click", () => {
+
+    let nextType = cTypeBtn.dataset.type; // next chart type
+
+    // apply chart type
+    chart.config.type = nextType;
+    chart.update("none");
+
+    // toggle next type
+    let newNextType = nextType === "line" ? "bar" : "line";
+
+    // change image to show next chart
+    cTypeBtn.src = `/graphics/${newNextType}.svg`;
+    cTypeBtn.dataset.type = newNextType;
+
+  });
 
   socket.off("dashboardStats");
   socket.off("dashboardChart");

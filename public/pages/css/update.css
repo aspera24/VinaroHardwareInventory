@@ -90,11 +90,11 @@ input,
     outline: none;
 }
 
-#note:focus{
+#note:focus {
     border: 1px solid gray;
 }
 
-button {
+#updateBtn {
     background: #760000;
     color: #fff;
     border: none;
@@ -107,10 +107,21 @@ button {
     border: none;
     outline: none;
     float: left;
-
 }
 
 #backBtn {
+    background: #760000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: .1s all ease-in-out;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 10px;
+    border: none;
+    outline: none;
+    float: left;
     position: absolute;
     top: 10px;
     left: 10px;

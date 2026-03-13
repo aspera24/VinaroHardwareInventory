@@ -21,8 +21,10 @@
 
             <div class="report-controls">
                 <p id="customerCount">0 client</p>
-                <a id="deleteAllBtn" title="Delete All" class="danger"><img src="../graphics/deleteAll.svg" alt="Delete All"></a>
-                <a id="generateReport" title="Generate Report"><img src="../graphics/generate.svg" alt="Generate Report"></a>
+                <a id="deleteAllBtn" title="Delete All" class="danger"><img src="../graphics/deleteAll.svg"
+                        alt="Delete All"></a>
+                <a id="generateReport" title="Generate Report"><img src="../graphics/generate.svg"
+                        alt="Generate Report"></a>
                 <a id="screenshotTable" title="Screenshot"><img src="../graphics/screenshot.svg" alt="Screenshot"></a>
             </div>
         </div>
@@ -41,6 +43,23 @@
             </thead>
             <tbody id="appointmentList"></tbody>
         </table>
+
+        <div id="msgBox" class="msgBox">
+            <div class="msgContent">
+                <h3 id="msgTitle"></h3>
+                <p id="msgText"></p>
+
+                <div id="msgBtns">
+                    <button id="msgOk">Confirm</button>
+                    <button id="msgCancel">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="msgSuccess">
+            <h3 id="successTitle"></h3>
+            <p id="successText"></p>
+        </div>
     </div>
 
 </div>

@@ -78,11 +78,11 @@
 .chart-container {
     background-color: #fff;
     padding: 20px;
+    padding-bottom: 40px;
     margin-top: 10px;
     margin-bottom: 10px;
-    /* box-shadow:0 10px 40px rgba(0,0,0,0.08); */
     overflow: hidden;
-    height: 390px;
+    height: 490px;
 }
 
 .chart-container h3{
@@ -90,9 +90,29 @@
     font-weight: normal;
 }
 
+.labAndBut{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.labAndBut #cType{
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    padding: 5px;
+    transition: .1s ease-in;
+    border-radius: 50%;
+}
+
+.labAndBut #cType:hover{
+    background: rgb(245, 245, 245);
+}
+
 #appointmentsChart {
     overflow: hidden;
     margin-bottom: 50px;
+    width: 100% !important;
 }
 
 .chart-filters {

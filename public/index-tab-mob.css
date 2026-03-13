@@ -59,7 +59,7 @@
     }
 
     .nav-hidden>#nav-toggle {
-        left: 0px !important;
+        /* left: 0px !important; */
     }
 
     .profileCont {
@@ -91,17 +91,17 @@
 
 
     /* Main content */
-    #main-content {
+    /* #main-content {
         flex-grow: 1;
         overflow: auto;
         padding: 12px;
         width: 100%;
         scroll-behavior: smooth;
-    }
+    } */
 
-    #sidebar {
+    /* #sidebar {
         position: fixed;
-    }
+    } */
 
     .hide-browser-bar {
         height: 100vh;
@@ -114,4 +114,3 @@
     } */
 
 }
-
