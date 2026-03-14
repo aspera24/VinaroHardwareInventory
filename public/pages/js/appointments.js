@@ -116,10 +116,10 @@
                 a.status,
                 a.note || "NA",
                 `
-            <img title="Profile" class="viewBtn" data-id="${a.id}" src="../graphics/detail.svg"/>
-            <img title="Update" class="editBtn" data-id="${a.id}" src="../graphics/update.svg"/>
-            <img title="Delete" class="deleteBtn" data-id="${a.id}" src="../graphics/delete.svg"/>
-            `
+                <img title="Profile" class="viewBtn" data-id="${a.id}" src="/graphics/detail.svg"/>
+                <img title="Update" class="editBtn" data-id="${a.id}" src="/graphics/update.svg"/>
+                <img title="Delete" class="deleteBtn" data-id="${a.id}" src="/graphics/delete.svg"/>
+                `
             ]);
         });
 
@@ -140,6 +140,12 @@
 
         loading.style.display = "none";
         main.style.display = "flex";
+
+        const updatedMsg = localStorage.getItem("appointmentUpdated");
+        if (updatedMsg) {
+            showSuccess("Success", updatedMsg);
+            localStorage.removeItem("appointmentUpdated");
+        }
     });
 
     socket.on("appointmentUpdate", () => {
@@ -170,7 +176,8 @@
         }
 
         if (this.classList.contains("editBtn")) {
-            window.history.pushState({}, "", `/page/appointments/update?id=${id}`);
+            const admin = getAdminPath(); // get the logged-in admin from URL
+            history.pushState({}, "", `/${admin}/page/appointments/update?id=${id}`);
             router();
         }
 

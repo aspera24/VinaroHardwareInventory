@@ -13,17 +13,23 @@
     const time = document.getElementById("time");
     const status = document.getElementById("status");
     const note = document.getElementById("note");
+    const admin = getAdminPath();
+
 
     if (!id) {
         alert("No appointment ID found.");
         return;
     }
 
+
+
+
+
     /* ================= LOAD DATA ================= */
 
     async function loadData() {
         try {
-            const res = await fetch(`/page/appointment/${id}`);
+            const res = await fetch(`/${admin}/page/appointment/${id}`);
             const data = await res.json();
 
             if (!res.ok) {
@@ -71,7 +77,7 @@
         };
 
         try {
-            const res = await fetch(`/page/appointments/update-data/${id}`, {
+            const res = await fetch(`/${admin}/page/appointments/update-data/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedData)
@@ -80,12 +86,14 @@
             const result = await res.json();
 
             if (res.ok) {
-                alert(result.message);
-                window.history.pushState({}, "", "/page/appointments");
-                localStorage.setItem("appointmentUpdated", "true");
+                localStorage.setItem("appointmentUpdated", result.message);
+                console.log(result.message);
+
+
+                window.history.pushState({}, "", `/${admin}/page/appointments`);
                 router();
             } else {
-                alert(result.message);
+                localStorage.setItem("appointmentUpdated", result.message);
             }
 
         } catch (err) {
@@ -95,10 +103,11 @@
     });
 
     /* ================= BACK BUTTON ================= */
-
+    // Back button
     backBtn.addEventListener("click", () => {
-        window.history.pushState({}, "", "/page/appointments");
+        window.history.pushState({}, "", `/${admin}/page/appointments`);
         router();
     });
+
 
 })();

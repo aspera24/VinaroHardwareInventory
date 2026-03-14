@@ -111,7 +111,7 @@
       datasets: [{
         label: "Number of Clients",
         data: [],
-        tension: 0.5,
+        tension: 0.4,
         fill: true,
         pointRadius: 5,
         borderWidth: 2,

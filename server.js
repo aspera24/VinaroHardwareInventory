@@ -4,6 +4,14 @@ const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 const db = require("./db");
 
+const session = require("express-session");
+
+app.use(session({
+  secret: "secret-key",
+  resave: false,
+  saveUninitialized: true
+}));
+
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -438,7 +446,7 @@ io.on("connection", (socket) => {
 
 
 
-app.get("/page/appointment/:id", (req, res) => {
+app.get("/:username/page/appointment/:id", (req, res) => {
   const { id } = req.params;
 
   const query = `
@@ -505,7 +513,7 @@ app.put("/page/dashboard/update-status/:id", (req, res) => {
 });
 
 
-app.put("/page/appointments/update-data/:id", (req, res) => {
+app.put("/:username/page/appointments/update-data/:id", (req, res) => {
   const { id } = req.params;
   const { date, time, status, purpose, note, contact } = req.body;
 
@@ -806,9 +814,93 @@ app.get("/page/customers", (req, res) => {
 
 
 
-app.get("*", (req, res) =>
-  res.sendFile(__dirname + "/public/index.html")
-);
+// app.get("*", (req, res) =>
+//   res.sendFile(__dirname + "/public/index.html")
+// );
+
+app.get("/auth", (req, res) => {
+  res.sendFile(__dirname + "/public/auth.html");
+});
+
+app.post("/login", (req, res) => {
+
+  const { username, password } = req.body;
+
+  const sql = "SELECT * FROM admins WHERE username = ? LIMIT 1";
+
+  db.query(sql, [username], (err, rows) => {
+
+    if (err) {
+      console.error(err);
+      return res.json({ success: false });
+    }
+
+    if (rows.length === 0) {
+      return res.json({ success: false });
+    }
+
+    const admin = rows[0];
+
+    if (password === admin.password) {
+
+      req.session.admin = admin.username;
+
+      res.json({
+        success: true,
+        username: admin.username
+      });
+
+    } else {
+
+      res.json({
+        success: false
+      });
+
+    }
+  });
+});
+
+
+
+// app.get("/:username/*", (req, res) => {
+//   const { username } = req.params;
+
+//   if (!req.session.admin) {
+//     return res.redirect("/auth");
+//   }
+
+//   // optional: force correct session username
+//   if (username !== req.session.admin) {
+//     return res.status(404).send("404 Not Found: Invalid admin");
+//   }
+
+//   res.sendFile(__dirname + "/public/index.html");
+// });
+
+app.get("/:username/page/*", (req, res) => {
+  const { username } = req.params;
+
+  if (!req.session.admin) {
+    return res.redirect("/auth");
+  }
+
+  if (username !== req.session.admin) {
+    return res.status(404).send("404 Not Found: Invalid admin");
+  }
+
+  res.sendFile(__dirname + "/public/index.html");
+});
+
+
+app.get("/", (req, res) => {
+
+  if (!req.session.admin) {
+    return res.redirect("/auth");
+  }
+
+  res.redirect(`/${req.session.admin}/page/dashboard`);
+
+});
 
 http.listen(3000, () =>
   console.log("Server running on port 3000")

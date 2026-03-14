@@ -6,6 +6,12 @@ let browserTitle = document.getElementById('browserTitle');
 let webName = document.getElementById('webName');
 window.socket = io();
 
+function getAdminPath() {
+    const parts = location.pathname.split("/");
+    // example: ["", "admin-rodel", "page", "dashboard"]
+    return parts[1];
+}
+
 let lastScrollTop = 0;
 const mainContent = document.getElementById("main-content");
 
@@ -111,24 +117,25 @@ function loadPage(page) {
     setActive(page);
 }
 
+
+
 let validRoutes = ["webName", "dashboard", "add-customer", "appointments", "profile", "settings", "update"];
 
 function router() {
-    // Get the current path after "/page/"
-    const fullPath = location.pathname.replace("/page/", "");
-    const segments = fullPath.split("/");
-    const mainRoute = segments[0]; // first part of path
+    const parts = location.pathname.split("/");
+    const pageIndex = parts.indexOf("page");
+    const mainRoute = pageIndex !== -1 ? parts[pageIndex + 1] : "dashboard";
+    const segments = parts.slice(pageIndex + 1);
 
     // --- SETTINGS ROUTE ---
     if (mainRoute === "settings") {
-        loadPage("settings");       // Load settings.html into #main-content
-        setActive("settings");      // Highlight main menu
+        loadPage("settings");
+        setActive("settings");
 
-        // Get tab from URL or default to "modify-account"
         const tab = segments[1] || "modify-account";
 
-        // Wait a bit for settings.js to initialize, then open tab
         setTimeout(() => {
+            updateSettingsLinks(); // update URLs for tabs
             const link = document.querySelector(`.settings-menu a[data-page="${tab}"]`);
             if (link) link.click();
         }, 50);
@@ -136,19 +143,26 @@ function router() {
         return;
     }
 
-    // --- OTHER ROUTES ---
-    let page = mainRoute || "dashboard";
+    // --- APPOINTMENTS UPDATE / PROFILE ROUTES ---
+    let page = mainRoute;
 
-    // handle nested routes
-    if (mainRoute === "appointments" && segments[1] === "update") {
-        page = "update";
+    if (mainRoute === "appointments") {
+        if (segments[1] === "update") {
+            page = "update";
+            // Optional: handle query params
+            const searchParams = new URLSearchParams(window.location.search);
+            const id = searchParams.get("id");
+            // now you can pass `id` to your update page JS
+            setTimeout(() => {
+                if (window.loadUpdatePage) window.loadUpdatePage(id);
+            }, 50);
+        }
+
+        if (segments[1] === "profile") {
+            page = "profile";
+        }
     }
 
-    if (mainRoute === "appointments" && segments[1] === "profile") {
-        page = "profile";
-    }
-
-    // If route is invalid, show error
     if (!validRoutes.includes(page)) {
         document.getElementById("main-content").innerHTML = `
             <h2 style="color:red;">400 Bad Request</h2>
@@ -157,10 +171,8 @@ function router() {
         return;
     }
 
-    // Load the page
     loadPage(page);
 
-    // Highlight menu
     if (page === "profile" || page === "update") {
         setActive("appointments");
     } else {
@@ -168,20 +180,54 @@ function router() {
     }
 }
 
+function updateMenuLinks() {
+
+    const admin = getAdminPath();
+
+    dashboard.href = `/${admin}/page/dashboard`;
+    add_customer.href = `/${admin}/page/add-customer`;
+    appointments.href = `/${admin}/page/appointments`;
+    settings.href = `/${admin}/page/settings`;
+
+}
+
+updateMenuLinks();
 
 
+function updateSettingsLinks() {
+    const admin = getAdminPath();
+
+    const links = document.querySelectorAll(".settings-menu a");
+
+    links.forEach(link => {
+
+        const page = link.dataset.page;
+
+        link.href = `/${admin}/page/settings/${page}`;
+
+        link.addEventListener("click", e => {
+            e.preventDefault();
+
+            history.pushState({}, "", `/${admin}/page/settings/${page}`);
+
+            activateSettingsTab(page);
+        });
+
+    });
+}
 
 
 function navigate(page) {
+
     if (!validRoutes.includes(page)) {
         alert("Invalid route!");
         return;
     }
 
-    window.location.href = "/page/" + page;
+    const adminPath = getAdminPath();
+
+    window.location.href = `/${adminPath}/page/${page}`;
 }
-
-
 
 
 window.addEventListener("load", router);
