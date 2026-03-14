@@ -172,10 +172,11 @@
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    background: white;
 }
 
-.recent-activity th {
-    background-color: #f4f4f4;
+#recentTable th{
+    background: white;
 }
 
 

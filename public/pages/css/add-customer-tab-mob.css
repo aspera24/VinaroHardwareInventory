@@ -18,14 +18,12 @@
     }
 
     #left-card {
-        border: 1px solid #ddd;
         padding: 20px;
         height: auto;
         grid-column: 1/2;
     }
 
     #right-card {
-        border: 1px solid #ddd;
         padding: 20px;
         height: auto;
         grid-column: 2/3;
@@ -51,7 +49,6 @@
     }
 
     #left-card {
-        border: 1px solid #ddd;
         padding: 20px;
         height: auto;
         grid-row: 1/2;
@@ -59,7 +56,7 @@
     }
 
     #right-card {
-        border: 1px solid #ddd;
+        border-top: 1px solid rgb(207, 207, 207);
         padding: 20px;
         height: auto;
         grid-row: 2/3;

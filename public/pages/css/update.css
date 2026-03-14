@@ -16,6 +16,7 @@
     flex-wrap: wrap;
     position: relative;
     overflow: hidden;
+    border-radius: 10px;
 }
 
 #updateForm {
