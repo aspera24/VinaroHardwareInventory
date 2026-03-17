@@ -826,20 +826,17 @@ app.post("/login", (req, res) => {
 
   const { username, password } = req.body;  
 
-res.json({
-        success: req.body
-      });return;
   const sql = "SELECT * FROM admins WHERE username = ? LIMIT 1";
 
   db.query(sql, [username], (err, rows) => {
     console.log(err);
     if (err) {
       console.error(err);
-      return res.json({ success: false });
+      return res.json({ success: false ,  err: '-' +err,});
     }
 
     if (rows.length === 0) {
-      return res.json({ success: false });
+      return res.json({ success: false ,  err: 'rows.length === 0' + err,});
     }
 
     const admin = rows[0];
@@ -856,7 +853,8 @@ res.json({
     } else {
 
       res.json({
-        success: false
+        success: false,
+        err: err,
       });
 
     }
