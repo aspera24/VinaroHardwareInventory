@@ -831,7 +831,7 @@ app.post("/login", (req, res) => {
   const sql = "SELECT * FROM admins WHERE username = ? LIMIT 1";
 
   db.query(sql, [username], (err, rows) => {
-
+    console.log(err);
     if (err) {
       console.error(err);
       return res.json({ success: false });
