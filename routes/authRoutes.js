@@ -1,0 +1,66 @@
+const express = require("express");
+const router = express.Router();
+const db = require("../db");
+
+function handleAuth(req, res) {
+    console.log(`Session Expires: ${req.session.cookie.expires}`);
+    if (req.session.admin) {
+        console.log("Admin already logged in:", req.session.admin);
+        return res.redirect(`/${req.session.admin}/page/dashboard`);
+    }
+
+    console.log("No admin in session, showing login page");
+    res.sendFile(process.cwd() + "/public/auth.html");
+}
+
+// BOTH routes use same function
+router.get("/", handleAuth);
+router.get("/auth", handleAuth);
+
+
+router.post("/login", (req, res) => {
+
+    const { username, password } = req.body;
+
+    const sql = "SELECT * FROM admins WHERE username=? LIMIT 1";
+
+    db.query(sql, [username], (err, rows) => {
+
+        if (err || rows.length === 0) {
+            return res.json({ success: false });
+        }
+
+        const admin = rows[0];
+
+        if (password === admin.password) {
+            req.session.admin = admin.username;
+            console.log("Logged in admin:", req.session.admin);
+
+            return res.json({
+                success: true,
+                username: admin.username,
+                session: req.session  // para makita sa frontend
+            });
+        }
+
+        res.json({ success: false });
+
+    });
+
+});
+
+router.get("/check-session", (req, res) => {
+    res.json(req.session);
+});
+
+
+router.get("/logout", (req, res) => {
+
+    req.session.destroy(() => {
+        res.redirect("/auth");
+    });
+
+});
+
+
+module.exports = router;
