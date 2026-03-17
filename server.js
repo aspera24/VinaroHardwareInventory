@@ -455,7 +455,7 @@ io.on("connection", (socket) => {
 
 
   socket.on("disconnect", () => {
-    // clearInterval(interval);
+    clearInterval(interval);
     console.log("Socket disconnected:", socket.id);
   });
 });
