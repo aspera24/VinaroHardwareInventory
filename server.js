@@ -825,6 +825,8 @@ app.get("/auth", (req, res) => {
 app.post("/login", (req, res) => {
 
   const { username, password } = req.body;
+  console.log(username);
+  console.log(password);
 
   const sql = "SELECT * FROM admins WHERE username = ? LIMIT 1";
 
