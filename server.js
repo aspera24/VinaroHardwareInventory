@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
                 stats.pendingApproval = r4?.[0]?.total ?? 0;
 
                 // emit full stats
-                socket.emit("dashboardStats", stats);
+                io.emit("dashboardStats", stats);
               }
             );
           }
@@ -186,7 +186,7 @@ io.on("connection", (socket) => {
   /* ==========================
      SEND STATS ON CONNECT
   ========================== */
-  sendFilterOptions(socket);
+  sendFilterOptions(io);
 
 
   /* ==========================
@@ -455,7 +455,7 @@ io.on("connection", (socket) => {
 
 
   socket.on("disconnect", () => {
-    clearInterval(interval);
+    // clearInterval(interval);
     console.log("Socket disconnected:", socket.id);
   });
 });
@@ -468,7 +468,7 @@ io.on("connection", (socket) => {
 
 // ROOT
 app.get("/", (req, res) => {
- 
+
   if (!req.session.admin) {
     return res.redirect("/auth");
   }
