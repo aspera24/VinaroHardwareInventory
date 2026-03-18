@@ -3,6 +3,8 @@
     const loading = document.getElementById("loading");
     const main = document.querySelector(".mainSettings");
 
+    const adminPath = getAdminPath();
+
     if (!main) return;
 
     const settingsLinks = document.querySelectorAll(".settings-menu a");
@@ -42,7 +44,7 @@
             const page = this.dataset.page;
 
             // Update URL without reload
-            history.pushState({ tab: page }, "", `/page/settings/${page}`);
+            history.pushState({ tab: page }, "", `/${adminPath}/page/settings/${page}`);
 
             activateTab(page);
         });
@@ -53,8 +55,8 @@
 
     // On first load: check URL
     const segments = location.pathname.split("/");
-    if (segments.length >= 4 && segments[3] === "settings") {
-        const tab = segments[3];
+    if (segments.length >= 5 && segments[3] === "settings") {
+        const tab = segments[4];
         defaultTab = tab || defaultTab;
     }
 
