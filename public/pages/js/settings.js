@@ -12,7 +12,7 @@
 
     function loadSettingsPage(page) {
 
-        fetch(`/pages/settings/${page}.html`)
+        fetch(`/:username/pages/settings/${page}.html`)
             .then(res => res.text())
             .then(html => {
                 if (settingsContent) {
