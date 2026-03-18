@@ -29,7 +29,7 @@
 
     async function loadData() {
         try {
-            const res = await fetch(`/${admin}/page/appointment/${id}`);
+            const res = await fetch(`/page/appointment/${id}`);
             const data = await res.json();
 
             if (!res.ok) {

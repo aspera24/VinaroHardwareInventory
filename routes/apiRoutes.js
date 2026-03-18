@@ -109,9 +109,7 @@ router.post("/page/add-customer-data", (req, res) => {
     );
   };
 
-  // ================================
-  // MAIN LOGIC
-  // ================================
+
 
   // ================================
   // MAIN LOGIC (safer for external customers)
@@ -339,7 +337,7 @@ router.put("/:username/page/appointments/update-data/:id", (req, res) => {
 
 
 
-router.get("/:username/page/appointment/:id", (req, res) => {
+router.get("/page/appointment/:id", (req, res) => {
   const { id } = req.params;
 
   const query = `

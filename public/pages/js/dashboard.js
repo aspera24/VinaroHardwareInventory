@@ -239,21 +239,30 @@
     const prevMonth = monthFilter.value;
     const prevWeek = weekFilter.value;
 
-    const title = document.getElementById("chartLabel");
-    title.textContent = `Appointments – ${monthNames[prevMonth - 1]} ${prevYear} | Week ${weekFilter.value}`;
-
-
     loadYears(filters, prevYear);
     loadMonths(filters, yearFilter.value, prevMonth);
     loadWeeks(filters, yearFilter.value, monthFilter.value, prevWeek);
     setCurrentWeekIfApplicable(yearFilter.value, monthFilter.value);
 
-
     updatingFilters = false;
 
     requestChartUpdate();
+    updateChartLabel();
   });
 
+
+  function updateChartLabel() {
+    const title = document.getElementById("chartLabel");
+
+    // Safe parsing
+    const year = yearFilter.value || "----";
+    const monthIndex = Number(monthFilter.value) - 1;
+    const week = weekFilter.value || "-";
+
+    const monthName = monthNames[monthIndex] || "Unknown";
+
+    title.textContent = `Appointments – ${monthName} ${year} | Week ${week}`;
+  }
 
 
   function loadYears(filters, prevYear = null) {
@@ -369,17 +378,20 @@
     if (updatingFilters) return; // Ignore programmatic changes
     loadMonths(cachedFilters, yearFilter.value);
     requestChartUpdate();
+    updateChartLabel();
   });
 
   monthFilter.addEventListener("change", () => {
     if (updatingFilters) return;
     loadWeeks(cachedFilters, yearFilter.value, monthFilter.value);
     requestChartUpdate();
+    updateChartLabel();
   });
 
   weekFilter.addEventListener("change", () => {
     if (updatingFilters) return;
     requestChartUpdate();
+    updateChartLabel();
   });
 
 
