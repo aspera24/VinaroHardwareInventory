@@ -5,6 +5,15 @@
     font-family: 'Poppins', sans-serif;
 }
 
+:root {
+    scrollbar-width: thin;
+    scrollbar-color: #303641 transparent;
+    --main-bg: #303641;
+    --card-bg: #303641;
+    --card-border-bg: #485161;
+    --text-color: white;
+}
+
 body {
     margin: 0;
     background: #ececec;
@@ -15,11 +24,6 @@ body {
 html, body {
     height: 100%;
     overflow: hidden;
-}
-
-:root {
-    scrollbar-width: thin;
-    scrollbar-color: #303641 transparent;
 }
 
 .container {
@@ -110,6 +114,7 @@ html, body {
     height: 100%;
     z-index: 900;
     left: 0;
+    border-right: 1px solid #485161;
     top: 0;
     transition: all 0.3s ease-in-out;
     user-select: none;
@@ -203,6 +208,7 @@ html, body {
     height: 100vh;
     position: relative;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 /* For Loading */
@@ -249,11 +255,12 @@ html, body {
 .msgBox {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .4);
+    background-color: rgba(0, 0, 0, 0.192);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    backdrop-filter: blur(2px);
 }
 
 #msgSuccess {
@@ -273,6 +280,8 @@ html, body {
     z-index: 9999;
     transition: all 0.3s ease;
     pointer-events: none;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(43, 43, 43, 0.115);
 }
 
 #msgSuccess #successTitle{
@@ -297,6 +306,7 @@ html, body {
     padding: 20px;
     width: 300px;
     text-align: justify;
+    border-radius: 10px;
 }
 
 

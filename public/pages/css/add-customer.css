@@ -16,6 +16,7 @@
     background: white;
     border-radius: 0px;
     border-radius: 10px;
+    margin-bottom: 30px;
 }
 
 #left-card {
@@ -206,4 +207,11 @@ span.select2-selection.select2-selection--single {
 
 .select2-dropdown.select2-dropdown--below {
       border: 1px solid rgb(177, 177, 177) !important;
+}
+
+.clientCont{
+    background: white;
+    border-radius: 10px;
+    height: 200px;
+    width: 100%;
 }

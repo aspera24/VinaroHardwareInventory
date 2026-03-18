@@ -127,8 +127,19 @@
   height: auto;
 }
 
-.save-btn:hover {
+.verify {
+  margin-top: 10px;
   background: #760000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: .25s;
+  padding: 10px 10px;
+  height: auto;
+}
+
+.save-btn:hover, .verify:hover {
+  background: #5e0000;
 }
 
 /* Toggle Switch */

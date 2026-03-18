@@ -47,6 +47,7 @@ input,
     border: 1px solid rgb(177, 177, 177);
     justify-content: space-around;
     outline: none;
+    border-radius: 5px;
 }
 
 #contact {
@@ -89,6 +90,7 @@ input,
     cursor: text;
     border: 1px solid rgb(177, 177, 177);
     outline: none;
+    border-radius: 5px;
 }
 
 #note:focus {
@@ -108,6 +110,7 @@ input,
     border: none;
     outline: none;
     float: left;
+    border-radius: 5px;
 }
 
 #backBtn {
@@ -126,4 +129,5 @@ input,
     position: absolute;
     top: 10px;
     left: 10px;
+    border-radius: 5px;
 }

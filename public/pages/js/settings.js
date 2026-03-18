@@ -40,7 +40,7 @@
     // Click handler for tab links
     settingsLinks.forEach(link => {
         link.addEventListener("click", function (e) {
-            e.preventDefault();
+            // e.preventDefault();
             const page = this.dataset.page;
 
             // Update URL without reload
