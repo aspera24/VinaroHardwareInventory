@@ -60,6 +60,14 @@
         defaultTab = tab || defaultTab;
     }
 
+    const username = segments[1];
+
+    if (segments.length < 5) {
+        const newUrl = `/${username}/page/settings/${defaultTab}`;
+
+        history.replaceState({ tab: defaultTab }, "", newUrl);
+    }
+
     activateTab(defaultTab);
 
     // Show main content
