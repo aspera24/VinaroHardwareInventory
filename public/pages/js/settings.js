@@ -42,7 +42,7 @@
             const page = this.dataset.page;
 
             // Update URL without reload
-            history.pushState({ tab: page }, "", `/page/settings/${page}`);
+            history.pushState({ tab: page }, "", `/:username/page/settings/${page}`);
 
             activateTab(page);
         });
