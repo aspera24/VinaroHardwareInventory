@@ -12,7 +12,7 @@
 
     function loadSettingsPage(page) {
 
-        fetch(`/:username/pages/settings/${page}.html`)
+        fetch(`/pages/settings/${page}.html`)
             .then(res => res.text())
             .then(html => {
                 if (settingsContent) {
@@ -53,7 +53,7 @@
 
     // On first load: check URL
     const segments = location.pathname.split("/");
-    if (segments.length >= 4 && segments[2] === "settings") {
+    if (segments.length >= 4 && segments[3] === "settings") {
         const tab = segments[3];
         defaultTab = tab || defaultTab;
     }
