@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
                 stats.pendingApproval = r4?.[0]?.total ?? 0;
 
                 // emit full stats
-                io.emit("dashboardStats", stats);
+                socket.emit("dashboardStats", stats);
               }
             );
           }
@@ -110,7 +110,7 @@ io.on("connection", (socket) => {
   /* ==========================
      FILTER OPTIONS
   ========================== */
-  const sendFilterOptions = (targetSocket = io) => {
+  const sendFilterOptions = (targetSocket) => {
     db.query(
       `
     SELECT 
@@ -156,37 +156,48 @@ io.on("connection", (socket) => {
   };
 
 
-  let lastMaxDate = null;
+  // let lastMaxDate = null;
 
-  const watchDatabase = () => {
-    db.query(
-      `SELECT MAX(appointment_date) AS maxDate FROM appointments`,
-      (err, r) => {
-        if (err) return;
+  // const watchDatabase = () => {
+  //   db.query(
+  //     `SELECT MAX(appointment_date) AS maxDate FROM appointments`,
+  //     (err, r) => {
+  //       if (err) return;
 
-        const currentMaxDate = r[0].maxDate;
+  //       const currentMaxDate = r[0].maxDate;
 
-        if (currentMaxDate !== lastMaxDate) {
-          lastMaxDate = currentMaxDate;
+  //       if (currentMaxDate !== lastMaxDate) {
+  //         lastMaxDate = currentMaxDate;
 
-          sendDashboardStats();
-          sendFilterOptions(io);
+  //         sendDashboardStats();
+  //         sendFilterOptions(io);
 
-          io.emit("databaseUpdated");
-        }
-      }
-    );
-  };
+  //         io.emit("databaseUpdated");
+  //       }
+  //     }
+  //   );
+  // };
 
-  // check every 1 second
-  setInterval(watchDatabase, 1000);
-  sendDashboardStats();
+  // // check every 1 second
+  // setInterval(watchDatabase, 1000);
+  // sendDashboardStats();
 
 
-  /* ==========================
-     SEND STATS ON CONNECT
-  ========================== */
-  sendFilterOptions(io);
+  // /* ==========================
+  //    SEND STATS ON CONNECT
+  // ========================== */
+  // sendFilterOptions(io);
+
+
+
+  socket.on("getDashboardStats", () => {
+    sendDashboardStats();
+  });
+
+  socket.on("getFilterOptions", () => {
+    sendFilterOptions(socket);
+  });
+
 
 
   /* ==========================

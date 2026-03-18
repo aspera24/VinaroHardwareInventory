@@ -191,6 +191,9 @@
   socket.off("statDetailsPaginated");
   socket.off("recentAppointments");
 
+  socket.emit("getDashboardStats");
+  socket.emit("getFilterOptions");
+
 
   // ================= DASHBOARD DATA =================
   socket.on("dashboardStats", stats => {
