@@ -1,20 +1,11 @@
-/**
- * Created by Christos Ploutarchou
- * Project : node_rest_api_with_mysql
- * Filename : db.config.js
- * Date: 03/04/2020
- * Time: 21:32
- **/
-module.exports = {
-  HOST: "localhost",
-  USER: "root",
-  PASSWORD: "pass",
-  DB: "restapi",
-  dialect: "mysql",
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  }
-};
+const mysql = require("mysql2");
+
+const db = mysql.createPool({
+  host: "srv2050.hstgr.io",
+  user: "u859692781_custservice",
+  password: "Customerservice!051824",
+  database: "u859692781_custservice",
+  timezone: "+08:00"
+});
+
+module.exports = db;

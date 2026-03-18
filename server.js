@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
-const db = require("./db");
+const db = require("./config/db.config");
 
 const session = require("express-session");
 

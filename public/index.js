@@ -41,10 +41,7 @@ function checkSession() {
     credentials: "include",
 
   })
-    // .then(res => res.json())
     .then(res => {
-      // alert(res.cookie.expires);
-      
       if (res.admin != "") {
         window.location.href =
           `/${res.admin}/page/dashboard`;
