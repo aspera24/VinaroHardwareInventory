@@ -204,7 +204,7 @@
 #appTable_length {
     float: left !important;
     width: 50% !important;
-    height: 25px;
+    /* height: 25px; */
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -219,7 +219,7 @@
 
 .dataTables_filter {
     width: 50%;
-    height: 25px;
+    /* height: 25px; */
     display: flex;
     align-items: center;
     justify-content: right;
@@ -236,7 +236,7 @@
 
 
 #filterStatus {
-    height: 25px;
+    /* height: 25px; */
     padding: 0 5px;
     font-size: 10px;
     border: 1px solid #8d8d8d !important;

@@ -166,6 +166,7 @@
     padding: 8px;
 }
 
+
 .chart-filters select:focus {
     border-color: #303641;
     box-shadow: 0 0 0 2px rgba(48, 54, 65, 0.1);
@@ -183,7 +184,7 @@
     font-weight: normal;
 }
 
-.custom-select.custom-select-sm.form-control.form-control-sm{
+.form-control.form-control-sm{
     border: 1px solid #ddd;
     font-size: 10px;
     border-radius: 6px;
@@ -195,7 +196,6 @@
     display: flex;
     align-items: center;
     padding: 2px;
-    background: red;
 }
 
 .recent-activity table {
@@ -219,7 +219,7 @@
 .recent-activity .dataTables_length{
     float: left !important;
     width: 50% !important;
-    height: 25px;
+    /* height: 25px; */
     overflow: hidden;
     display: flex;
     align-items: center;
