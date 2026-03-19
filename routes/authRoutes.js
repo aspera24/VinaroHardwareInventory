@@ -39,7 +39,7 @@ router.post("/login", (req, res) => {
             return res.json({
                 success: true,
                 username: admin.username,
-                session: req.session  // para makita sa frontend
+                session: req.session  
             });
         }
 
@@ -47,10 +47,6 @@ router.post("/login", (req, res) => {
 
     });
 
-});
-
-router.get("/check-session", (req, res) => {
-    res.json(req.session);
 });
 
 

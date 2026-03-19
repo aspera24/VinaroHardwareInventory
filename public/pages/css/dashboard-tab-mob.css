@@ -54,17 +54,6 @@
         transform: translateY(-5px);
     }
 
-    .icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background-color: rgb(238, 238, 238);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-shrink: 0;
-        font-size: 1.5rem;
-    }
 
     .chart-container {
         background-color: #fff;
@@ -270,7 +259,7 @@
 
     #dt-search-0 {
         height: 20px !important;
-        width: 80px !important;
+        width: 80px !important;    
     }
 
     label[for="dt-length-0"] {
@@ -313,7 +302,22 @@
     }
 }
 
+@media (max-width: 600px){
+    .icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        
+    }
+}
+
 @media(max-width: 540px) {
+
     .stat-card h3 {
         margin: 0;
         font-size: .59rem;

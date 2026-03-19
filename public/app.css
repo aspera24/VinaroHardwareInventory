@@ -17,19 +17,18 @@
 body {
     margin: 0;
     background: #ececec;
-    overflow-y: scroll;
-    overflow-x: hidden;
 }
 
 html, body {
     height: 100%;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .container {
     display: flex;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 /* Toggle button */
@@ -207,8 +206,6 @@ html, body {
     min-height: 100vh;
     height: 100vh;
     position: relative;
-    overflow-y: scroll;
-    overflow-x: hidden;
 }
 
 /* For Loading */

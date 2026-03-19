@@ -51,12 +51,36 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background-color: rgb(238, 238, 238);
+    background: linear-gradient(45deg, rgb(245, 245, 245), white);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
     font-size: 1.5rem;
+    box-shadow: 2px 0px 2px rgba(48, 54, 65, 0.1);
+    border: 2px solid white;
+}
+
+.total-customer .icon i { color: #4CAF50; }
+.total-appointments .icon i { color: #2196F3; }
+.upcoming-today .icon i { color: #FF9800; }
+.pending-approval .icon i { color: #F44336; }
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.stat-card .icon i {
+    animation: pulse 2s infinite;
+    text-shadow: 0 0 2px rgb(255, 255, 255);
 }
 
 .stat-card h3 {
@@ -121,24 +145,30 @@
     align-items: center;
     outline: none;
     margin-top: 10px;
-    width: 300px;
-    overflow: hidden;
+    width: auto;
 }
 
 .chart-filters p {
     font-size: 12px;
     color: rgb(92, 92, 92);
     margin-right: 8px;
+    padding: 2px;
 }
 
 .chart-filters select {
     margin: 0 2px;
-    height: 20px;
     cursor: pointer;
     outline: none;
-    border: 1px solid gray;
+    border: 1px solid #ddd;
     font-size: 10px;
+    border-radius: 6px;
+    background: transparent;
+    padding: 8px;
+}
 
+.chart-filters select:focus {
+    border-color: #303641;
+    box-shadow: 0 0 0 2px rgba(48, 54, 65, 0.1);
 }
 
 /* Recent Appointments Table */
@@ -154,12 +184,18 @@
 }
 
 .custom-select.custom-select-sm.form-control.form-control-sm{
-    height: 25;
+    border: 1px solid #ddd;
+    font-size: 10px;
+    border-radius: 6px;
+    background: transparent;
+    padding: 8px;
 }
 
 #recentTable_filter label{
     display: flex;
     align-items: center;
+    padding: 2px;
+    background: red;
 }
 
 .recent-activity table {
@@ -202,6 +238,7 @@
     padding: 3px 6px;
     cursor: pointer;
     color: white;
+    border-radius: 5px;
 }
 
 #void:hover{
@@ -433,6 +470,7 @@
     color: rgb(17, 17, 17);
     background: #ffbb0029;
     padding: 3px 5px;
+    border-radius: 5px;
 }
 
 td {

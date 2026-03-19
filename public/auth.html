@@ -1,22 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<title>Admin Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>CS - Login</title>
 </head>
 
 <body>
+    <div class="logContainer">
+        <div class="loginCard">
+            <h2>Customer Service</h2>
+            <p class="subtitle">Sign in to continue</p>
 
-<h2>Admin Login</h2>
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-icon">
+                    <i class="fa fa-user"></i>
+                    <input id="username" type="text" required>
+                </div>
+            </div>
 
-<input id="username" placeholder="Username">
-<br><br>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-icon">
+                    <i class="fa fa-lock"></i>
+                    <input id="password" type="password" required>
+                </div>
+            </div>
 
-<input id="password" type="password" placeholder="Password">
-<br><br>
+            <button id="login" onclick="login()">
+                <i class="fa fa-right-to-bracket"></i> Login
+            </button>
 
-<button onclick="login()">Login</button>
+            <p class="quest">Don't have an account yet?</p>
+            
+            <button id="contactAgent">
+                <i class="fa fa-headset"></i> Contact Agent
+            </button>
+        </div>
+    </div>
 
-<script src="/index.js"></script>
-<!-- <script>checkSession()</script> -->
+    <script src="/index.js"></script>
 </body>
+
 </html>

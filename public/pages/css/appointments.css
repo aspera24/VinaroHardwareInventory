@@ -194,10 +194,11 @@
 }
 
 .custom-select.custom-select-sm.form-control.form-control-sm {
-    height: 25px;
+    /* height: 25px; */
     width: 51px;
     font-size: 9px;
     border-radius: 5px !important;
+    background: transparent;
 }
 
 #appTable_length {
@@ -238,9 +239,10 @@
     height: 25px;
     padding: 0 5px;
     font-size: 10px;
-    border: 1px solid #303641 !important;
+    border: 1px solid #8d8d8d !important;
     outline: none;
     border-radius: 5px;
+    background: transparent;
 }
 
 .dt-layout-row {

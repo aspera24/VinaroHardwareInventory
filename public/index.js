@@ -31,20 +31,3 @@ function login() {
     });
 
 }
-
-function checkSession() {
-  fetch("/check-session", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    credentials: "include",
-
-  })
-    .then(res => {
-      if (res.admin != "") {
-        window.location.href =
-          `/${res.admin}/page/dashboard`;
-      }
-    });
-}

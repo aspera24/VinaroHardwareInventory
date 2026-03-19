@@ -59,10 +59,14 @@
   color: #ffffff;
 }
 
-.settings-menu .active {
+.settings-menu a:not(:last-child) {
+    border-right: 1px solid #ffffff;
+}
+
+/* .settings-menu .active {
   background: white;
   color: #3b4352;
-}
+} */
 
 /* RIGHT CONTENT */
 .settings-content {

@@ -56,7 +56,12 @@
     outline: none;
     transition: .2s;
     font-size: 12px;
+    height: 35px;
+    border-radius: 5px;
+    background: transparent;
 }
+
+
 
 .select2-container {
     width: 100% !important;
@@ -126,7 +131,7 @@ span.select2-selection.select2-selection--single {
 [type=search] {
     outline-offset: 0px;
     outline: none;
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
     font-size: 10px;
 }
 
@@ -165,7 +170,7 @@ span.select2-selection.select2-selection--single {
 .profile-section {
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px dashed rgb(127, 127, 127);
+    border-bottom: 1px dashed rgb(224, 224, 224);
 }
 
 .profile-section h4 {
@@ -214,4 +219,5 @@ span.select2-selection.select2-selection--single {
     border-radius: 10px;
     height: 200px;
     width: 100%;
+    margin-bottom: 20px;
 }

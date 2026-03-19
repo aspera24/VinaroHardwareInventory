@@ -29,11 +29,27 @@
     }
 
     function activateTab(tab) {
+        // remove active class
         settingsLinks.forEach(l => l.classList.remove("active"));
-        const link = document.querySelector(`.settings-menu a[data-page="${tab}"]`);
-        if (link) {
-            link.classList.add("active");
+
+        // target current link
+        const activeLink = document.querySelector(`.settings-menu a[data-page="${tab}"]`);
+
+        if (activeLink) {
+            activeLink.classList.add("active");
             loadSettingsPage(tab);
+        }
+
+        // reset all backgrounds
+        settingsLinks.forEach(link => {
+            link.style.background = "#485161";
+            link.style.color = "white";
+        });
+
+        // highlight selected
+        if (activeLink) {
+            activeLink.style.background = "white";
+            activeLink.style.color = "#485161";
         }
     }
 
