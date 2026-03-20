@@ -7,17 +7,7 @@
     display: none;
 }
 
-.title {
-    text-align: left;
-    letter-spacing: 2px;
-}
 
-.title-p {
-    margin-bottom: 20px;
-    color: rgb(42, 42, 42);
-    font-size: 12px;
-    letter-spacing: 2px;
-}
 
 .stats-grid {
     display: flex;
