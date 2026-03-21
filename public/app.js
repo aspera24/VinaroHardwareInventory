@@ -245,3 +245,5 @@ fetch('https://beta.ourmanna.com/api/v1/get?format=json&order=daily')
         console.error(err);
         document.getElementById('g-content').innerText = 'Failed to load verse.';
     });
+
+    
