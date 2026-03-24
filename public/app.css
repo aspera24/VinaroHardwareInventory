@@ -89,7 +89,6 @@ body {
     top: 94.5px;
     background: #ffffff;
     min-height: 300px;
-    height: auto;
     width: 10%;
     display: flex;
     flex-direction: column;
@@ -98,6 +97,36 @@ body {
     padding: 20px;
     cursor: pointer;
     border-radius: 10px;
+
+    overflow: hidden; 
+}
+
+.gospel::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -75%;
+    width: 50%;
+    height: 200%;
+
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 100%,
+        transparent 100%
+    );
+
+    transform: rotate(25deg);
+    animation: shine 5.5s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: -75%;
+    }
+    100% {
+        left: 125%;
+    }
 }
 
 .gospel #g-title {
@@ -139,13 +168,15 @@ body {
 #sidebar h2 {
     font-size: 17px;
     width: 100%;
-    font-weight: bold;
-    color: #ffa600 !important;
+    /* font-weight: bold; */
+    color: #dc3545 !important;
     text-wrap: nowrap;
     padding: 20px;
     text-align: center;
     border-bottom: 1px solid #485161;
     cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 700;
 }
 
 #sidebar h2:hover {
@@ -178,7 +209,7 @@ body {
 
 #sidebar li {
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 6px;
     margin: 2px 0;
 }
 

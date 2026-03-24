@@ -74,22 +74,21 @@ function setActive(page) {
         item.style.background = "transparent";
     });
 
-    const appName = "Customer Service";
     var pageName = page.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
 
     // Apply highlight to selected page
     if (page === 'dashboard' || page === 'webName') {
         dashboard.style.background = "#485161";
-        browserTitle.textContent = `${appName} - ${pageName}`;
+        browserTitle.textContent = `${pageName}`;
     } else if (page === 'add-customer') {
         add_customer.style.background = "#485161";
-        browserTitle.textContent = `${appName} - ${pageName}`;
+        browserTitle.textContent = `${pageName}`;
     } else if (page === 'appointments') {
         appointments.style.background = "#485161";
-        browserTitle.textContent = `${appName} - ${pageName}`;
+        browserTitle.textContent = `${pageName}`;
     } else if (page === 'settings') {
         settings.style.background = "#485161";
-        browserTitle.textContent = `${appName} - ${pageName}`;
+        browserTitle.textContent = `${pageName}`;
     }
 }
 
