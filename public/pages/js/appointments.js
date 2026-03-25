@@ -5,6 +5,8 @@
     const filterStatus = document.getElementById("filterStatus");
     const deleteAllBtn = document.getElementById("deleteAllBtn");
     let customerCount = document.getElementById("customerCount");
+    const applyBtn = document.getElementById("applyBtn");
+    let updateStat = document.getElementById("updateStat");
 
     const socket = window.socket;
 
@@ -64,6 +66,30 @@
         }, 3000);
 
     }
+
+
+    applyBtn.addEventListener("click", () => {
+        const newStatus = updateStat.value;
+
+        if (!newStatus) {
+            showMsg("Warning", "Please select a status first");
+            return;
+        }
+
+        showMsg(
+            "Confirm Update",
+            `Are you sure you want to update ALL appointments to "${newStatus}"?`,
+            () => {
+                socket.emit("updateAllStatus", newStatus);
+            }
+        );
+    });
+
+
+    socket.on("allStatusUpdated", (status) => {
+        showSuccess("Success", `All appointments updated to "${status}"`);
+        socket.emit("getAppointments");
+    });
 
     const screenshotBtn = document.getElementById("screenshotTable");
 
