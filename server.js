@@ -463,7 +463,41 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("updateSelectedStatus", async ({ ids, status }) => {
+    const conn = await db.promise().getConnection();
 
+    try {
+      await conn.beginTransaction();
+
+      const placeholders = ids.map(() => '?').join(',');
+
+      await conn.query(
+        `UPDATE appointments 
+       SET status = ? 
+       WHERE id IN (${placeholders})`,
+        [status, ...ids]
+      );
+
+      await conn.query(
+        `UPDATE appointment_status 
+       SET status = ? 
+       WHERE appointment_id IN (${placeholders})`,
+        [status, ...ids]
+      );
+
+      await conn.commit();
+
+      socket.emit("allStatusUpdated", status);
+      socket.broadcast.emit("appointmentUpdate");
+
+    } catch (err) {
+      console.error(err);
+      await conn.rollback();
+      socket.emit("errorMsg", "Failed to update selected");
+    } finally {
+      conn.release();
+    }
+  });
 
   socket.on("disconnect", () => {
     // clearInterval(interval);

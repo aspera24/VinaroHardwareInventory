@@ -9,8 +9,6 @@
     <p class="title-p">Monitor and manage customers with scheduled appointments.</p>
 
     <div class="mainCard">
-
-
         <!-- FILTER BAR -->
         <div class="table-controls">
             <select id="filterStatus">
@@ -18,26 +16,14 @@
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
             </select>
-            <div class="tableCont">
-                <p>Modify all status to</p>
-                <select id="updateStat">
-                    <option value="">Select Status</option>
-                    <option value="approved">Approved</option>
-                    <option value="completed">Completed</option>
-                </select>
-                <button id="applyBtn">Apply</button>
-            </div>
 
             <div class="report-controls">
-
-
                 <p id="customerCount">0 client</p>
                 <a id="deleteAllBtn" title="Delete All" class="danger"><img src="/graphics/delete.svg"
                         alt="Delete All"></a>
                 <a id="generateReport" title="Generate Report"><img src="/graphics/generate.svg"
                         alt="Generate Report"></a>
                 <a id="screenshotTable" title="Screenshot"><img src="/graphics/screenshot.svg" alt="Screenshot"></a>
-
             </div>
         </div>
 
@@ -72,6 +58,11 @@
             <h3 id="successTitle"></h3>
             <p id="successText"></p>
         </div>
+
+        <div class="tableCont">
+            <button id="applyBtn">Apply</button>
+        </div>
+
     </div>
 
 </div>

@@ -114,8 +114,8 @@
     border-radius: 10px;
 }
 
-.chart-container h3 {
-    font-size: 20px;
+.chart-container #chartLabel {
+    font-size: 15px;
     font-weight: normal;
 }
 
@@ -140,7 +140,7 @@
 
 #appointmentsChart {
     overflow: hidden;
-    margin-bottom: 50px;
+    margin-bottom: 80px;
     width: 100% !important;
 }
 
@@ -185,8 +185,9 @@
     border-radius: 10px;
 }
 
-.recent-activity h3 {
+.recent-activity #recentApp {
     font-weight: normal;
+    font-size: 15px;
 }
 
 .form-control.form-control-sm {
@@ -202,10 +203,6 @@
     box-shadow: 0 0 0 2px rgba(48, 54, 65, 0.1);
 }
 
-/* #recentTable_length{
-    background: red;
-} */
-
 
 #recentTable_wrapper {
     display: flex;
@@ -215,32 +212,37 @@
 
 #recentTable_wrapper .row:first-child {
     width: 100% !important;
-    height: 50px !important;
     overflow: hidden;
     display: grid;
     align-items: center;
     grid-template-columns: repeat(2, 1fr);
+    padding: 5px 0;
 }
 
-.dataTables_length {
+
+#recentTable_wrapper .col-sm-12.col-md-6:first-child {
     grid-column: 1 / 2;
     width: 100%;
     height: 100%;
-    padding: 4px;
-}
-
-
-.dataTables_length label {
     display: flex;
     align-items: center;
-    height: 100%;
-    width: auto;
-    gap: 4px;
 }
+
+#recentTable_wrapper .col-sm-12.col-md-6:last-child {
+    width: 100%;
+    height: 100%;
+    grid-column: 2 / 3;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    overflow: hidden;
+}
+
 
 #recentTable_length select {
     outline: none;
     transition: 0.2s;
+    width: 60px;
 }
 
 #recentTable_length select:focus {
@@ -248,16 +250,23 @@
     box-shadow: 0 0 0 2px rgba(48, 54, 65, 0.1);
 }
 
-#recentTable_filter {
-    height: 100%;
-    width: 50%;
-    grid-column: 2 / 3;
-}
 
 #recentTable_filter label {
     display: flex;
     align-items: center;
+    justify-content: right;
     width: 100%;
+    height: 100%; 
+    float: right;
+}
+
+
+#recentTable_filter input{
+    min-width: 100px;
+}
+
+.dataTables_wrapper .dataTables_filter{
+    margin-top: unset !important;
 }
 
 .recent-activity table {
@@ -277,23 +286,6 @@
     background: white;
 }
 
-
-.recent-activity .dataTables_length {
-    float: left !important;
-    width: 50% !important;
-    /* height: 25px; */
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-}
-
-.recent-activity .dataTables_filter {
-    width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: right;
-}
 
 #void {
     background: #a10000;

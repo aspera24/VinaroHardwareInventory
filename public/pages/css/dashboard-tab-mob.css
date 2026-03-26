@@ -259,7 +259,7 @@
 
     #dt-search-0 {
         height: 20px !important;
-        width: 80px !important;    
+        width: 80px !important;
     }
 
     label[for="dt-length-0"] {
@@ -302,7 +302,7 @@
     }
 }
 
-@media (max-width: 600px){
+@media (max-width: 600px) {
     .icon {
         width: 60px;
         height: 60px;
@@ -312,7 +312,7 @@
         align-items: center;
         flex-shrink: 0;
         font-size: 1.5rem;
-        
+
     }
 }
 
@@ -367,6 +367,7 @@
     }
 }
 
+
 @media(max-width: 440px) {
     .stat-card h3 {
         margin: 0;
@@ -402,9 +403,42 @@
         max-width: 100px;
         text-align: left;
     }
+
+    .chart-container #chartLabel, .recent-activity #recentApp {
+        font-size: 12px;
+        font-weight: normal;
+    }
+
+    .chart-filters select {
+        margin: 0 2px;
+        cursor: pointer;
+        outline: none;
+        border: 1px solid #ddd;
+        font-size: 8px;
+        border-radius: 6px;
+        background: transparent;
+        padding: 4px 4px;
+        transition: 0.2s;
+    }
+
+    #appointmentsChart {
+        overflow: hidden;
+        margin-bottom: 70px;
+        width: 100% !important;
+    }
+
+    .col-sm-12.col-md-6:last-child label, .col-sm-12.col-md-6:first-child label{
+        font-size: 10px !important;
+    }
+
+    .col-sm-12.col-md-6:first-child select, .col-sm-12.col-md-6:last-child input{
+        font-size: 10px !important;
+        height: 30px;
+        padding: 0px 8px !important;
+    }
 }
 
-@media(max-width: 414px) {
+@media(max-width: 430px) {
     .stat-card h3 {
         margin: 0;
         font-size: .46rem;
@@ -522,19 +556,51 @@
         font-weight: normal;
         color: #555;
     }
+
+    /* Chart */
+    .chart-container {
+        background-color: #fff;
+        padding: 10px;
+        padding-bottom: 40px;
+        margin-top: 10px;
+        overflow: hidden;
+        height: 400px;
+        border-radius: 10px;
+    }
+
+    .recent-activity{
+        padding: 10px;
+    }
+
 }
 
 @media(max-width: 350px) {
-    .stat-card h3 {
-        margin: 0;
-        font-size: .20rem;
-        color: black;
+    .stat-card {
+        background-color: #fff;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+        width: 100%;
+        flex: 1 1 220px;
+        cursor: pointer;
+        overflow: hidden;
     }
+}
 
-    .stat-card p {
-        margin: 5px 0 0 0;
-        font-size: 1rem;
-        font-weight: normal;
-        color: #555;
+@media(max-width: 325px) {
+    .icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        box-shadow: 2px 0px 2px rgba(48, 54, 65, 0.1);
+        border: 2px solid white;
     }
 }

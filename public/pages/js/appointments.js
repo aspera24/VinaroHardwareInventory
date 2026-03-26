@@ -4,9 +4,8 @@
 
     const filterStatus = document.getElementById("filterStatus");
     const deleteAllBtn = document.getElementById("deleteAllBtn");
-    let customerCount = document.getElementById("customerCount");
+    const customerCount = document.getElementById("customerCount");
     const applyBtn = document.getElementById("applyBtn");
-    let updateStat = document.getElementById("updateStat");
 
     const socket = window.socket;
 
@@ -67,27 +66,52 @@
 
     }
 
+    function toggleBulkActions() {
+        const checked = document.querySelectorAll('.checkBox:checked');
+        const tableCont = document.querySelector('.tableCont');
+
+        if (checked.length > 0) {
+            tableCont.style.display = "flex";
+            tableCont.querySelector("button").textContent =
+                `Modify ${checked.length} selected to Completed`;
+        } else {
+            tableCont.style.display = "none";
+        }
+    }
+
+
+    $('#appTable tbody').on('change', '.checkBox', function () {
+        toggleBulkActions();
+    });
 
     applyBtn.addEventListener("click", () => {
-        const newStatus = updateStat.value;
+        const newStatus = "Completed";
 
         if (!newStatus) {
             showMsg("Warning", "Please select a status first");
             return;
         }
 
+        const checked = document.querySelectorAll(".checkBox:checked");
+        const ids = Array.from(checked).map(cb => cb.dataset.id);
+
+        if (ids.length === 0) {
+            showMsg("Warning", "Please select at least one appointment");
+            return;
+        }
+
         showMsg(
             "Confirm Update",
-            `Are you sure you want to update ALL appointments to "${newStatus}"?`,
+            `Update ${ids.length} selected appointment(s) to "${newStatus}"?`,
             () => {
-                socket.emit("updateAllStatus", newStatus);
+                socket.emit("updateSelectedStatus", { ids, status: newStatus });
             }
         );
     });
 
 
     socket.on("allStatusUpdated", (status) => {
-        showSuccess("Success", `All appointments updated to "${status}"`);
+        showSuccess("Success", `All selected data was successfully modified as "${status}."`);
         socket.emit("getAppointments");
     });
 
@@ -145,11 +169,13 @@
                 <img title="Profile" class="viewBtn" data-id="${a.id}" src="/graphics/detail.svg"/>
                 <img title="Update" class="editBtn" data-id="${a.id}" src="/graphics/update.svg"/>
                 <img title="Delete" class="deleteBtn" data-id="${a.id}" src="/graphics/delete.svg"/>
+                <input class="checkBox" type="checkbox" data-id="${a.id}"/>
                 `
             ]);
         });
 
         api.draw();
+        toggleBulkActions();
 
         let cusCount = api.rows({ filter: 'applied' }).count();
 

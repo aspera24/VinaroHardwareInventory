@@ -96,31 +96,35 @@
 
 
 .tableCont {
-    display: flex;
-    justify-content: space-between;
+    /* position: absolute; */
+    display: none;
+    justify-content: right;
     align-items: center;
     gap: 3px;
+    bottom: 0px;
+    margin-top: 10px;
+    width: 100%;
 }
 
 .tableCont p {
     font-size: 10px;
     color: rgb(121, 121, 121);
     width: 100px;
-    margin-left: 10px;
+    margin-right: -5px;
 }
 
 .tableCont select {
-    /* height: 35px; */
     font-size: 10px;
     outline: none;
-    width: 70px;
+    width: auto;
     border: none;
     color: rgb(0, 136, 255);
     padding: 4px 4px 4px 5px;
     border-bottom: 1px solid #ddd;
     appearance: none;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
+    cursor: pointer;
 }
 
 .tableCont #applyBtn {
@@ -128,6 +132,14 @@
     border-radius: 2px;
     padding: 0 10px;
     background: rgb(0, 136, 255);
+    color: white;
+    border: none;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.tableCont #applyBtn:hover{
+    background: rgb(0, 112, 210);
 }
 
 .mainCard table {
@@ -198,6 +210,11 @@
 }
 
 
+.mainCard table tbody td:last-child{
+    display: flex;
+    align-items: center;
+}
+
 
 .mainCard table tbody img {
     height: 28px;
@@ -206,6 +223,13 @@
     transition: .2s ease-in-out;
     border-radius: 50%;
     padding: 4px;
+}
+
+.mainCard table tbody .checkBox{
+    height: 15px;
+    width: 15px;
+    margin-left: 4px;
+    cursor: pointer;
 }
 
 /* @keyframes zoom{
@@ -274,14 +298,14 @@
     justify-content: right;
 }
 
-/* .form-control.form-control-sm {
-    height: 25px;
-    padding: 0 5px;
-    font-size: 10px;
-    border-radius: 0px !important;
-    border: 1px solid gray !important;
-    outline: none;
-} */
+#appTable_wrapper.row:first-child {
+    width: 100% !important;
+    overflow: hidden;
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 5px 0;
+}
 
 
 #filterStatus {
@@ -294,7 +318,7 @@
     transition: 0.2s;
 }
 
-#filterStatus:focus{
+#filterStatus:focus {
     border-color: #303641;
     box-shadow: 0 0 0 2px rgba(48, 54, 65, 0.1);
 }
