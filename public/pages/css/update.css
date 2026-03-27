@@ -37,7 +37,7 @@
     letter-spacing: 1;
 }
 
-input,
+#updateForm input,
 #purpose,
 #status {
     height: 30px;

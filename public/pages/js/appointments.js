@@ -72,12 +72,42 @@
 
         if (checked.length > 0) {
             tableCont.style.display = "flex";
-            tableCont.querySelector("button").textContent =
-                `Modify ${checked.length} selected to Completed`;
+
+            tableCont.querySelector("p").textContent =
+                `${checked.length} selected`;
         } else {
             tableCont.style.display = "none";
         }
     }
+
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+
+    deleteSelectedBtn.addEventListener("click", () => {
+        const checked = document.querySelectorAll(".checkBox:checked");
+        const ids = Array.from(checked).map(cb => cb.dataset.id);
+
+        if (ids.length === 0) {
+            showMsg("Warning", "Please select at least one appointment");
+            return;
+        }
+
+        showMsg(
+            "Confirm Delete",
+            `Delete ${ids.length} selected appointment(s)?`,
+            () => {
+                socket.emit("deleteSelectedAppointments", ids);
+            }
+        );
+    });
+
+
+    document.getElementById("selectAll").addEventListener("change", function () {
+        const checked = this.checked;
+        document.querySelectorAll(".checkBox").forEach(cb => {
+            cb.checked = checked;
+        });
+        toggleBulkActions();
+    });
 
 
     $('#appTable tbody').on('change', '.checkBox', function () {
@@ -166,10 +196,11 @@
                 a.status,
                 a.note || "NA",
                 `
-                <img title="Profile" class="viewBtn" data-id="${a.id}" src="/graphics/detail.svg"/>
-                <img title="Update" class="editBtn" data-id="${a.id}" src="/graphics/update.svg"/>
-                <img title="Delete" class="deleteBtn" data-id="${a.id}" src="/graphics/delete.svg"/>
-                <input class="checkBox" type="checkbox" data-id="${a.id}"/>
+                <div class="actionWrap">
+                    <img title="Profile" class="viewBtn" data-id="${a.id}" src="/graphics/detail.svg"/>
+                    <img title="Update" class="editBtn" data-id="${a.id}" src="/graphics/update.svg"/>
+                    <input class="checkBox" type="checkbox" data-id="${a.id}"/>
+                </div>
                 `
             ]);
         });
@@ -233,23 +264,23 @@
             router();
         }
 
-        if (this.classList.contains("deleteBtn")) {
-            showMsg(
-                "Warning",
-                `Are you sure you want to delete ${id} appointment?`,
-                async () => {
-                    try {
-                        socket.emit("deleteAppointment", id);
+        // if (this.classList.contains("deleteBtn")) {
+        //     showMsg(
+        //         "Warning",
+        //         `Are you sure you want to delete ${id} appointment?`,
+        //         async () => {
+        //             try {
+        //                 socket.emit("deleteAppointment", id);
 
-                        // Separate success message
-                        showSuccess("Success", `${id} appointment deleted successfully`);
+        //                 // Separate success message
+        //                 showSuccess("Success", `${id} appointment deleted successfully`);
 
-                    } catch (err) {
-                        showMsg("Error", "Server error");
-                    }
-                }
-            );
-        }
+        //             } catch (err) {
+        //                 showMsg("Error", "Server error");
+        //             }
+        //         }
+        //     );
+        // }
     });
 
     deleteAllBtn.addEventListener("click", () => {

@@ -411,11 +411,45 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("deleteAppointment", (id) => {
-    db.query("DELETE FROM appointments WHERE id = ?", [id], (err) => {
-      if (err) console.error(err);
-      io.emit("appointmentUpdate");
-    });
+  // socket.on("deleteAppointment", (id) => {
+  //   db.query("DELETE FROM appointments WHERE id = ?", [id], (err) => {
+  //     if (err) console.error(err);
+  //     io.emit("appointmentUpdate");
+  //   });
+  // });
+
+  socket.on("deleteSelectedAppointments", async (ids) => {
+    const conn = await db.promise().getConnection();
+
+    try {
+      await conn.beginTransaction();
+
+      const placeholders = ids.map(() => '?').join(',');
+
+      await conn.query(
+        `DELETE FROM appointments 
+       WHERE id IN (${placeholders})`,
+        ids
+      );
+
+      await conn.query(
+        `DELETE FROM appointment_status 
+       WHERE appointment_id IN (${placeholders})`,
+        ids
+      );
+
+      await conn.commit();
+
+      socket.emit("deleteSuccess", ids.length);
+      socket.broadcast.emit("appointmentUpdate");
+
+    } catch (err) {
+      console.error(err);
+      await conn.rollback();
+      socket.emit("errorMsg", "Failed to delete selected");
+    } finally {
+      conn.release();
+    }
   });
 
   socket.on("deleteAllAppointments", () => {
