@@ -441,7 +441,7 @@ io.on("connection", (socket) => {
       await conn.commit();
 
       socket.emit("deleteSuccess", ids.length);
-      socket.broadcast.emit("appointmentUpdate");
+      io.emit("appointmentUpdate");
 
     } catch (err) {
       console.error(err);

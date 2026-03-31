@@ -75,19 +75,20 @@ function setActive(page) {
     });
 
     var pageName = page.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
+    const linearBg = "linear-gradient(45deg, #485161 50%, #6f7989 50%)";
 
     // Apply highlight to selected page
     if (page === 'dashboard' || page === 'webName') {
-        dashboard.style.background = "#485161";
+        dashboard.style.background = linearBg;
         browserTitle.textContent = `${pageName}`;
     } else if (page === 'add-customer') {
-        add_customer.style.background = "#485161";
+        add_customer.style.background = linearBg;
         browserTitle.textContent = `${pageName}`;
     } else if (page === 'appointments') {
-        appointments.style.background = "#485161";
+        appointments.style.background = linearBg;
         browserTitle.textContent = `${pageName}`;
     } else if (page === 'settings') {
-        settings.style.background = "#485161";
+        settings.style.background = linearBg;
         browserTitle.textContent = `${pageName}`;
     }
 }

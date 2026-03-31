@@ -108,9 +108,9 @@
         width: 1100px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         position: relative;
-        height: 600px;
+        max-height: 600px;
         overflow: hidden;
-        overflow-y: scroll;
+        /* overflow-y: scroll; */
         scrollbar-color: #303641 transparent;
     }
 
@@ -231,9 +231,9 @@
         width: 90%;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         position: relative;
-        height: 600px;
+        max-height: 600px;
         overflow: hidden;
-        overflow-y: scroll;
+        /* overflow-y: scroll; */
         scrollbar-color: #303641 transparent;
     }
 }

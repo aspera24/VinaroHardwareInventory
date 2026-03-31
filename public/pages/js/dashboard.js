@@ -415,6 +415,35 @@
   const modalStatus = document.getElementById("modal-status-filter");
 
 
+  function animateCounter(element, start, end, duration) {
+    let startTime = null;
+
+    function easeInOut(t) {
+      return t < 0.5
+        ? 2 * t * t
+        : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function update(currentTime) {
+      if (!startTime) startTime = currentTime;
+
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      const eased = easeInOut(progress);
+
+      const value = Math.floor(start + (end - start) * eased);
+      element.textContent = value;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        element.textContent = end; // ensure exact end value
+      }
+    }
+
+    requestAnimationFrame(update);
+  }
+
+
 
 
   cards.forEach(card => {
@@ -440,10 +469,18 @@
   }
 
 
+  const counterEl = document.getElementById("counter");
 
   socket.on("statDetailsPaginated", ({ title, rows, total, type }) => {
     const txtLabel = document.getElementById("txtLabel");
     const modalPagination = document.getElementById("modal-pagination");
+
+    // reset before animate
+    counterEl.textContent = "0";
+
+    // Run
+    animateCounter(counterEl, 0, total, 1500);
+
     modalTotal = total;
 
     modalStatus.style.display =

@@ -6,6 +6,8 @@
     const deleteAllBtn = document.getElementById("deleteAllBtn");
     const customerCount = document.getElementById("customerCount");
     const applyBtn = document.getElementById("applyBtn");
+    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+
 
     const socket = window.socket;
 
@@ -80,8 +82,6 @@
         }
     }
 
-    const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
-
     deleteSelectedBtn.addEventListener("click", () => {
         const checked = document.querySelectorAll(".checkBox:checked");
         const ids = Array.from(checked).map(cb => cb.dataset.id);
@@ -140,10 +140,16 @@
     });
 
 
-    socket.on("allStatusUpdated", (status) => {
-        showSuccess("Success", `All selected data was successfully modified as "${status}."`);
+    socket.on("deleteSuccess", (count) => {
+        showSuccess("Success", `${count} appointment(s) deleted successfully`);
         socket.emit("getAppointments");
     });
+
+    socket.on("selectedAppointmentsDeleted", () => {
+        showSuccess("Success", "All selected appointments deleted successfully");
+        socket.emit("getAppointments");
+    });
+
 
     const screenshotBtn = document.getElementById("screenshotTable");
 

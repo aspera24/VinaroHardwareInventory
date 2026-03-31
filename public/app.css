@@ -7,7 +7,8 @@
 
 :root {
     scrollbar-width: thin;
-    scrollbar-color: #303641 rgb(243, 243, 243);
+    /* scrollbar-color: #303641 rgb(243, 243, 243); */
+    scrollbar-color: #303641 transparent;
     --main-bg: #303641;
     --card-bg: #303641;
     --card-border-bg: #485161;
@@ -42,7 +43,7 @@ body {
     width: 100%;
     position: relative;
     /* height: 100vh; */
-    height: 50vh; 
+    height: 50vh;
 }
 
 /* Toggle button */
@@ -98,7 +99,7 @@ body {
     cursor: pointer;
     border-radius: 10px;
 
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .gospel::after {
@@ -109,12 +110,10 @@ body {
     width: 50%;
     height: 200%;
 
-    background: linear-gradient(
-        120deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.6) 100%,
-        transparent 100%
-    );
+    background: linear-gradient(120deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.6) 100%,
+            transparent 100%);
 
     transform: rotate(25deg);
     animation: shine 5.5s infinite;
@@ -124,6 +123,7 @@ body {
     0% {
         left: -75%;
     }
+
     100% {
         left: 125%;
     }
@@ -180,7 +180,7 @@ body {
 }
 
 #sidebar h2:hover {
-    color: #ffa600d0 !important;
+    color: #c8303f !important;
 }
 
 #sidebar ul {
@@ -255,7 +255,12 @@ body {
     min-height: 100dvh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-
+    background:
+        linear-gradient(45deg, rgba(170, 191, 204, 0.5), rgba(255, 255, 255, 0.5)),
+        url('/graphics/back.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
     /* allow refresh */
     overscroll-behavior-y: auto;
 }
