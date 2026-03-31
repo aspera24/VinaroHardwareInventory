@@ -398,6 +398,7 @@
     -webkit-text-fill-color: transparent;
     box-shadow: 0 10px 6px rgba(0, 0, 0, 0.071);
     border-radius: 10px;
+    font-variant-numeric: tabular-nums;
 }
 
 .centContainerModal{

@@ -256,7 +256,7 @@ body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     background:
-        linear-gradient(45deg, rgba(170, 191, 204, 0.5), rgba(255, 255, 255, 0.5)),
+        linear-gradient(45deg, rgba(233, 246, 254, 0.5), rgba(255, 255, 255, 0.5)),
         url('/graphics/back.jpg');
     background-repeat: no-repeat;
     background-position: center;
