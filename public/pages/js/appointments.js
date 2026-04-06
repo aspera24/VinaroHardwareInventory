@@ -139,6 +139,18 @@
         );
     });
 
+    socket.on("allStatusUpdated", (status) => {
+        showSuccess("Success", `Appointments updated to ${status}`);
+        document.querySelectorAll(".checkBox").forEach(cb => {
+            cb.checked = false;
+        });
+
+        const selectAll = document.getElementById("selectAll");
+        if (selectAll) selectAll.checked = false;
+
+        toggleBulkActions();
+    });
+
 
     socket.on("deleteSuccess", (count) => {
         showSuccess("Success", `${count} appointment(s) deleted successfully`);

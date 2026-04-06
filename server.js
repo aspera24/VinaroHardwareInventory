@@ -8,7 +8,7 @@ const session = require("express-session");
 
 const authRoutes = require("./routes/authRoutes");
 const pageRoutes = require("./routes/pageRoutes");
-const apiRoutes = require("./routes/apiRoutes");
+const apiRoutes = require("./routes/apiRoutes")(io);
 
 
 
@@ -209,9 +209,11 @@ io.on("connection", (socket) => {
     SELECT a.id,
       c.name AS customer,
       a.appointment_date AS date,
-      a.status
+      a.status,
+      upa.updated_at
     FROM appointments a
     JOIN customers c ON a.customer_id = c.id
+    LEFT JOIN appointment_status upa ON upa.appointment_id = a.id
     WHERE a.status = 'completed'
     ORDER BY a.appointment_date DESC
   `, (err, rows) => {
@@ -522,7 +524,7 @@ io.on("connection", (socket) => {
       await conn.commit();
 
       socket.emit("allStatusUpdated", status);
-      socket.broadcast.emit("appointmentUpdate");
+      io.emit("appointmentUpdate");
 
     } catch (err) {
       console.error(err);

@@ -14,6 +14,8 @@
     const status = document.getElementById("status");
     const note = document.getElementById("note");
     const admin = getAdminPath();
+    const created_at = document.getElementById("created_at");
+    const updated_at = document.getElementById("updated_at");
 
 
     if (!id) {
@@ -22,8 +24,7 @@
     }
 
 
-
-
+    let originalData = {};
 
     /* ================= LOAD DATA ================= */
 
@@ -45,13 +46,45 @@
             time.value = data.appointment_time ? data.appointment_time.slice(0, 5) : "";
             status.value = data.status || "";
             note.value = data.note || "";
+            created_at.textContent = data.created_at ? formatDateTime(data.created_at) : "";
+            updated_at.textContent = data.updated_at ? formatDateTime(data.updated_at) : "";
+
+            originalData = {
+                contact: contact.value,
+                purpose: purpose.value,
+                date: date.value,
+                time: time.value,
+                status: status.value,
+                note: note.value
+            };
+
 
         } catch (err) {
             console.error(err);
             alert("Failed to load data");
         }
     }
+
     loadData();
+
+    function formatDateTime(dateStr) {
+        const d = new Date(dateStr);
+
+        const date = d.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+
+        const time = d.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true
+        });
+
+        return `${date} | ${time}`;
+    }
+
 
     function formatDate(dateStr) {
         const d = new Date(dateStr);
@@ -76,6 +109,13 @@
             note: note.value
         };
 
+        const isSame = JSON.stringify(updatedData) === JSON.stringify(originalData);
+
+        if (isSame) {
+            alert("No changes detected.");
+            return;
+        }
+
         try {
             const res = await fetch(`/${admin}/page/appointments/update-data/${id}`, {
                 method: "PUT",
@@ -87,9 +127,6 @@
 
             if (res.ok) {
                 localStorage.setItem("appointmentUpdated", result.message);
-                console.log(result.message);
-
-
                 window.history.pushState({}, "", `/${admin}/page/appointments`);
                 router();
             } else {

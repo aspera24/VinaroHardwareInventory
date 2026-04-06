@@ -69,28 +69,31 @@ toggleBtn.addEventListener("click", () => {
 let menuItems = [webName, dashboard, add_customer, appointments, settings];
 
 function setActive(page) {
-    // Remove highlight from all
     menuItems.forEach(item => {
-        item.style.background = "transparent";
+        item.parentElement.classList.remove("active");
     });
 
-    var pageName = page.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join("-");
-    const linearBg = "linear-gradient(45deg, #485161 50%, #6f7989 50%)";
+    let activeItem;
 
-    // Apply highlight to selected page
     if (page === 'dashboard' || page === 'webName') {
-        dashboard.style.background = linearBg;
-        browserTitle.textContent = `${pageName}`;
+        activeItem = dashboard;
     } else if (page === 'add-customer') {
-        add_customer.style.background = linearBg;
-        browserTitle.textContent = `${pageName}`;
+        activeItem = add_customer;
     } else if (page === 'appointments') {
-        appointments.style.background = linearBg;
-        browserTitle.textContent = `${pageName}`;
+        activeItem = appointments;
     } else if (page === 'settings') {
-        settings.style.background = linearBg;
-        browserTitle.textContent = `${pageName}`;
+        activeItem = settings;
     }
+
+    if (activeItem) {
+        activeItem.parentElement.classList.add("active");
+    }
+
+    var pageName = page.split("-")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join("-");
+
+    browserTitle.textContent = pageName;
 }
 
 function loadPage(page) {

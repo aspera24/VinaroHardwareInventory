@@ -584,12 +584,14 @@
     ordering: true,
     searching: true,
     columnDefs: [
-      { targets: 2, orderable: false } // actions column
+      { targets: 3, orderable: false } // actions column
     ],
     language: {
       emptyTable: "No appointments found"
     }
   });
+
+
 
 
   socket.on("recentAppointments", rows => {
@@ -601,22 +603,46 @@
     rows.forEach(a => {
       api1.row.add([
         a.customer,
-        new Date(a.date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric"
-        }),
+        formatDate(a.date),
         `<span class="status ${a.status}">
-        ${a.status.charAt(0).toUpperCase() + a.status.slice(1)}✔</span>
+        <span class="statusText">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span>✔</span>
        <a href="/page/dashboard/update-status:${a.id}" id="void" class="void-btn" data-id="${a.id}">
         Void
-       </a>`
+       </a>`,
+        a.updated_at ? formatDateTime(a.updated_at) : "No Date"
       ]);
     });
 
     api1.draw();
 
   });
+
+  function formatDateTime(dateStr) {
+    const d = new Date(dateStr);
+
+    const date = d.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+
+    const time = d.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
+
+    return `${date} | ${time}`;
+  }
+
+
+  function formatDate(date) {
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    })
+  }
 
 
 

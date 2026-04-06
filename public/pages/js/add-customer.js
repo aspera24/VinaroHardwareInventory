@@ -86,7 +86,7 @@
 
 
     document.getElementById("customerForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         const data = {
             customer_id: $("#name").val() || null,
             name: $("#name option:selected").text() || $("#name").val(),

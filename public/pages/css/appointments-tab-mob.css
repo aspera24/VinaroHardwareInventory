@@ -45,7 +45,7 @@
         width: 80px;
         min-width: 80px;
         max-width: 80px;
-        text-align: left;
+        text-align: right;
     }
 
     .mainCard table th:nth-child(6),
@@ -132,7 +132,7 @@
         width: 50px;
         min-width: 50px;
         max-width: 50px;
-        text-align: left;
+        text-align: right;
     }
 }
 
@@ -361,9 +361,9 @@
 
     .mainCard table th:nth-child(2),
     .mainCard table td:nth-child(2) {
-        width: 30px;
-        min-width: 30px;
-        max-width: 30px;
+        width: 40px;
+        min-width: 40px;
+        max-width: 40px;
     }
 
     .mainCard table th:nth-child(3),
@@ -414,6 +414,7 @@
         width: 20px;
         min-width: 20px;
         max-width: 20px;
+        
     }
 
     .mainCard table th,
@@ -426,9 +427,9 @@
 
     .mainCard table th:nth-child(2),
     .mainCard table td:nth-child(2) {
-        width: 10px;
-        min-width: 10px;
-        max-width: 10px;
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
     }
 
     .mainCard table th:nth-child(3),
@@ -453,7 +454,7 @@
     }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 400px) {
 
     .mainCard table th:nth-child(2),
     .mainCard table td:nth-child(2) {

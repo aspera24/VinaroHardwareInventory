@@ -18,6 +18,7 @@
     overflow: hidden;
     position: relative;
     border-radius: 10px;
+    min-width: 290px !important;
 }
 
 .table-controls {
@@ -177,7 +178,7 @@
     width: 80px;
     min-width: 80px;
     max-width: 80px;
-    text-align: left;
+    text-align: right;
 }
 
 .mainCard table th:nth-child(6),
@@ -239,6 +240,24 @@
     height: 100%;
 }
 
+.checkCont{
+    width: fit-content;
+    display: flex;
+    margin-left: auto;
+    
+}
+
+.checkCont label{
+    color: gray;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkCont input{
+    margin-left: 5px;
+    cursor: pointer;
+}
+
 .checkBox {
     margin-left: 5px;
     cursor: pointer;
@@ -264,6 +283,10 @@
     background: transparent;
     padding: 8px;
     transition: 0.2s;
+}
+
+#appTable {
+    width: 100% !important;
 }
 
 #appTable_wrapper #appTable_length {
@@ -327,10 +350,6 @@
     overflow: hidden;
 }
 
-
-#appTable_wrapper .col-sm-12.col-md-6 label{
-    /* width: 100% !important; */
-}
 
 #filterStatus {
     padding: 8px;

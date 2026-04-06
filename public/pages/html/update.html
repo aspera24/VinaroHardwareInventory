@@ -9,6 +9,9 @@
             <h3 id="name"></h3>
             <p class="nameLabel">Name of Client</p>
         </div>
+        <div class="c_at">
+            <label for="created_at">Created at: <span id="created_at"></span></label>
+        </div>
         <form id="updateForm">
             <input type="text" id="contact" placeholder="Contact Number" maxlength="11" required />
             <select type="text" id="purpose" required>
@@ -32,6 +35,11 @@
 
             <button type="submit" id="updateBtn">Update</button>
         </form>
+
+        <div class="up_at">
+            <label for="updated_at">Last update:</label>
+            <p id="updated_at"></p>
+        </div>
 
         <div id="msgSuccess">
             <h3 id="successTitle"></h3>

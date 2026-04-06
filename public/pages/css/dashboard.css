@@ -15,6 +15,7 @@
     justify-content: space-evenly;
     z-index: 1000px;
     text-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    min-width: 290px !important;
 }
 
 .stat-card {
@@ -112,6 +113,7 @@
     overflow: hidden;
     height: 400px;
     border-radius: 10px;
+    min-width: 290px !important;
 }
 
 .chart-container #chartLabel {
@@ -183,6 +185,7 @@
     padding: 20px;
     overflow: hidden;
     border-radius: 10px;
+    min-width: 290px !important;
 }
 
 .recent-activity #recentApp {

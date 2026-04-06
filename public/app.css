@@ -197,32 +197,82 @@ body {
 }
 
 #sidebar i {
-    margin-right: 5px;
+    margin-right: 8px;
 }
 
 #sidebar a {
-    height: 40px;
+    height: 42px;
     display: flex;
-    padding: 0 10px;
+    padding: 0 12px;
     align-items: center;
+    gap: 8px;
 }
 
 #sidebar li {
+    position: relative;
     overflow: hidden;
-    border-radius: 6px;
-    margin: 2px 0;
+    border-radius: 8px;
+    margin: 3px 0;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
+/* Hover */
 #sidebar li:hover {
     background: #373e4a;
+}
+
+/* Active item */
+#sidebar li.active {
+    background: #485161;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+/* Subtle shine */
+#sidebar li.active::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.15) 50%,
+        transparent 100%
+    );
+    transform: skewX(-20deg);
+    animation: shine 2.5s ease-in-out infinite;
+}
+
+/* Optional subtle left accent */
+#sidebar li.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20%;
+    height: 60%;
+    width: 3px;
+    background: #6f7989;
+    border-radius: 2px;
+}
+
+@keyframes shine {
+    0% {
+        left: -120%;
+    }
+    100% {
+        left: 220%;
+    }
 }
 
 #sidebar ul li a {
     text-decoration: none;
     color: white;
     font-size: 13px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
+
 
 .logout {
     position: absolute;
@@ -256,7 +306,7 @@ body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     background:
-        linear-gradient(45deg, rgba(233, 246, 254, 0.5), rgba(255, 255, 255, 0.5)),
+        linear-gradient(45deg, rgba(233, 246, 254, 0.453), rgba(221, 221, 221, 0.642)),
         url('/graphics/back.jpg');
     background-repeat: no-repeat;
     background-position: center;
