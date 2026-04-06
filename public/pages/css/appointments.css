@@ -139,6 +139,17 @@
     cursor: pointer;
 }
 
+.tableCont #deleteSelectedBtn{
+    height: 23px;
+    border-radius: 2px;
+    padding: 0 10px;
+    background: #760000;
+    color: white;
+    border: none;
+    font-size: 10px;
+    cursor: pointer;
+}
+
 .tableCont #applyBtn:hover {
     background: rgb(0, 112, 210);
 }

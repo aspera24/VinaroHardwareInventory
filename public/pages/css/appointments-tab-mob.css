@@ -454,6 +454,17 @@
     }
 }
 
+@media (max-width: 410px) {
+    .tableCont{
+        flex-direction: column;
+    }
+
+    .tableCont #applyBtn, .tableCont #deleteSelectedBtn{
+        font-size: 8px;
+        width: 100%;
+    }
+}
+
 @media (max-width: 400px) {
 
     .mainCard table th:nth-child(2),
