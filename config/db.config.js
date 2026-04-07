@@ -17,4 +17,8 @@ const db = mysql.createPool({
 //   timezone: "+08:00"
 // });
 
+db.on("connection", (connection) => {
+  connection.query("SET time_zone = '+08:00'");
+});
+
 module.exports = db;

@@ -16,6 +16,8 @@
     const admin = getAdminPath();
     const created_at = document.getElementById("created_at");
     const updated_at = document.getElementById("updated_at");
+    const btnText = form.querySelector(".btn-text");
+    const loader = form.querySelector(".btn-loader");
 
 
     if (!id) {
@@ -116,6 +118,11 @@
             return;
         }
 
+        // 🔥 START LOADING
+        updateBtn.disabled = true;
+        btnText.textContent = "Updating...";
+        loader.style.display = "inline-block";
+
         try {
             const res = await fetch(`/${admin}/page/appointments/update-data/${id}`, {
                 method: "PUT",
@@ -126,16 +133,36 @@
             const result = await res.json();
 
             if (res.ok) {
-                localStorage.setItem("appointmentUpdated", result.message);
-                window.history.pushState({}, "", `/${admin}/page/appointments`);
-                router();
+                btnText.textContent = "Updated ✔";
+                loader.style.display = "none";
+
+                // gamay delay para makita ang success
+                setTimeout(() => {
+                    localStorage.setItem("appointmentUpdated", result.message);
+                    window.history.pushState({}, "", `/${admin}/page/appointments`);
+                    router();
+                }, 800);
+
             } else {
-                localStorage.setItem("appointmentUpdated", result.message);
+                btnText.textContent = "Failed !";
+
+                setTimeout(() => {
+                    updateBtn.disabled = false;
+                    btnText.textContent = "Update";
+                    loader.style.display = "none";
+                }, 1500);
             }
 
         } catch (err) {
             console.error(err);
-            alert("Server error");
+
+            btnText.textContent = "Error !";
+
+            setTimeout(() => {
+                updateBtn.disabled = false;
+                btnText.textContent = "Update";
+                loader.style.display = "none";
+            }, 1500);
         }
     });
 

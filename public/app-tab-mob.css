@@ -27,14 +27,14 @@
         width: 100%;
     }
 
-    nav ul {
+    /* nav ul {
         list-style: none;
         display: flex;
         flex-direction: column;
         position: absolute;
         top: 40px;
         width: 140px;
-    }
+    } */
 
     nav i {
         margin-right: 5px;
@@ -85,7 +85,7 @@
         display: none;
     }
 
-    .profileCont:hover>p {
+    .profileCont:hover > p {
         color: rgb(126, 206, 255);
     }
 

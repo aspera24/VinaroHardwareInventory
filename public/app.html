@@ -55,8 +55,11 @@
 
     <div class="container">
         <div class="gospel">
+            <div class="headGos">
+                <i>†</i>
                 <h2 id="g-title">Title</h2>
-                <p id="g-content">Loading...</p>
+            </div>
+            <p id="g-content">Loading...</p>
         </div>
 
         <nav id="sidebar">
@@ -64,41 +67,57 @@
                 <i class="fa-solid fa-bars"></i>
             </button>
             <h2 id="webName" onclick="navigate('dashboard')">CUSTOMER SERVICE</h2>
-            <ul>
-                <li>
-                    <a id="dashboard" onclick="navigate('dashboard')">
-                        <i class="fa-solid fa-chart-line"></i> Dashboard
-                    </a>
-                </li>
 
-                <li>
-                    <a id="add_customer" onclick="navigate('add-customer')">
-                        <i class="fa-solid fa-user-plus"></i> Add Customer
-                    </a>
-                </li>
+            <div class="sidebarMenu">
+                <ul>
+                    <li>
+                        <a id="dashboard" onclick="navigate('dashboard')">
+                            <i class="fa-solid fa-chart-line"></i><span>Dashboard</span>
+                        </a>
+                    </li>
 
-                <li>
-                    <a id="appointments" onclick="navigate('appointments')">
-                        <i class="fa-solid fa-calendar-check"></i> Appointments
-                    </a>
-                </li>
-                <li>
-                    <a id="settings" onclick="navigate('settings')">
-                        <i class="fa-solid fa-gear"></i> Settings
-                    </a>
-                </li>
-            </ul>
+                    <li>
+                        <a id="add_customer" onclick="navigate('add-customer')">
+                            <i class="fa-solid fa-user-plus"></i><span>Add Customer</span>
+                        </a>
+                    </li>
 
-            <input class="logout" type="button" value="Logout">
+                    <li>
+                        <a id="appointments" onclick="navigate('appointments')">
+                            <i class="fa-solid fa-calendar-check"></i><span>Appointments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a id="settings" onclick="navigate('settings')">
+                            <i class="fa-solid fa-gear"></i><span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <input id="logout" type="button" value="Logout">
         </nav>
 
         <div id="main-content"></div>
     </div>
 
 
+    <div id="msgBox" class="msgBox">
+        <div class="msgContent">
+            <h3 id="msgTitle"></h3>
+            <p id="msgText"></p>
+
+            <div id="msgBtns">
+                <button id="msgOk">Confirm</button>
+                <button id="msgCancel">Close</button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/app.js"></script>
-    
+
 
 </body>
 

@@ -604,12 +604,12 @@
       api1.row.add([
         a.customer,
         formatDate(a.date),
+        a.updated_at ? formatDateTime(a.updated_at) : "No Date",
         `<span class="status ${a.status}">
         <span class="statusText">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span>✔</span>
        <a href="/page/dashboard/update-status:${a.id}" id="void" class="void-btn" data-id="${a.id}">
         Void
-       </a>`,
-        a.updated_at ? formatDateTime(a.updated_at) : "No Date"
+       </a>`
       ]);
     });
 

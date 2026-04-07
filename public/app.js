@@ -4,12 +4,50 @@ let appointments = document.getElementById('appointments');
 let settings = document.getElementById('settings');
 let browserTitle = document.getElementById('browserTitle');
 let webName = document.getElementById('webName');
+let logout = document.getElementById('logout');
+const msgBox = document.getElementById("msgBox");
+const msgTitle = document.getElementById("msgTitle");
+const msgText = document.getElementById("msgText");
+const msgBtns = document.getElementById("msgBtns");
+const msgOk = document.getElementById("msgOk");
+const msgCancel = document.getElementById("msgCancel");
 window.socket = io();
 
 function getAdminPath() {
     const parts = location.pathname.split("/");
     // example: ["", "admin-rodel", "page", "dashboard"]
     return parts[1];
+}
+
+
+
+function showMsg(title, text, confirmFn = null) {
+
+    msgTitle.innerText = title;
+    msgText.innerText = text;
+
+    msgBox.style.display = "flex";
+
+    if (confirmFn) {
+        msgBtns.style.display = "block";
+
+        msgOk.onclick = () => {
+            msgBox.style.display = "none";
+            confirmFn();
+        };
+
+        msgCancel.onclick = () => {
+            msgBox.style.display = "none";
+        };
+
+    } else {
+
+        msgBtns.style.display = "none";
+
+        setTimeout(() => {
+            msgBox.style.display = "none";
+        }, 3000);
+    }
 }
 
 let lastScrollTop = 0;
@@ -63,7 +101,16 @@ toggleBtn.addEventListener("click", () => {
 });
 
 
+logout.addEventListener("click", () => {
 
+    showMsg("Confirmation",
+        "Please confirm if you want to logout.",
+        () => {
+            window.location.href = "/logout";
+        }
+    )
+
+});
 
 
 let menuItems = [webName, dashboard, add_customer, appointments, settings];
@@ -249,4 +296,3 @@ fetch('https://beta.ourmanna.com/api/v1/get?format=json&order=daily')
         document.getElementById('g-content').innerText = 'Failed to load verse.';
     });
 
-    

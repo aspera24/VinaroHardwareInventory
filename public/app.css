@@ -96,7 +96,7 @@ body {
     align-items: center;
     z-index: 1002;
     padding: 20px;
-    cursor: pointer;
+    /* cursor: pointer; */
     border-radius: 10px;
 
     overflow: hidden;
@@ -129,11 +129,26 @@ body {
     }
 }
 
+.gospel .headGos{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.gospel .headGos i{
+    font-size: 25px;
+    font-weight: bold;
+    padding: 0 10px 0 0;
+    color: #000000;
+    font-style: normal;
+    text-decoration: underline #ffa600 wavy 1px;
+    /* text-underline-offset: -18px; */
+}
+
 .gospel #g-title {
     width: 100%;
     font-weight: normal;
-    font-size: 22px;
-    margin-bottom: 10px;
+    font-size: 18px;
 }
 
 .gospel p {
@@ -156,26 +171,30 @@ body {
     flex-direction: column;
     align-items: center;
     z-index: 900000;
+    width: 190px;
     border-right: 1px solid #485161;
     transition: all 0.3s ease-in-out;
+    /* min-height: 500px; */
+    /* overflow-y: scroll; */
+    /* overscroll-behavior: contain; */
 }
 
-#sidebar {
-    /* overflow-y: auto; */
-    overscroll-behavior: contain;
+.sidebarMenu{
+    margin-top: 20px;
+    width: 90%;
 }
+
 
 #sidebar h2 {
     font-size: 17px;
     width: 100%;
-    /* font-weight: bold; */
     color: #dc3545 !important;
     text-wrap: nowrap;
     padding: 20px;
     text-align: center;
     border-bottom: 1px solid #485161;
     cursor: pointer;
-    font-size: 1.1em;
+    font-size: .8em;
     font-weight: 700;
 }
 
@@ -183,25 +202,25 @@ body {
     color: #c8303f !important;
 }
 
-#sidebar ul {
+/* #sidebar ul {
     list-style: none;
     display: flex;
     flex-direction: column;
     position: absolute;
     top: 80px;
     width: 190px;
-}
+} */
 
-.account {
+/* .account {
     display: none;
-}
+} */
 
 #sidebar i {
-    margin-right: 8px;
+    margin-right: 3px;
 }
 
 #sidebar a {
-    height: 42px;
+    height: 38px;
     display: flex;
     padding: 0 12px;
     align-items: center;
@@ -212,22 +231,20 @@ body {
     position: relative;
     overflow: hidden;
     border-radius: 8px;
-    margin: 3px 0;
+    margin: 1px 0;
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
-/* Hover */
+
 #sidebar li:hover {
     background: #373e4a;
 }
 
-/* Active item */
 #sidebar li.active {
     background: #485161;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
 }
 
-/* Subtle shine */
 #sidebar li.active::after {
     content: "";
     position: absolute;
@@ -245,7 +262,6 @@ body {
     animation: shine 2.5s ease-in-out infinite;
 }
 
-/* Optional subtle left accent */
 #sidebar li.active::before {
     content: "";
     position: absolute;
@@ -266,6 +282,10 @@ body {
     }
 }
 
+#sidebar ul li i{
+    width: 20px;
+}
+
 #sidebar ul li a {
     text-decoration: none;
     color: white;
@@ -273,25 +293,30 @@ body {
     letter-spacing: 1px;
 }
 
+#sidebar ul li a span{
+    margin-left: -10px;
+}
 
-.logout {
+
+#logout {
     position: absolute;
     bottom: 10px;
     width: 190px;
     height: 30px;
     border: none;
     outline: none;
-    background: transparent;
+    background: #2b3039;
     color: rgb(255, 255, 255);
     cursor: pointer;
     letter-spacing: 1px;
     transition: all .1s ease-in-out;
 }
 
-.logout:hover {
+#logout:hover {
     transform: scale(1.02);
     color: #ff1d1d;
     background: #2b3039;
+    border: 1px solid gray;
 }
 
 #main-content {
