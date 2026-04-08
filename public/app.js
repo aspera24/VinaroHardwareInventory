@@ -5,12 +5,12 @@ let settings = document.getElementById('settings');
 let browserTitle = document.getElementById('browserTitle');
 let webName = document.getElementById('webName');
 let logout = document.getElementById('logout');
-const msgBox = document.getElementById("msgBox");
-const msgTitle = document.getElementById("msgTitle");
-const msgText = document.getElementById("msgText");
-const msgBtns = document.getElementById("msgBtns");
-const msgOk = document.getElementById("msgOk");
-const msgCancel = document.getElementById("msgCancel");
+const msgBox = document.getElementById("msgBox1");
+const msgTitle = document.getElementById("msgTitle1");
+const msgText = document.getElementById("msgText1");
+const msgBtns = document.getElementById("msgBtns1");
+const msgOk = document.getElementById("msgOk1");
+const msgCancel = document.getElementById("msgCancel1");
 window.socket = io();
 
 function getAdminPath() {
@@ -173,6 +173,7 @@ let validRoutes = ["webName", "dashboard", "add-customer", "appointments", "prof
 
 function router() {
     const parts = location.pathname.split("/");
+    const admin = parts[1];
     const pageIndex = parts.indexOf("page");
     const mainRoute = pageIndex !== -1 ? parts[pageIndex + 1] : "dashboard";
     const segments = parts.slice(pageIndex + 1);

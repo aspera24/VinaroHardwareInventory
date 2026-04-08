@@ -499,6 +499,9 @@
 
     console.log(rows);
 
+    const admin = getAdminPath();
+    let subPage = localStorage.getItem("subPage");
+
 
     txtLabel.textContent = title;
 
@@ -514,7 +517,7 @@
       <tbody>
         ${rows.map(r => `
           <tr>
-            <td onclick="window.location='/profile.html?id=${r.id}'">${r.name}</td>
+            <td onclick="clientProfile(${r.id})">${r.name}</td>
             ${hasDate ? `<td>${new Date(r.appointment_date).toLocaleDateString("en-CA")}</td>` : ""}
             ${hasStatus ? `<td>${r.status}</td>` : ""}
           </tr>
@@ -523,12 +526,19 @@
     </table>
   `;
 
+
+
     const totalPages = Math.ceil(total / modalLimit);
     modalPageInfo.textContent = `Page ${modalPage} of ${totalPages}`;
 
     modalPrev.disabled = modalPage === 1;
     modalNext.disabled = modalPage === totalPages;
   });
+
+  window.clientProfile = function (id) {
+    localStorage.setItem("subPage", "dashboard");
+    window.location.href = `/${getAdminPath()}/profile?id=${id}`;
+  };
 
   modalSearch.addEventListener("input", () => {
     modalPage = 1;

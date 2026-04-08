@@ -1,12 +1,11 @@
 /* Responsive: Tablets & Phones */
-@media (max-width: 1770px){
-    .gospel{
+@media (max-width: 1770px) {
+    .gospel {
         display: none;
     }
 }
 
 @media (max-width: 1645px) {
-    /* Sidebar nav */
     nav {
         background: #303641;
         color: white;
@@ -27,14 +26,6 @@
         width: 100%;
     }
 
-    /* nav ul {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 40px;
-        width: 140px;
-    } */
 
     nav i {
         margin-right: 5px;
@@ -42,24 +33,6 @@
 
     nav ul li a {
         font-size: 10px;
-    }
-
-    #nav-toggle {
-        /* position: absolute;
-        top: 50%;
-        left: 227px;
-        background: #303641 !important;
-        color: white !important;
-        border: none;
-        height: 40px;
-        width: 15px;
-        cursor: pointer;
-        font-size: 10px;
-        transition: all 0.3s ease-in-out */
-    }
-
-    .nav-hidden>#nav-toggle {
-        /* left: 0px !important; */
     }
 
     .profileCont {
@@ -85,32 +58,20 @@
         display: none;
     }
 
-    .profileCont:hover > p {
+    .profileCont:hover>p {
         color: rgb(126, 206, 255);
     }
 
-
-    /* Main content */
-    /* #main-content {
-        flex-grow: 1;
-        overflow: auto;
-        padding: 12px;
-        width: 100%;
-        scroll-behavior: smooth;
-    } */
-
-    /* #sidebar {
-        position: fixed;
-    } */
 
     .hide-browser-bar {
         height: 100vh;
         overflow: hidden;
     }
 
-    /* html,
-    body {
-        height: 100%;
-    } */
+}
 
+@media (max-height: 630px) {
+    #sidebar { 
+        overflow-y: scroll;
+    }
 }

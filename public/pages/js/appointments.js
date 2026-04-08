@@ -267,17 +267,19 @@
 
     /* ================= ACTION BUTTONS ================= */
 
+    const admin = getAdminPath();
+
     $('#appTable tbody').on('click', 'img', function () {
         const id = this.dataset.id;
 
         if (this.classList.contains("viewBtn")) {
-
-            window.location.href = `/profile.html?id=${id}`;
+            localStorage.setItem("subPage", "appointments");
+            window.location.href = `/${admin}/profile?id=${id}`;
             router();
         }
 
         if (this.classList.contains("editBtn")) {
-            const admin = getAdminPath(); // get the logged-in admin from URL
+             // get the logged-in admin from URL
             history.pushState({}, "", `/${admin}/page/appointments/update?id=${id}`);
             router();
         }

@@ -34,7 +34,7 @@
         height: 25px;
         margin: 0px 0px 0px 0px;
         width: 100%;
-        padding: 0 8px;
+        padding: 0 5px;
         border: 1px solid rgb(177, 177, 177);
         justify-content: space-around;
         outline: none;
@@ -184,5 +184,58 @@
         border: none;
         outline: none;
         float: left;
+    }
+}
+
+@media (max-width: 360px) {
+    #updateForm {
+        display: grid;
+        flex-direction: column;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, auto);
+        width: 100%;
+    }
+
+    #updateForm input,
+    #purpose,
+    #status {
+        height: 25px;
+        margin: 0px 0px 0px 0px;
+        width: 100%;
+        padding: 0px !important;
+        border: 1px solid rgb(177, 177, 177);
+        justify-content: space-around;
+        outline: none;
+        font-size: 10px;
+    }
+
+    /* #contact {
+        width: 50% !important;
+    }
+
+    #date {
+        width: 50% !important;
+    }
+
+    #status {
+        width: 50% !important;
+    } */
+
+
+    #name {
+        font-size: 14px;
+    }
+
+    .nameLabel {
+        font-size: 10px;
+    }
+
+    #contact,
+    #purpose,
+    #date,
+    #time,
+    #status,
+    #note {
+        font-size: 8px;
     }
 }
