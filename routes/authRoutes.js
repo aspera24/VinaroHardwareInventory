@@ -32,6 +32,8 @@ router.post("/login", (req, res) => {
 
         const admin = rows[0];
 
+        console.log(admin)
+
         if (password === admin.password) {
             req.session.admin = admin.username;
             console.log("Logged in admin:", req.session.admin);
@@ -39,7 +41,8 @@ router.post("/login", (req, res) => {
             return res.json({
                 success: true,
                 username: admin.username,
-                session: req.session  
+                session: req.session,  
+                fullName:admin.fullName
             });
         }
 

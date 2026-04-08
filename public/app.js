@@ -11,6 +11,7 @@ const msgText = document.getElementById("msgText1");
 const msgBtns = document.getElementById("msgBtns1");
 const msgOk = document.getElementById("msgOk1");
 const msgCancel = document.getElementById("msgCancel1");
+let uName = document.getElementById("uName");
 window.socket = io();
 
 function getAdminPath() {
@@ -19,7 +20,7 @@ function getAdminPath() {
     return parts[1];
 }
 
-
+uName.textContent = localStorage.getItem("fullName");
 
 function showMsg(title, text, confirmFn = null) {
 

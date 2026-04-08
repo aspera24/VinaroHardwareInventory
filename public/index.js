@@ -19,8 +19,8 @@ function login() {
 
       if (data.success) {
 
-        window.location.href =
-          `/${data.username}/page/dashboard`;
+        localStorage.setItem("fullName", data.fullName);
+        window.location.href = `/${data.username}/page/dashboard`;
 
       } else {
 

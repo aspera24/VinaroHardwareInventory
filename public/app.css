@@ -163,32 +163,18 @@ body {
     transition: all 0.3s ease-in-out;
     overflow-y: auto;
     overflow-x: hidden;
-    /* padding-right: 10px;  
-    margin-right: -10px; */
     scrollbar-color: #485161 transparent;
 }
 
-/* #sidebar::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: -20px;
-    width: 40px;
-    height: 80px;
-    background: #303641;
-    border-radius: 50%;
-    transform: translateY(-50%);
-    overflow: hidden;
-} */
 
 .sidebarMenu {
     margin-top: -50px;
-    width: 90%;
+    width: 100%;
     height: 100%;
     top: 60px;
     z-index: 1;
     min-height: 600px;
-    max-height: calc(100% - 70px);
+    max-height: calc(100% - 75px);
     position: relative;
 }
 
@@ -204,7 +190,6 @@ body {
     cursor: pointer;
     font-size: .8em;
     font-weight: 700;
-    
 }
 
 #sidebar h2:hover {
@@ -223,12 +208,21 @@ body {
     gap: 8px;
 }
 
+#sidebar ul {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* mao ni ang key */
+    padding: 0;
+}
+
 #sidebar li {
     position: relative;
     overflow: hidden;
     border-radius: 8px;
     margin: 2px 0;
     cursor: pointer;
+    width: 90%;
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
@@ -296,27 +290,41 @@ body {
 }
 
 
-#logout {
+.userCont {
     position: absolute;
-    bottom: 10px;
+    bottom: 0px;
     width: 100%;
     border: none;
     outline: none;
-    background: #2b3039;
     color: rgb(255, 255, 255);
-    cursor: pointer;
     letter-spacing: 1px;
     transition: all .1s ease-in-out;
-    border-radius: 8px;
-    height: 38px;
+    border-top: 1px solid #485161;
+    padding: 5px 20px;
     margin-top: auto;
+}
+
+
+.userCont h4{
+    font-weight: normal;
+    font-size: 10px;
+}
+
+#logout{
+    padding: 3px 5px;
+    background: #2b3039;
+    color: #ff1d1d;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #485161;
+    font-size: 10px;
+    letter-spacing: 1px;
 }
 
 #logout:hover {
     transform: scale(1.02);
-    color: #ff1d1d;
     background: #2b3039;
-    border: 1px solid gray;
+    box-shadow: 0 0 3px #ff1d1d70;
 }
 
 #main-content {
