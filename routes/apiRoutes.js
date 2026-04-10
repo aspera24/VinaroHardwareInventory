@@ -18,7 +18,8 @@ module.exports = (io) => {
       time,
       meeting_mode,
       status,
-      appointment_note
+      appointment_note,
+      uID
     } = req.body;
 
     if (!name || !contact || !purpose || !date || !time) {
@@ -63,13 +64,13 @@ module.exports = (io) => {
               // 3. Insert into appointment_status
               const statusQuery = `
               INSERT INTO appointment_status
-              (appointment_id, status)
-              VALUES (?, ?)
+              (appointment_id, status, inserted_by)
+              VALUES (?, ?, ?)
             `;
 
               db.query(
                 statusQuery,
-                [appointmentId, status || "pending"],
+                [appointmentId, status || "pending", uID],
                 (err4) => {
                   if (err4) {
                     console.error("Appointment status insert error:", err4);

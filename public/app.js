@@ -12,6 +12,7 @@ const msgBtns = document.getElementById("msgBtns1");
 const msgOk = document.getElementById("msgOk1");
 const msgCancel = document.getElementById("msgCancel1");
 let uName = document.getElementById("uName");
+
 window.socket = io();
 
 function getAdminPath() {
@@ -20,7 +21,11 @@ function getAdminPath() {
     return parts[1];
 }
 
-uName.textContent = localStorage.getItem("fullName");
+let fullName = localStorage.getItem("fullName");
+let accountType = localStorage.getItem("accountType");
+console.log(accountType);
+
+uName.textContent = `Hi, ${fullName} (${accountType})`;
 
 function showMsg(title, text, confirmFn = null) {
 
@@ -67,7 +72,6 @@ mainContent.addEventListener("scroll", () => {
 
     lastScrollTop = st <= 0 ? 0 : st;
 });
-
 
 
 const toggleBtn = document.getElementById("nav-toggle");
@@ -142,12 +146,16 @@ function setActive(page) {
         .join("-");
 
     browserTitle.textContent = pageName;
+
+    // FOR SCREENSHOT
+    const printBtn = document.getElementById("ss");
+
+    printBtn.addEventListener("click", () => {
+        window.print();
+    });
 }
 
 function loadPage(page) {
-    // Update button states
-    // updateButtonState(page);
-
     fetch(`/pages/html/${page}.html`)
         .then(res => res.text())
         .then(html => {

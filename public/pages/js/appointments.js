@@ -3,11 +3,9 @@
     const main = document.querySelector(".mainAppoint");
 
     const filterStatus = document.getElementById("filterStatus");
-    const deleteAllBtn = document.getElementById("deleteAllBtn");
     const customerCount = document.getElementById("customerCount");
     const applyBtn = document.getElementById("applyBtn");
     const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
-
 
     const socket = window.socket;
 
@@ -23,6 +21,8 @@
     const msgSuccess = document.getElementById("msgSuccess");
     const successTitle = document.getElementById("successTitle");
     const successText = document.getElementById("successText");
+
+    const userID = localStorage.getItem("id");
 
     function showMsg(title, text, confirmFn = null) {
 
@@ -82,6 +82,21 @@
         }
     }
 
+
+    // FOR CHECKBOX LISTENER
+    document.getElementById("selectAll").addEventListener("change", function () {
+        const checked = this.checked;
+        document.querySelectorAll(".checkBox").forEach(cb => {
+            cb.checked = checked;
+        });
+        toggleBulkActions();
+    });
+
+    $('#appTable tbody').on('change', '.checkBox', function () {
+        toggleBulkActions();
+    });
+
+    // FOR DELETE BUTTON
     deleteSelectedBtn.addEventListener("click", () => {
         const checked = document.querySelectorAll(".checkBox:checked");
         const ids = Array.from(checked).map(cb => cb.dataset.id);
@@ -95,25 +110,13 @@
             "Confirm Delete",
             `Delete ${ids.length} selected appointment(s)?`,
             () => {
-                socket.emit("deleteSelectedAppointments", ids);
+                socket.emit("deleteSelectedAppointments", ids, userID);
             }
         );
     });
 
 
-    document.getElementById("selectAll").addEventListener("change", function () {
-        const checked = this.checked;
-        document.querySelectorAll(".checkBox").forEach(cb => {
-            cb.checked = checked;
-        });
-        toggleBulkActions();
-    });
-
-
-    $('#appTable tbody').on('change', '.checkBox', function () {
-        toggleBulkActions();
-    });
-
+    // FOR MARK BUTTON
     applyBtn.addEventListener("click", () => {
         const newStatus = "Completed";
 
@@ -134,7 +137,7 @@
             "Confirm Update",
             `Update ${ids.length} selected appointment(s) to "${newStatus}"?`,
             () => {
-                socket.emit("updateSelectedStatus", { ids, status: newStatus });
+                socket.emit("updateSelectedStatus", { ids, status: newStatus, userID });
             }
         );
     });
@@ -233,7 +236,7 @@
 
     /* ================= SOCKET ================= */
 
-    socket.emit("getAppointments");
+    socket.emit("getAppointments", userID);
 
     socket.on("appointmentsData", (data) => {
         allData = data || [];
@@ -253,11 +256,6 @@
         socket.emit("getAppointments");
     });
 
-
-    // filterStatus.addEventListener("change", function () {
-    //     const val = this.value;
-    //     table.column(4).search(val).draw(); // Status column
-    // });
 
     filterStatus.addEventListener("change", function () {
         const val = this.value;
@@ -279,35 +277,12 @@
         }
 
         if (this.classList.contains("editBtn")) {
-             // get the logged-in admin from URL
+            // get the logged-in admin from URL
             history.pushState({}, "", `/${admin}/page/appointments/update?id=${id}`);
             router();
         }
-
-        // if (this.classList.contains("deleteBtn")) {
-        //     showMsg(
-        //         "Warning",
-        //         `Are you sure you want to delete ${id} appointment?`,
-        //         async () => {
-        //             try {
-        //                 socket.emit("deleteAppointment", id);
-
-        //                 // Separate success message
-        //                 showSuccess("Success", `${id} appointment deleted successfully`);
-
-        //             } catch (err) {
-        //                 showMsg("Error", "Server error");
-        //             }
-        //         }
-        //     );
-        // }
     });
 
-    deleteAllBtn.addEventListener("click", () => {
-        if (confirm("Are you sure you want to delete ALL appointments?")) {
-            socket.emit("deleteAllAppointments");
-        }
-    });
 
     /* ================= FORMATTERS ================= */
 

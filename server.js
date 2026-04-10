@@ -383,7 +383,7 @@ io.on("connection", (socket) => {
   /* ==========================
    GET ALL APPOINTMENTS (SOCKET)
 ========================== */
-  socket.on("getAppointments", () => {
+  socket.on("getAppointments", (userID) => {
 
     const query = `
       SELECT 
@@ -398,6 +398,7 @@ io.on("connection", (socket) => {
       JOIN customers c ON a.customer_id = c.id
       JOIN appointment_details ad ON ad.appointment_id = a.id
       LEFT JOIN appointment_notes an ON an.appointment_id = a.id
+      LEFT JOIN appointment_status aps ON aps.appointment_id = a.id
       WHERE a.status IN ('pending', 'approved')
       ORDER BY a.appointment_date DESC, a.appointment_time DESC;
   `;
@@ -413,14 +414,10 @@ io.on("connection", (socket) => {
     });
   });
 
-  // socket.on("deleteAppointment", (id) => {
-  //   db.query("DELETE FROM appointments WHERE id = ?", [id], (err) => {
-  //     if (err) console.error(err);
-  //     io.emit("appointmentUpdate");
-  //   });
-  // });
 
-  socket.on("deleteSelectedAppointments", async (ids) => {
+
+  // FOR MOVING DATA TO TRASH (SOFT DELETE)
+  socket.on("deleteSelectedAppointments", async (ids, userID) => {
     const conn = await db.promise().getConnection();
 
     try {
@@ -428,16 +425,20 @@ io.on("connection", (socket) => {
 
       const placeholders = ids.map(() => '?').join(',');
 
+      // Soft delete appointments
       await conn.query(
-        `DELETE FROM appointments 
+        `UPDATE appointments 
+       SET status = 'deleted'
        WHERE id IN (${placeholders})`,
         ids
       );
 
+      // Soft delete related status
       await conn.query(
-        `DELETE FROM appointment_status 
+        `UPDATE appointment_status 
+       SET status = 'deleted', updated_by = ? 
        WHERE appointment_id IN (${placeholders})`,
-        ids
+        [userID, ...ids]
       );
 
       await conn.commit();
@@ -454,12 +455,48 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("deleteAllAppointments", () => {
-    db.query("DELETE FROM appointments", (err) => {
-      if (err) console.error(err);
-      io.emit("appointmentUpdate");
-    });
-  });
+
+  // FOR RESTORING DATA FROM TRASH
+  socket.on("restoreAppointments", async (ids) => {
+  const conn = await db.promise().getConnection();
+
+  try {
+    await conn.beginTransaction();
+
+    const placeholders = ids.map(() => '?').join(',');
+
+    await conn.query(
+      `UPDATE appointments 
+       SET status = 'active'
+       WHERE id IN (${placeholders})`,
+      ids
+    );
+
+    await conn.query(
+      `UPDATE appointment_status 
+       SET status = 'active'
+       WHERE appointment_id IN (${placeholders})`,
+      ids
+    );
+
+    await conn.commit();
+
+    socket.emit("restoreSuccess");
+    io.emit("appointmentUpdate");
+
+  } catch (err) {
+    await conn.rollback();
+    socket.emit("errorMsg", "Restore failed");
+  } finally {
+    conn.release();
+  }
+});
+
+
+  
+
+
+
 
   socket.on("updateAppointment", (data) => {
 
@@ -499,7 +536,9 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("updateSelectedStatus", async ({ ids, status }) => {
+
+  // CHANGE STATUS TO COMPLETED
+  socket.on("updateSelectedStatus", async ({ ids, status, userID }) => {
     const conn = await db.promise().getConnection();
 
     try {
@@ -516,9 +555,9 @@ io.on("connection", (socket) => {
 
       await conn.query(
         `UPDATE appointment_status 
-       SET status = ? 
+       SET status = ?, updated_by = ? 
        WHERE appointment_id IN (${placeholders})`,
-        [status, ...ids]
+        [status, userID, ...ids]
       );
 
       await conn.commit();

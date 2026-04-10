@@ -84,28 +84,30 @@
 
         <div id="modal" class="modal" style="display:none">
             <div class="modal-content">
-                <span id="close-modal">&times;</span>
-                <h3 id="txtLabel"></h3>
-                <input type="text" class="searchClient" id="modal-search" placeholder="Search Client..." />
+                <div class="counter" id="counter">0</div>
+                <div class="modalControls">
+                    <span id="close-modal">&times;</span>
+                    <h3 id="txtLabel"></h3>
+                    <input type="text" class="searchClient" id="modal-search" placeholder="Search Client..." />
 
-                <select id="modal-status-filter" style="display:none">
-                    <option value="">All</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                </select>
-
-                <div class="limitCont">
-                    <p>Show</p>
-                    <select id="modal-limit">
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
+                    <select id="modal-status-filter" style="display:none">
+                        <option value="">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
                     </select>
-                    <p>entries</p>
+
+                    <div class="limitCont">
+                        <p>Show</p>
+                        <select id="modal-limit">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                        <p>entries</p>
+                    </div>
                 </div>
                 <div class="centContainerModal">
-                    <div class="counter" id="counter">0</div>
                     <div class="tableContModal">
                         <div id="modal-body"></div>
 

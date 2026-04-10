@@ -131,6 +131,7 @@ body {
     color: #000000;
     font-style: normal;
     text-decoration: underline #ffa600 wavy 1px;
+    cursor: pointer;
 }
 
 .gospel #g-title {
@@ -212,7 +213,8 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* mao ni ang key */
+    align-items: center;
+    /* mao ni ang key */
     padding: 0;
 }
 
@@ -305,12 +307,12 @@ body {
 }
 
 
-.userCont h4{
+.userCont h4 {
     font-weight: normal;
     font-size: 10px;
 }
 
-#logout{
+#logout {
     padding: 3px 5px;
     background: #2b3039;
     color: #ff1d1d;
@@ -495,4 +497,49 @@ input.form-control.form-control-sm {
     cursor: pointer;
     font-size: 12px;
     height: auto;
+}
+
+
+@media print {
+
+    /* REMOVE ALL SCROLL / FIXED BEHAVIOR */
+    html,
+    body {
+        height: auto !important;
+        overflow: visible !important;
+        background: white !important;
+    }
+
+    /* HIDE FLOATING ELEMENTS */
+    #nav-toggle,
+    #sidebar,
+    .gospel {
+        display: none !important;
+    }
+
+    /* MAIN LAYOUT FIX */
+    .container {
+        display: block !important;
+    }
+
+    #main-content {
+        overflow: visible !important;
+        height: auto !important;
+        min-height: auto !important;
+        background: white !important;
+        padding: 0 !important;
+    }
+
+    /* REMOVE SHADOW/ANIMATION */
+    * {
+        box-shadow: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+
+    /* KEEP TEXT CLEAN */
+    body {
+        color: black !important;
+    }
+
 }

@@ -20,6 +20,8 @@ function login() {
       if (data.success) {
 
         localStorage.setItem("fullName", data.fullName);
+        localStorage.setItem("accountType", data.accountType);
+        localStorage.setItem("id", data.id);
         window.location.href = `/${data.username}/page/dashboard`;
 
       } else {

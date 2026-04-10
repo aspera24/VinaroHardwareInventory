@@ -40,9 +40,11 @@ router.post("/login", (req, res) => {
 
             return res.json({
                 success: true,
+                id: admin.id,
                 username: admin.username,
-                session: req.session,  
-                fullName:admin.fullName
+                session: req.session,
+                fullName: admin.fullName,
+                accountType: admin.account_type
             });
         }
 

@@ -84,6 +84,8 @@
 
     });
 
+    
+    const userID = localStorage.getItem("id");
 
     document.getElementById("customerForm").addEventListener("submit", async (e) => {
         // e.preventDefault();
@@ -100,7 +102,8 @@
             time: document.getElementById("time").value,
             meeting_mode: document.getElementById("meeting_mode").value,
             status: document.getElementById("status").value,
-            appointment_note: document.getElementById("notes").value // optional
+            appointment_note: document.getElementById("notes").value, // optional
+            uID: userID
         };
 
         try {
