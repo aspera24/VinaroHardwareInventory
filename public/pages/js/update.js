@@ -97,8 +97,11 @@
 
         return `${year}-${month}-${day}`;
     }
-    /* ================= UPDATE ================= */
 
+
+
+
+    /* ================= UPDATE ================= */
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -133,10 +136,21 @@
             const result = await res.json();
 
             if (res.ok) {
+                const userID = localStorage.getItem("id");
+
+                fetch(`/${admin}/page/appointments/log-change/${id}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userID,
+                        oldData: originalData,
+                        newData: updatedData
+                    })
+                });
+
                 btnText.textContent = "Updated ✔";
                 loader.style.display = "none";
 
-                // gamay delay para makita ang success
                 setTimeout(() => {
                     localStorage.setItem("appointmentUpdated", result.message);
                     window.history.pushState({}, "", `/${admin}/page/appointments`);

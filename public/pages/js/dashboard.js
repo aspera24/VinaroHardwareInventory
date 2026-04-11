@@ -663,6 +663,7 @@
 
     const id = $(this).data("id");
     console.log("Appointment ID:", id);
+    const userID = localStorage.getItem("id");
 
     showMsg(
       "Warning",
@@ -672,7 +673,7 @@
           const res = await fetch(`/page/dashboard/update-status/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: "pending" })
+            body: JSON.stringify({ status: "pending", userID })
           });
 
           const result = await res.json();

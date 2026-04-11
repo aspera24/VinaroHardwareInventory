@@ -184,33 +184,64 @@ module.exports = (io) => {
 
 
   // For void 
-  router.put("/page/dashboard/update-status/:id", (req, res) => {
-
+  router.put("/page/dashboard/update-status/:id", async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, userID } = req.body;
 
-    console.log("Updating appointment:", id, "to", status);
 
-    db.query(
-      "UPDATE appointments SET status = ? WHERE id = ?",
-      [status, id],
-      (err) => {
+    const conn = await db.promise().getConnection();
 
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ message: "Database error" });
-        }
+    try {
+      await conn.beginTransaction();
 
-        db.query(
-          "UPDATE appointment_status SET status = ? WHERE appointment_id = ?",
-          [status, id]
-        );
+      // GET OLD VALUE
+      const [rows] = await conn.query(
+        "SELECT status FROM appointments WHERE id = ?",
+        [id]
+      );
 
-        res.json({ message: "Status updated successfully" });
-
+      if (rows.length === 0) {
+        await conn.rollback();
+        return res.status(404).json({ message: "Appointment not found" });
       }
-    );
 
+      const oldStatus = rows[0].status;
+
+      // LOG IF CHANGED
+      if (oldStatus !== status) {
+        await conn.query(
+          `INSERT INTO appointment_logs 
+        (appointment_id, field_name, old_value, new_value, changed_by, changed_at)
+        VALUES (?, ?, ?, ?, ?, NOW())`,
+          [id, "status", oldStatus, status, userID]
+        );
+      }
+
+      // UPDATE appointments
+      await conn.query(
+        "UPDATE appointments SET status = ? WHERE id = ?",
+        [status, id]
+      );
+
+      // UPDATE appointment_status
+      await conn.query(
+        `UPDATE appointment_status 
+       SET status = ?, updated_by = ?, updated_at = NOW()
+       WHERE appointment_id = ?`,
+        [status, userID, id]
+      );
+
+      await conn.commit();
+
+      res.json({ message: "Status updated successfully" });
+
+    } catch (err) {
+      console.error(err);
+      await conn.rollback();
+      res.status(500).json({ message: "Database error" });
+    } finally {
+      conn.release();
+    }
   });
 
 
@@ -336,7 +367,55 @@ module.exports = (io) => {
   });
 
 
+  router.post("/:username/page/appointments/log-change/:id", (req, res) => {
+    const { id } = req.params;
+    const { userID, oldData, newData } = req.body;
 
+    const fields = ["contact", "purpose", "status", "date", "time", "note"];
+
+    const dbMap = {
+      contact: "contact",
+      purpose: "purpose",
+      status: "status",
+      date: "appointment_date",
+      time: "appointment_time",
+      note: "note"
+    };
+
+    const logPromises = [];
+
+    fields.forEach((field) => {
+      if (!oldData || !newData) return;
+
+      if (oldData[field] != newData[field]) {
+        logPromises.push(
+          new Promise((resolve) => {
+            db.query(
+              `INSERT INTO appointment_logs 
+            (appointment_id, field_name, old_value, new_value, changed_by, changed_at)
+            VALUES (?, ?, ?, ?, ?, NOW())`,
+              [
+                id,
+                field,
+                oldData[field] ?? "",
+                newData[field] ?? "",
+                userID || 0
+              ],
+              () => resolve()
+            );
+          })
+        );
+      }
+    });
+
+    Promise.all(logPromises)
+      .then(() => {
+        res.json({ message: "Logs saved successfully" });
+      })
+      .catch(() => {
+        res.status(500).json({ message: "Logging failed" });
+      });
+  });
 
 
   router.get("/page/appointment/:id", (req, res) => {

@@ -458,42 +458,42 @@ io.on("connection", (socket) => {
 
   // FOR RESTORING DATA FROM TRASH
   socket.on("restoreAppointments", async (ids) => {
-  const conn = await db.promise().getConnection();
+    const conn = await db.promise().getConnection();
 
-  try {
-    await conn.beginTransaction();
+    try {
+      await conn.beginTransaction();
 
-    const placeholders = ids.map(() => '?').join(',');
+      const placeholders = ids.map(() => '?').join(',');
 
-    await conn.query(
-      `UPDATE appointments 
+      await conn.query(
+        `UPDATE appointments 
        SET status = 'active'
        WHERE id IN (${placeholders})`,
-      ids
-    );
+        ids
+      );
 
-    await conn.query(
-      `UPDATE appointment_status 
+      await conn.query(
+        `UPDATE appointment_status 
        SET status = 'active'
        WHERE appointment_id IN (${placeholders})`,
-      ids
-    );
+        ids
+      );
 
-    await conn.commit();
+      await conn.commit();
 
-    socket.emit("restoreSuccess");
-    io.emit("appointmentUpdate");
+      socket.emit("restoreSuccess");
+      io.emit("appointmentUpdate");
 
-  } catch (err) {
-    await conn.rollback();
-    socket.emit("errorMsg", "Restore failed");
-  } finally {
-    conn.release();
-  }
-});
+    } catch (err) {
+      await conn.rollback();
+      socket.emit("errorMsg", "Restore failed");
+    } finally {
+      conn.release();
+    }
+  });
 
 
-  
+
 
 
 
@@ -546,6 +546,38 @@ io.on("connection", (socket) => {
 
       const placeholders = ids.map(() => '?').join(',');
 
+      // GET OLD DATA FIRST
+      const [rows] = await conn.query(
+        `SELECT id, status FROM appointments WHERE id IN (${placeholders})`,
+        ids
+      );
+
+      // PREPARE LOGS (only if changed)
+      const logs = [];
+
+      rows.forEach(row => {
+        if (row.status !== status) {
+          logs.push([
+            row.id,           // appointment_id
+            "status",         // field_name
+            row.status,       // old_value
+            status,           // new_value
+            userID            // changed_by
+          ]);
+        }
+      });
+
+      // INSERT LOGS
+      if (logs.length > 0) {
+        await conn.query(
+          `INSERT INTO appointment_logs 
+        (appointment_id, field_name, old_value, new_value, changed_by, changed_at)
+        VALUES ?`,
+          [logs.map(log => [...log, new Date()])]
+        );
+      }
+
+      // UPDATE appointments
       await conn.query(
         `UPDATE appointments 
        SET status = ? 
@@ -553,9 +585,10 @@ io.on("connection", (socket) => {
         [status, ...ids]
       );
 
+      // UPDATE appointment_status
       await conn.query(
         `UPDATE appointment_status 
-       SET status = ?, updated_by = ? 
+       SET status = ?, updated_by = ?, updated_at = NOW()
        WHERE appointment_id IN (${placeholders})`,
         [status, userID, ...ids]
       );

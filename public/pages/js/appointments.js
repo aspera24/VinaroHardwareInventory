@@ -137,7 +137,7 @@
             "Confirm Update",
             `Update ${ids.length} selected appointment(s) to "${newStatus}"?`,
             () => {
-                socket.emit("updateSelectedStatus", { ids, status: newStatus, userID });
+                socket.emit("updateSelectedStatus", { ids, status: newStatus.toLowerCase(), userID });
             }
         );
     });
