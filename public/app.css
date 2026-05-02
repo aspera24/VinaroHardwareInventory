@@ -8,6 +8,7 @@
 :root {
   --fb-bg: #1877f2;
   --fb-hover-bg: #1468d6;
+  --table-bg: #e4e4e4;
 }
 
 * {
@@ -19,7 +20,7 @@
 
 body {
   margin: 0;
-  background: #f0f2f5;
+  background: #f0f0f0;
   position: relative;
   height: auto;
   overflow-y: auto;
@@ -155,7 +156,7 @@ table {
 }
 
 th {
-  background: #f5f6f7;
+  background: #e4e4e4;
   text-align: left;
   padding: 12px;
 }
