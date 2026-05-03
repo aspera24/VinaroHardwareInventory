@@ -1,3 +1,4 @@
+// DASHBOARD
 async function loadDashboard() {
   const res = await fetch("/items", { credentials: "include" });
   const items = await res.json();
@@ -6,58 +7,24 @@ async function loadDashboard() {
   const borrowed = items.filter(i => i.status === "borrowed").length;
   const available = total - borrowed;
 
-  // document.getElementById("total").textContent = total;
-  // document.getElementById("borrowed").textContent = borrowed;
-  // document.getElementById("available").textContent = available;
-
   animateNumber("total", total);
   animateNumber("borrowed", borrowed);
   animateNumber("available", available);
 }
 
-
-async function loadBorrower() {
-  const borrowerList = document.getElementById("borrower-list");
-
-  const res = await fetch("/borrower", { credentials: "include" });
-  const borrowers = await res.json();
-
-  // clear first
-  borrowerList.innerHTML = "";
-
-  // check if empty
-  if (borrowers.length === 0) {
-    borrowerList.innerHTML = "<p>No borrowers found</p>";
-    return;
-  }
-
-  borrowerList.innerHTML = borrowers.map(b => `
-    <div class="blist">
-      <img src="${b.profile}">
-      <div class="borrower-item">
-        <p class="bname"><strong>${b.name}</strong></p>
-        <p class="bcontact">${b.contact || ""}</p>
-      </div>
-    </div>
-  `).join("");
-
-  console.log(borrowers);
-}
-
-
-
+// ANIMATION
 function animateNumber(id, value) {
-  let el = document.getElementById(id);
+  const el = document.getElementById(id);
   let start = 0;
-  let end = value;
 
-  let duration = 800;
-  let step = Math.ceil(end / (duration / 16));
+  const duration = 800;
+  const step = Math.ceil(value / (duration / 16));
 
-  let counter = setInterval(() => {
+  const counter = setInterval(() => {
     start += step;
-    if (start >= end) {
-      el.textContent = end;
+
+    if (start >= value) {
+      el.textContent = value;
       clearInterval(counter);
     } else {
       el.textContent = start;
@@ -65,7 +32,101 @@ function animateNumber(id, value) {
   }, 16);
 }
 
+// BORROWER
+let page = 1;
+const limit = 6;
+let loading = false;
+let hasMore = true;
 
+async function loadBorrower(reset = false) {
+  if (loading) return;
+
+  if (reset) {
+    page = 1;
+    hasMore = true;
+    document.getElementById("borrower-list").innerHTML = "";
+  }
+
+  if (!hasMore) return;
+
+  loading = true;
+
+  const res = await fetch(`/borrower?page=${page}&limit=${limit}`, {
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  if (data.length === 0) {
+    hasMore = false;
+    loading = false;
+    return;
+  }
+
+  const list = document.getElementById("borrower-list");
+
+  list.innerHTML += data.map(b => `
+    <div class="blist">
+      <img src="${b.profile || ''}">
+      <div class="borrower-item">
+        <p class="bname"><strong>${b.name}</strong></p>
+        <p class="bcontact">${b.contact || ""}</p>
+      </div>
+    </div>
+  `).join("");
+
+  page++;
+  loading = false;
+}
+
+// INFINITE SCROLL BORROWER 
+const borrowerList = document.getElementById("borrower-list");
+
+borrowerList.addEventListener("scroll", () => {
+  if (
+    borrowerList.scrollTop + borrowerList.clientHeight >= borrowerList.scrollHeight - 10
+  ) {
+    loadBorrower();
+  }
+});
+
+// MODAL
+const modal = document.getElementById("borrowerModal");
+const addBtn = document.getElementById("addBtn");
+
+addBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+});
+
+function closeModal() {
+  modal.style.display = "none";
+  document.body.style.overflow = "";
+}
+
+// SAVE BORROWER
+async function saveBorrower() {
+  const name = document.getElementById("bName").value;
+  const contact = document.getElementById("bContact").value;
+  const file = document.getElementById("bProfile").files[0];
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("contact", contact);
+  formData.append("profile", file);
+
+  await fetch("/borrowers", {
+    method: "POST",
+    body: formData,
+    credentials: "include"
+  });
+
+  closeModal();
+
+  loadBorrower(true);
+}
+
+// LOGS 
 window.table = null;
 
 async function loadLogs() {
@@ -73,8 +134,7 @@ async function loadLogs() {
   const logs = await res.json();
 
   const tbody = document.getElementById("logsTable");
-
-  if (!tbody) return; // IMPORTANT FIX
+  if (!tbody) return;
 
   tbody.innerHTML = logs.map(log => `
     <tr>
@@ -107,8 +167,7 @@ async function loadLogs() {
   loadAlerts(logs);
 }
 
-
-
+// ALERT
 function loadAlerts(logs) {
   const container = document.getElementById("alerts");
   container.innerHTML = "";
@@ -119,13 +178,13 @@ function loadAlerts(logs) {
     if (!l.date_returned) {
       const borrowDate = new Date(l.date_borrowed);
       const diffDays = (now - borrowDate) / (1000 * 60 * 60 * 24);
-      return diffDays > 3; // example: 3 days overdue
+      return diffDays > 3;
     }
     return false;
   });
 
   if (overdue.length === 0) {
-    container.innerHTML = `<div class="alert yellow">No overdue items 🎉</div>`;
+    container.innerHTML = `<div class="alert yellow">No overdue items.</div>`;
     return;
   }
 
@@ -138,7 +197,7 @@ function loadAlerts(logs) {
   });
 }
 
-
+// DATE FORMAT
 function datetimeformat(datetime) {
   if (!datetime) return "-";
 
@@ -152,7 +211,7 @@ function datetimeformat(datetime) {
   });
 }
 
-
+// INIT
 loadDashboard();
-loadBorrower();
+loadBorrower(true);
 loadLogs();

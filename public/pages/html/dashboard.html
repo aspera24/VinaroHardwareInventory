@@ -1,16 +1,25 @@
 <div class="cards">
   <div class="card blue">
-    <h3>Total Items</h3>
+    <div class="cardLabel">
+      <i class="fas fa-box"></i>
+      <h3>Total Items</h3>
+    </div>
     <p id="total"></p>
   </div>
 
   <div class="card orange">
-    <h3>Available</h3>
+    <div class="cardLabel">
+      <i class="fas fa-check-circle"></i>
+      <h3>Available</h3>
+    </div>
     <p id="available"></p>
   </div>
 
   <div class="card light">
-    <h3>Borrowed</h3>
+    <div class="cardLabel">
+      <i class="fas fa-hand-holding"></i>
+      <h3>Borrowed</h3>
+    </div>
     <p id="borrowed"></p>
   </div>
 </div>
@@ -25,6 +34,21 @@
     <button id="addBtn">+</button>
     <h3>Borrower(s)</h3>
     <div id="borrower-list"></div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="borrowerModal" class="modal">
+    <div class="modalContent">
+      <h3>Add Borrower</h3>
+
+      <input type="text" id="bName" placeholder="Name">
+      <input type="text" id="bContact" placeholder="Contact">
+
+      <input type="file" id="bProfile">
+
+      <button onclick="saveBorrower()">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
   </div>
 </div>
 

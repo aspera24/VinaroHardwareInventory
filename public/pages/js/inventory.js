@@ -20,7 +20,14 @@ async function loadItems() {
 }
 
 async function addItem() {
-  const name = document.getElementById("itemName").value;
+  const input = document.getElementById("itemName");
+  const name = input.value.trim();
+
+  // CHECK IF EMPTY BEFORE REQUEST
+  if (!name) {
+    document.getElementById("itemName").style.border = "2px solid red";
+    return;
+  }
 
   await fetch("/items", {
     method: "POST",
@@ -30,7 +37,16 @@ async function addItem() {
   });
 
   loadItems();
+
+  // clear input
+  input.value = "";
 }
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    addItem();
+  }
+});
 
 async function deleteItem(id) {
   await fetch(`/items/${id}`, {

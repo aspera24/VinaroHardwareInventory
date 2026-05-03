@@ -1,9 +1,7 @@
 function requireAuth(req, res, next) {
-
-  if (!req.session.admin) {
+  if (!req.session.adminId) {
     return res.redirect("/auth");
   }
-
   next();
 }
 

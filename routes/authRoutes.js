@@ -41,6 +41,7 @@ router.post("/login", (req, res) => {
         console.log(admin)
 
         if (password === admin.password) {
+            req.session.adminId = admin.id;
             req.session.admin = admin.username;
             console.log("Logged in admin:", req.session.admin);
 

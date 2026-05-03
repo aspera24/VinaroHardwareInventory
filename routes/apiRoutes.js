@@ -6,18 +6,70 @@ module.exports = (io) => {
 
   // GET borrowers
   router.get("/borrower", requireAuth, (req, res) => {
-    db.query(`SELECT * FROM borrowers`, (err, result) => {
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 6;
+
+    let offset = (page - 1) * limit;
+
+    db.query(
+      "SELECT * FROM borrowers ORDER BY id DESC LIMIT ? OFFSET ?",
+      [limit, offset],
+      (err, result) => {
+        if (err) return res.status(500).json(err);
+
+        const formatted = result.map(r => {
+          if (r.profile) {
+            r.profile = `data:image/jpeg;base64,${r.profile.toString("base64")}`;
+          }
+          return r;
+        });
+
+        res.json(formatted);
+      }
+    );
+  });
+
+  // GET borrowers count
+  router.get("/borrower/count", requireAuth, (req, res) => {
+    db.query("SELECT COUNT(*) AS total FROM borrowers", (err, result) => {
       if (err) return res.status(500).json(err);
-
-      const formatted = result.map(r => {
-        if (r.profile) {
-          r.profile = `data:image/jpeg;base64,${r.profile.toString("base64")}`;
-        }
-        return r;
-      });
-
-      res.json(formatted);
+      res.json(result[0]);
     });
+  });
+
+
+  // ADD BORROWER
+  const multer = require("multer");
+  const sharp = require("sharp");
+
+  const upload = multer({ storage: multer.memoryStorage() });
+
+  router.post("/borrowers", requireAuth, upload.single("profile"), async (req, res) => {
+    try {
+      const { name, contact } = req.body;
+      const adminId = req.session.adminId;
+
+      let compressedImage = null;
+
+      if (req.file) {
+        compressedImage = await sharp(req.file.buffer)
+          .resize(500, 500)
+          .jpeg({ quality: 80 })
+          .toBuffer();
+      }
+
+      db.query(
+        "INSERT INTO borrowers (name, contact, profile, created_by) VALUES (?, ?, ?, ?)",
+        [name, contact, compressedImage, adminId],
+        (err) => {
+          if (err) return res.status(500).json(err);
+          res.json({ success: true });
+        }
+      );
+
+    } catch (err) {
+      res.status(500).json(err);
+    }
   });
 
   // GET items
