@@ -1,0 +1,20 @@
+.inventory input {
+    outline: none;
+}
+
+.addItem {
+    background: linear-gradient(135deg, #1877f2, #5aa0ff);
+    width: 100px;
+    border: none;
+    border-radius: 7px;
+    color: white;
+}
+
+button.small {
+  padding: 8px 15px;
+  font-size: 12px;
+  border-radius: 8px;
+  background: var(--orange-bg);
+  color: white;
+  border: none;
+}

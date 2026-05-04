@@ -3,6 +3,8 @@ module.exports = (io) => {
   const router = express.Router();
   const db = require("../config/db.config");
   const requireAuth = require("../middleware/authMiddleware");
+  const multer = require("multer");
+  const upload = multer({ storage: multer.memoryStorage() });
 
   // GET borrowers
   router.get("/borrower", requireAuth, (req, res) => {
@@ -37,12 +39,94 @@ module.exports = (io) => {
     });
   });
 
+  // DELETE borrower(s)
+  router.post("/borrower/delete", async (req, res) => {
+    try {
+      const { ids } = req.body;
+
+      if (!ids || ids.length === 0) {
+        return res.status(400).json({ message: "No IDs provided" });
+      }
+
+      const placeholders = ids.map(() => "?").join(",");
+
+      const sql = `DELETE FROM borrowers WHERE id IN (${placeholders})`;
+
+      await db.execute(sql, ids);
+
+      res.json({ message: "Borrower(s) deleted successfully" });
+
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // GET SINGLE BORROWER
+  router.get("/borrower/:id", requireAuth, (req, res) => {
+    const { id } = req.params;
+
+    db.query(
+      "SELECT * FROM borrowers WHERE id = ?",
+      [id],
+      (err, result) => {
+        if (err) return res.status(500).json(err);
+
+        if (result.length === 0) {
+          return res.status(404).json({ message: "Borrower not found" });
+        }
+
+        const row = result[0];
+
+        // convert image to base64
+        if (row.profile) {
+          row.profile = `data:image/jpeg;base64,${row.profile.toString("base64")}`;
+        }
+
+        res.json(row);
+      }
+    );
+  });
+
+  // UPDATE borrower's data
+  router.post("/borrower/update", upload.single("profile"), async (req, res) => {
+    try {
+      const { id, name, contact } = req.body;
+      const file = req.file;
+
+      if (!id || !name) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      let sql = "UPDATE borrowers SET name = ?, contact = ?";
+      let params = [name || null, contact || null];
+
+      if (file) {
+        const compressedImage = await sharp(file.buffer)
+          .resize(500, 500)
+          .jpeg({ quality: 80 })
+          .toBuffer();
+
+        sql += ", profile = ?";
+        params.push(compressedImage);
+      }
+
+      sql += " WHERE id = ?";
+      params.push(id);
+
+      await db.execute(sql, params);
+
+      res.json({ message: "Borrower updated successfully" });
+
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
 
   // ADD BORROWER
-  const multer = require("multer");
   const sharp = require("sharp");
-
-  const upload = multer({ storage: multer.memoryStorage() });
 
   router.post("/borrowers", requireAuth, upload.single("profile"), async (req, res) => {
     try {
@@ -75,7 +159,9 @@ module.exports = (io) => {
   // GET items
   router.get("/items", requireAuth, (req, res) => {
     db.query(`
-    SELECT items.*, a.fullName AS created_by_name
+    SELECT items.*, 
+           a.fullName AS created_by_name,
+           (items.quantity - items.borrowed_count) AS available
     FROM items
     LEFT JOIN admins a ON items.created_by = a.id
     WHERE items.deleted_at IS NULL
@@ -87,12 +173,12 @@ module.exports = (io) => {
 
   // ADD item
   router.post("/items", requireAuth, (req, res) => {
-    const { name } = req.body;
+    const { name, quantity } = req.body;
     const adminId = req.session.adminId;
 
     db.query(
-      "INSERT INTO items (name, created_by) VALUES (?, ?)",
-      [name, adminId],
+      "INSERT INTO items (name, quantity, created_by) VALUES (?, ?, ?)",
+      [name, quantity || 1, adminId],
       (err) => {
         if (err) return res.status(500).json(err);
         res.json({ success: true });
@@ -102,21 +188,35 @@ module.exports = (io) => {
 
   // BORROW item
   router.post("/borrow", requireAuth, (req, res) => {
-    const { item_id, borrower } = req.body;
+    const { item_id, borrower, qty } = req.body;
     const adminId = req.session.adminId;
 
+    const borrowQty = Number(qty || 1);
+
     db.query(
-      "UPDATE items SET status='borrowed' WHERE id=? AND status='available'",
+      "SELECT quantity, borrowed_count FROM items WHERE id=?",
       [item_id],
       (err, result) => {
-        if (result.affectedRows === 0) {
-          return res.json({ success: false, message: "Already borrowed" });
+        if (err) return res.status(500).json(err);
+
+        const item = result[0];
+        const available = item.quantity - item.borrowed_count;
+
+        if (borrowQty > available) {
+          return res.json({ success: false, message: "Not enough stock available" });
         }
 
+        // update stock
         db.query(
-          `INSERT INTO logs (item_id, borrower, date_borrowed, created_by)
-         VALUES (?, ?, NOW(), ?)`,
-          [item_id, borrower, adminId]
+          "UPDATE items SET borrowed_count = borrowed_count + ? WHERE id=?",
+          [borrowQty, item_id]
+        );
+
+        // log
+        db.query(
+          `INSERT INTO borrow_logs (item_id, borrower, quantity, date_borrowed, created_by)
+            VALUES (?, ?, ?, NOW(), ?)`,
+          [item_id, borrower, borrowQty, adminId]
         );
 
         res.json({ success: true });
@@ -124,6 +224,27 @@ module.exports = (io) => {
     );
   });
 
+  // FOR searching borrower
+  router.get("/borrower-search", requireAuth, (req, res) => {
+    let { page = 1, limit = 6, search = "" } = req.query;
+    let offset = (page - 1) * limit;
+
+    let sql = "SELECT * FROM borrowers WHERE name LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?";
+    let values = [`%${search}%`, Number(limit), Number(offset)];
+
+    db.query(sql, values, (err, result) => {
+      if (err) return res.status(500).json(err);
+
+      const formatted = result.map(r => {
+        if (r.profile) {
+          r.profile = `data:image/jpeg;base64,${r.profile.toString("base64")}`;
+        }
+        return r;
+      });
+
+      res.json(formatted);
+    });
+  });
 
   router.put("/items/:id", requireAuth, (req, res) => {
     const { name } = req.body;
@@ -158,23 +279,32 @@ module.exports = (io) => {
     const logId = req.params.id;
     const adminId = req.session.adminId;
 
-    // 1. update log
+    // 1. get log info
     db.query(
-      "UPDATE logs SET date_returned=NOW() WHERE id=?",
+      "SELECT item_id, quantity FROM borrow_logs WHERE id=?",
       [logId],
-      (err) => {
+      (err, result) => {
         if (err) return res.status(500).json(err);
 
-        // 2. update item back to available
+        const { item_id, quantity } = result[0];
+
+        // 2. mark as returned
         db.query(
-          `UPDATE items 
-         SET status='available', updated_by=?, updated_at=NOW()
-         WHERE id=(SELECT item_id FROM logs WHERE id=?)`,
-          [adminId, logId],
+          "UPDATE borrow_logs SET date_returned=NOW() WHERE id=?",
+          [logId],
           (err2) => {
             if (err2) return res.status(500).json(err2);
 
-            res.json({ success: true });
+            // 3. restore stock
+            db.query(
+              "UPDATE items SET borrowed_count = borrowed_count - ? WHERE id=?",
+              [quantity, item_id],
+              (err3) => {
+                if (err3) return res.status(500).json(err3);
+
+                res.json({ success: true });
+              }
+            );
           }
         );
       }
@@ -182,15 +312,33 @@ module.exports = (io) => {
   });
 
   // GET logs
-  router.get("/logs", requireAuth, (req, res) => {
+  router.get("/borrow_logs", requireAuth, (req, res) => {
     db.query(`
-    SELECT logs.*, 
+    SELECT borrow_logs.*, 
            items.name AS item_name,
            admins.fullName AS admin_name
-    FROM logs
-    JOIN items ON logs.item_id = items.id
-    LEFT JOIN admins ON logs.created_by = admins.id
-    ORDER BY logs.id DESC
+    FROM borrow_logs
+    JOIN items ON borrow_logs.item_id = items.id
+    LEFT JOIN admins ON borrow_logs.created_by = admins.id
+    WHERE borrow_logs.date_returned IS NULL
+    ORDER BY borrow_logs.id DESC
+  `, (err, result) => {
+      if (err) return res.status(500).json(err);
+      res.json(result);
+    });
+  });
+
+  // GET return logs
+  router.get("/return_logs", requireAuth, (req, res) => {
+    db.query(`
+    SELECT borrow_logs.*, 
+           items.name AS item_name,
+           admins.fullName AS admin_name
+    FROM borrow_logs
+    JOIN items ON borrow_logs.item_id = items.id
+    LEFT JOIN admins ON borrow_logs.created_by = admins.id
+    WHERE borrow_logs.date_returned IS NOT NULL
+    ORDER BY borrow_logs.id DESC
   `, (err, result) => {
       if (err) return res.status(500).json(err);
       res.json(result);

@@ -1,31 +1,48 @@
 async function loadItems() {
   const res = await fetch("/items", { credentials: "include" });
   const items = await res.json();
+  const admin = localStorage.getItem("fullName");
 
   const table = document.getElementById("itemsTable");
   table.innerHTML = items.map(item => `
-    <tr>
-      <td>${item.name}</td>
-      <td>
-        <span class="status ${item.status}">
-          ${item.status}
-        </span>
-      </td>
-      <td>${item.created_by_name ?? "-"}</td>
-      <td>
-        <button class="small" onclick="deleteItem(${item.id})">Delete</button>
-      </td>
-    </tr>
-  `).join("");
+  <tr>
+    <td>${item.name}</td>
+    <td>${item.quantity}</td>
+    <td>${item.available}</td>
+    <td>${item.created_by_name == admin ? "You" : item.created_by_name}</td>
+    <td>
+      <button class="small" onclick="deleteItem(${item.id})">Delete</button>
+    </td>
+  </tr>
+`).join("");
 }
 
 async function addItem() {
-  const input = document.getElementById("itemName");
-  const name = input.value.trim();
+  const nameInput = document.getElementById("itemName");
+  const qtyInput = document.getElementById("itemQty");
 
-  // CHECK IF EMPTY BEFORE REQUEST
+  const name = nameInput.value.trim();
+  const quantity = parseInt(qtyInput.value);
+
+  // reset styles
+  nameInput.style.border = "";
+  qtyInput.style.border = "";
+
+  nameInput.addEventListener("input", () => {
+    nameInput.style.border = "";
+  });
+
+  qtyInput.addEventListener("input", () => {
+    qtyInput.style.border = "";
+  });
+
   if (!name) {
-    document.getElementById("itemName").style.border = "2px solid red";
+    nameInput.style.border = "2px solid red";
+    return;
+  }
+
+  if (!quantity || quantity <= 0) {
+    qtyInput.style.border = "2px solid red";
     return;
   }
 
@@ -33,13 +50,13 @@ async function addItem() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ name })
+    body: JSON.stringify({ name, quantity })
   });
 
   loadItems();
 
-  // clear input
-  input.value = "";
+  nameInput.value = "";
+  qtyInput.value = "";
 }
 
 document.addEventListener("keydown", function (event) {

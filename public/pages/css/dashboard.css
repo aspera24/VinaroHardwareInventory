@@ -1,10 +1,3 @@
-.topbar {
-  background: #1877f2;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-}
-
 .cards {
   display: flex;
   gap: 20px;
@@ -24,7 +17,6 @@
 
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  cursor: pointer;
 }
 
 .card:hover {
@@ -67,6 +59,7 @@
   font-size: 36px;
   font-weight: bold;
   letter-spacing: 1px;
+  margin-left: 40px;
 }
 
 .card.blue {
@@ -149,12 +142,13 @@
   border: 3px solid white;
   border-radius: 12px;
   position: relative;
-
+  overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
 
 .borrower-container h3 {
   color: var(--fb-bg);
+  margin-bottom: 10px;
 }
 
 .borrower-container #addBtn {
@@ -180,7 +174,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-
+  backdrop-filter: blur(2px);
   justify-content: center;
   align-items: center;
 }
@@ -198,6 +192,73 @@
   text-align: center;
 }
 
+.modalContent input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  flex: 1;
+  outline: none;
+  margin: 5px 0;
+}
+
+.modalContent input:focus {
+  border-color: #1877f2;
+}
+
+.modalContent button {
+  background: linear-gradient(135deg, #1877f2, #5aa0ff);
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin: 5px 0;
+  width: 100%;
+  color: white;
+  cursor: pointer;
+}
+
+.modalContent button:hover {
+  background: var(--fb-hover-bg);
+}
+
+.profileBox {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 10px auto;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #ddd;
+}
+
+.profileBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileBox .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 12px;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.profileBox:hover .overlay {
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 1;
+}
+
 .borrower-container #addBtn:hover {
   transform: scale(1.08);
 }
@@ -205,13 +266,45 @@
 #borrower-list {
   overflow: auto;
   scrollbar-color: var(--fb-bg) transparent;
-  height: calc(100% - 20px);
+  height: calc(100% - 30px);
 }
 
 .blist {
   display: flex;
   align-items: center;
   justify-content: left;
+  position: relative;
+}
+
+#borrower-actions {
+  position: absolute;
+  top: 10px;
+  right: 45px;
+}
+
+#borrower-actions button {
+  background: linear-gradient(135deg, #ff8c42, #ffb26b);
+  color: white;
+  border: none;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: .1s all ease-in-out;
+}
+
+#borrower-actions button:hover {
+  transform: scale(1.08);
+}
+
+.borrower-checkbox {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--orange-bg); 
 }
 
 .blist img {
@@ -233,30 +326,14 @@
 }
 
 .bname {
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   font-size: 14px;
 }
 
 .bcontact {
   color: gray;
+  font-size: 12px;
 }
-
-#seeMoreBtn {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 8px;
-  background: var(--fb-bg);
-  color: white;
-  cursor: pointer;
-}
-
-#seeMoreBtn:hover {
-  opacity: 0.9;
-}
-
-
 
 
 

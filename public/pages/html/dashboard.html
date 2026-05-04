@@ -2,7 +2,7 @@
   <div class="card blue">
     <div class="cardLabel">
       <i class="fas fa-box"></i>
-      <h3>Total Items</h3>
+      <h3>Total Item(s)</h3>
     </div>
     <p id="total"></p>
   </div>
@@ -10,7 +10,7 @@
   <div class="card orange">
     <div class="cardLabel">
       <i class="fas fa-check-circle"></i>
-      <h3>Available</h3>
+      <h3>Available Stock</h3>
     </div>
     <p id="available"></p>
   </div>
@@ -18,7 +18,7 @@
   <div class="card light">
     <div class="cardLabel">
       <i class="fas fa-hand-holding"></i>
-      <h3>Borrowed</h3>
+      <h3>Borrowed Item(s)</h3>
     </div>
     <p id="borrowed"></p>
   </div>
@@ -34,17 +34,31 @@
     <button id="addBtn">+</button>
     <h3>Borrower(s)</h3>
     <div id="borrower-list"></div>
+    <div id="borrower-actions" style="display:none;">
+      <button onclick="modifySelected()">Modify</button>
+      <button onclick="deleteSelected()">Delete</button>
+    </div>
   </div>
 
   <!-- MODAL -->
   <div id="borrowerModal" class="modal">
     <div class="modalContent">
-      <h3>Add Borrower</h3>
+      <h3 id="modalTitle">Add Borrower</h3>
+
+      <!-- PROFILE BOX -->
+      <div class="profileBox" onclick="triggerFile()">
+        <img id="profilePreview" src="default.png" />
+
+        <div class="overlay">
+          <span>Change Profile</span>
+        </div>
+      </div>
+
+      <!-- HIDDEN FILE INPUT -->
+      <input type="file" id="bProfile" hidden>
 
       <input type="text" id="bName" placeholder="Name">
       <input type="text" id="bContact" placeholder="Contact">
-
-      <input type="file" id="bProfile">
 
       <button onclick="saveBorrower()">Save</button>
       <button onclick="closeModal()">Cancel</button>
@@ -53,7 +67,7 @@
 </div>
 
 <div class="table-container">
-  <h3>Recent Activities</h3>
+  <h3>BorrowTrack Logs</h3>
   <table id="logsTableUI">
     <thead>
       <tr>

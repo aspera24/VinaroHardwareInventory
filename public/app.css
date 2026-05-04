@@ -9,6 +9,7 @@
   --fb-bg: #1877f2;
   --fb-hover-bg: #1468d6;
   --table-bg: #e4e4e4;
+  --orange-bg: #ffb26b;
 }
 
 * {
@@ -102,7 +103,7 @@ body {
 }
 
 .sidebar a.active {
-  background: #1877f2;
+  background: linear-gradient(135deg, #1877f2, #5aa0ff);
   color: white;
 }
 
@@ -170,8 +171,6 @@ tr:hover {
   background: #f9f9f9;
 }
 
-/* BUTTONS */
-button.small {
-  padding: 6px 10px;
-  font-size: 12px;
+button {
+  cursor: pointer;
 }

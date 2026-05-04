@@ -1,8 +1,9 @@
 <section class="page">
     <!-- ADD ITEM -->
-    <div class="form">
+    <div class="form inventory">
         <input type="text" id="itemName" placeholder="Item name...">
-        <button onclick="addItem()">Add Item</button>
+        <input type="number" id="itemQty" placeholder="Quantity..." min="1">
+        <button class="addItem" onclick="addItem()">Add Item</button>
     </div>
 
     <!-- TABLE -->
@@ -10,9 +11,10 @@
         <table>
             <thead>
                 <tr>
-                    <th>Item Name</th>
-                    <th>Status</th>
-                    <th>Created By</th>
+                    <th>Item</th>
+                    <th>Reg-Quantity</th>
+                    <th>Stock</th>
+                    <th>Added By</th>
                     <th>Action</th>
                 </tr>
             </thead>

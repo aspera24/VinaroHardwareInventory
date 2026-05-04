@@ -3,15 +3,26 @@
 
 <head>
     <title id="browser-title"></title>
+
+    <!-- Main page style -->
     <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/app-tab-mob.css">
+
+    <!-- Sub-pages styles -->
     <link rel="stylesheet" href="/pages/css/dashboard.css">
+    <link rel="stylesheet" href="/pages/css/inventory.css">
+    <link rel="stylesheet" href="/pages/css/borrow.css">
+    <link rel="stylesheet" href="/pages/css/logs.css">
+
+    <!-- For icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+    <!-- // For Datatable -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+    <!-- For Chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -23,7 +34,7 @@
             <a class="menuBtn" onclick="toggleSidebar()">
                 <i class="fa-solid fa-bars"></i>
             </a>
-            <h2 data-page="dashboard" onclick="navigate('dashboard', this)">🔧 Vinaro Inventory</h2>
+            <h2 data-page="dashboard" onclick="navigate('dashboard', this)">BorrowTrack</h2>
         </div>
 
         <a class="logoutBtn" onclick="logout()">Logout</a>
@@ -43,12 +54,12 @@
 
         <a data-page="borrow" onclick="navigate('borrow', this)">
             <i class="fa-solid fa-hand-holding"></i>
-            <span>Borrow</span>
+            <span>Borrow Now</span>
         </a>
 
         <a data-page="logs" onclick="navigate('logs', this)">
             <i class="fa-solid fa-clock-rotate-left"></i>
-            <span>Logs</span>
+            <span>Activity Logs</span>
         </a>
     </aside>
 
