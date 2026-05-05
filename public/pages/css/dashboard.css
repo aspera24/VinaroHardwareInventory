@@ -368,7 +368,6 @@ table th {
 /* ROWS */
 table td {
   padding: 12px;
-  border-bottom: 1px solid #f0f2f5;
   color: #1c1e21;
 }
 
@@ -393,8 +392,23 @@ table tbody tr:hover {
 }
 
 .status.returned {
-  background: var(--fb-bg);
+  background: #1876f226;
+  color: #1877f2;
+}
+
+.void {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  background: var(--orange-bg);
   color: white;
+  cursor: pointer;
+}
+
+.void:hover {
+  background: var(--orange-hover-bg);
 }
 
 /* DATATABLE SEARCH BOX */

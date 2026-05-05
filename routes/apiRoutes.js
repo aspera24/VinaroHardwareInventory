@@ -161,6 +161,7 @@ module.exports = (io) => {
     db.query(`
     SELECT items.*, 
            a.fullName AS created_by_name,
+           item_price,
            (items.quantity - items.borrowed_count) AS available
     FROM items
     LEFT JOIN admins a ON items.created_by = a.id
@@ -185,6 +186,46 @@ module.exports = (io) => {
       }
     );
   });
+
+  // DISPLAY item for modification
+  router.get("/items/:id", requireAuth, (req, res) => {
+    const { id } = req.params;
+
+    db.query(
+      `SELECT items.*, 
+            a.fullName AS created_by_name,
+            item_price,
+            (items.quantity - items.borrowed_count) AS available
+     FROM items
+     LEFT JOIN admins a ON items.created_by = a.id
+     WHERE items.id = ? AND items.deleted_at IS NULL`,
+      [id],
+      (err, result) => {
+        if (err) return res.status(500).json(err);
+
+        if (result.length === 0) {
+          return res.status(404).json({ message: "Item not found" });
+        }
+
+        res.json(result[0]);
+      }
+    );
+  });
+
+  // MODIFY item
+  router.put("/items/:id", requireAuth, (req, res) => {
+  const { name, quantity, price } = req.body;
+  const adminId = req.session.adminId;
+
+  db.query(
+    "UPDATE items SET name=?, quantity=?, item_price=?, updated_by=?, updated_at=NOW() WHERE id=?",
+    [name, quantity, price || 0, adminId, req.params.id],
+    (err) => {
+      if (err) return res.status(500).json(err);
+      res.json({ success: true });
+    }
+  );
+});
 
   // BORROW item
   router.post("/borrow", requireAuth, (req, res) => {
@@ -244,20 +285,6 @@ module.exports = (io) => {
 
       res.json(formatted);
     });
-  });
-
-  router.put("/items/:id", requireAuth, (req, res) => {
-    const { name } = req.body;
-    const adminId = req.session.adminId;
-
-    db.query(
-      "UPDATE items SET name=?, updated_by=?, updated_at=NOW() WHERE id=?",
-      [name, adminId, req.params.id],
-      (err) => {
-        if (err) return res.status(500).json(err);
-        res.json({ success: true });
-      }
-    );
   });
 
 

@@ -87,7 +87,8 @@ async function loadBorrower(reset = false) {
         data-id="${b.id}"
         ${isChecked ? "checked" : ""}>
 
-      <img src="${b.profile || ''}">
+      <img src="${b.profile || '/graphics/default_profile.png'}"
+     onerror="this.src='/graphics/default_profile.png'">
 
       <div class="borrower-item">
         <p class="bname"><strong>${b.name}</strong></p>
@@ -190,7 +191,7 @@ async function modifySelected() {
   document.getElementById("bContact").value = data.contact;
   document.getElementById("bName").dataset.id = data.id;
 
-  document.getElementById("profilePreview").src = data.profile || "";
+  document.getElementById("profilePreview").src = data.profile || "/graphics/default_profile.png";
 
   openBorrowerModal();
 }
@@ -206,7 +207,7 @@ function clearBorrowerForm() {
   document.getElementById("bContact").value = "";
   document.getElementById("bProfile").value = "";
 
-  document.getElementById("profilePreview").src = "";
+  document.getElementById("profilePreview").src = "/graphics/default_profile.png";
 
   const nameInput = document.getElementById("bName");
   delete nameInput.dataset.id;
@@ -362,6 +363,9 @@ async function loadLogs() {
       <td>
         <span class="status ${log.date_returned ? 'returned' : 'borrowed'}">
           ${log.date_returned ? "Returned" : "Borrowed"}
+        </span>
+        <span class="void ${log.id}">
+          Void
         </span>
       </td>
     </tr>

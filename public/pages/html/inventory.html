@@ -1,19 +1,36 @@
 <section class="page">
+    <h3>Inventory</h3>
     <!-- ADD ITEM -->
     <div class="form inventory">
-        <input type="text" id="itemName" placeholder="Item name...">
-        <input type="number" id="itemQty" placeholder="Quantity..." min="1">
-        <button class="addItem" onclick="addItem()">Add Item</button>
+        <button class="addItem" onclick="openItemModal()">+ Add Item</button>
+    </div>
+
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Add Item</h3>
+            <label for="itemName">Item Name</label>
+            <input type="text" id="itemName" required>
+            <label for="itemQty">Quantity</label>
+            <input type="number" id="itemQty" required>
+            <label for="itemPrice">Price</label>
+            <input type="number" id="itemPrice" required>
+
+            <div class="modal-actions">
+                <button onclick="saveItem()">Save</button>
+                <button onclick="closeItemModal()">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <!-- TABLE -->
     <div class="table-container">
-        <table>
+        <table id="itemsTableUI">
             <thead>
                 <tr>
                     <th>Item</th>
                     <th>Reg-Quantity</th>
                     <th>Stock</th>
+                    <th>Price</th>
                     <th>Added By</th>
                     <th>Action</th>
                 </tr>

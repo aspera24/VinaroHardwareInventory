@@ -80,7 +80,7 @@ if (window.location.pathname.startsWith("/auth")) {
         const browserTitle = document.getElementById("browser-title");
         document.querySelectorAll(".sidebar a").forEach(btn => {
             btn.classList.toggle("active", btn.dataset.page === page);
-            browserTitle.textContent = "VHI - " + capitalizeWords(page);
+            browserTitle.textContent = "BorrowTrack - " + capitalizeWords(page);
         });
     }
 

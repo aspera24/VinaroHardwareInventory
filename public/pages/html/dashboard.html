@@ -1,83 +1,86 @@
-<div class="cards">
-  <div class="card blue">
-    <div class="cardLabel">
-      <i class="fas fa-box"></i>
-      <h3>Total Item(s)</h3>
-    </div>
-    <p id="total"></p>
-  </div>
-
-  <div class="card orange">
-    <div class="cardLabel">
-      <i class="fas fa-check-circle"></i>
-      <h3>Available Stock</h3>
-    </div>
-    <p id="available"></p>
-  </div>
-
-  <div class="card light">
-    <div class="cardLabel">
-      <i class="fas fa-hand-holding"></i>
-      <h3>Borrowed Item(s)</h3>
-    </div>
-    <p id="borrowed"></p>
-  </div>
-</div>
-
-<div class="centView">
-  <div class="alerts-container">
-    <h3>Alerts</h3>
-    <div id="alerts"></div>
-  </div>
-
-  <div class="borrower-container">
-    <button id="addBtn">+</button>
-    <h3>Borrower(s)</h3>
-    <div id="borrower-list"></div>
-    <div id="borrower-actions" style="display:none;">
-      <button onclick="modifySelected()">Modify</button>
-      <button onclick="deleteSelected()">Delete</button>
-    </div>
-  </div>
-
-  <!-- MODAL -->
-  <div id="borrowerModal" class="modal">
-    <div class="modalContent">
-      <h3 id="modalTitle">Add Borrower</h3>
-
-      <!-- PROFILE BOX -->
-      <div class="profileBox" onclick="triggerFile()">
-        <img id="profilePreview" src="default.png" />
-
-        <div class="overlay">
-          <span>Change Profile</span>
-        </div>
+<section class="page">
+  <h3>Dashboard Overview</h3>
+  <div class="cards">
+    <div class="card blue">
+      <div class="cardLabel">
+        <i class="fas fa-box"></i>
+        <h3>Total Item(s)</h3>
       </div>
+      <p id="total"></p>
+    </div>
 
-      <!-- HIDDEN FILE INPUT -->
-      <input type="file" id="bProfile" hidden>
+    <div class="card orange">
+      <div class="cardLabel">
+        <i class="fas fa-check-circle"></i>
+        <h3>Available Stock</h3>
+      </div>
+      <p id="available"></p>
+    </div>
 
-      <input type="text" id="bName" placeholder="Name">
-      <input type="text" id="bContact" placeholder="Contact">
-
-      <button onclick="saveBorrower()">Save</button>
-      <button onclick="closeModal()">Cancel</button>
+    <div class="card light">
+      <div class="cardLabel">
+        <i class="fas fa-hand-holding"></i>
+        <h3>Borrowed Item(s)</h3>
+      </div>
+      <p id="borrowed"></p>
     </div>
   </div>
-</div>
 
-<div class="table-container">
-  <h3>BorrowTrack Logs</h3>
-  <table id="logsTableUI">
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th>Borrower</th>
-        <th>Date Borrowed</th>
-        <th>Status</th>
-      </tr>
-    </thead>
+  <div class="centView">
+    <div class="alerts-container">
+      <h3>Alerts</h3>
+      <div id="alerts"></div>
+    </div>
 
-    <tbody id="logsTable"></tbody>
-  </table>
-</div>
+    <div class="borrower-container">
+      <button title="Add Borrower" id="addBtn">+</button>
+      <h3>Borrower(s)</h3>
+      <div id="borrower-list"></div>
+      <div id="borrower-actions" style="display:none;">
+        <button onclick="modifySelected()">Modify</button>
+        <button onclick="deleteSelected()">Delete</button>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="borrowerModal" class="modal">
+      <div class="modalContent">
+        <h3 id="modalTitle">Add Borrower</h3>
+
+        <!-- PROFILE BOX -->
+        <div class="profileBox" onclick="triggerFile()">
+          <img id="profilePreview" src="default.png" />
+
+          <div class="overlay">
+            <span>Change Profile</span>
+          </div>
+        </div>
+
+        <!-- HIDDEN FILE INPUT -->
+        <input type="file" id="bProfile" hidden>
+
+        <input type="text" id="bName" placeholder="Name">
+        <input type="text" id="bContact" placeholder="Contact">
+
+        <button onclick="saveBorrower()">Save</button>
+        <button onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <h3>BorrowTrack Logs</h3>
+    <table id="logsTableUI">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Borrower</th>
+          <th>Date Borrowed</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="logsTable"></tbody>
+    </table>
+  </div>
+</section>
