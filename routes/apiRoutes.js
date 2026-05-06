@@ -174,12 +174,12 @@ module.exports = (io) => {
 
   // ADD item
   router.post("/items", requireAuth, (req, res) => {
-    const { name, quantity } = req.body;
+    const { name, quantity, price } = req.body;
     const adminId = req.session.adminId;
 
     db.query(
-      "INSERT INTO items (name, quantity, created_by) VALUES (?, ?, ?)",
-      [name, quantity || 1, adminId],
+      "INSERT INTO items (name, quantity, item_price, created_by) VALUES (?, ?, ?, ?)",
+      [name, quantity || 1, price, adminId],
       (err) => {
         if (err) return res.status(500).json(err);
         res.json({ success: true });
@@ -214,18 +214,18 @@ module.exports = (io) => {
 
   // MODIFY item
   router.put("/items/:id", requireAuth, (req, res) => {
-  const { name, quantity, price } = req.body;
-  const adminId = req.session.adminId;
+    const { name, quantity, price } = req.body;
+    const adminId = req.session.adminId;
 
-  db.query(
-    "UPDATE items SET name=?, quantity=?, item_price=?, updated_by=?, updated_at=NOW() WHERE id=?",
-    [name, quantity, price || 0, adminId, req.params.id],
-    (err) => {
-      if (err) return res.status(500).json(err);
-      res.json({ success: true });
-    }
-  );
-});
+    db.query(
+      "UPDATE items SET name=?, quantity=?, item_price=?, updated_by=?, updated_at=NOW() WHERE id=?",
+      [name, quantity, price || 0, adminId, req.params.id],
+      (err) => {
+        if (err) return res.status(500).json(err);
+        res.json({ success: true });
+      }
+    );
+  });
 
   // BORROW item
   router.post("/borrow", requireAuth, (req, res) => {
@@ -287,7 +287,7 @@ module.exports = (io) => {
     });
   });
 
-
+  // DELETE item
   router.delete("/items/:id", requireAuth, (req, res) => {
     const adminId = req.session.adminId;
 
@@ -334,6 +334,40 @@ module.exports = (io) => {
             );
           }
         );
+      }
+    );
+  });
+
+  // GET borrowed item id
+  router.get("/borrowedItem/:id", requireAuth, (req, res) => {
+    const { id } = req.params;
+
+    db.query(
+      "SELECT * FROM borrow_logs WHERE id=?",
+      [id],
+      (err, result) => {
+        if (err) return res.status(500).json(err);
+        if (result.length === 0) return res.status(404).json({ message: "Not found" });
+
+        res.json(result[0]);
+      }
+    );
+  });
+
+  // PUT modified borrowed item
+  router.put("/borrow_logs/:id", requireAuth, (req, res) => {
+    const { borrower, quantity, date_borrowed } = req.body;
+    const { id } = req.params;
+
+    db.query(
+      `UPDATE borrow_logs 
+     SET borrower=?, quantity=?, date_borrowed=? 
+     WHERE id=?`,
+      [borrower, quantity, date_borrowed, id],
+      (err) => {
+        if (err) return res.status(500).json(err);
+
+        res.json({ success: true });
       }
     );
   });

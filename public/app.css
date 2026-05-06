@@ -28,21 +28,40 @@ body {
   overflow-y: auto;
 }
 
-
+html {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--fb-bg) white !important;
+}
 
 /* TOPBAR */
 .topbar {
   background: var(--fb-bg);
   color: white;
   height: 40px;
-  padding: 0 20px;
+  padding: 0px 5px;
   position: sticky;
   top: 0;
   z-index: 1000;
-
+  overflow: hidden;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.topbar img {
+  height: 30px;
+  filter: drop-shadow(1px 1px 0px rgba(255, 255, 255, 0.844));
+}
+
+.topbar a {
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.topbar a:hover {
+  color: rgb(240, 240, 240);
 }
 
 .menuBtn {
@@ -176,7 +195,8 @@ button {
   cursor: pointer;
 }
 
-.dataTables_length, .dataTables_filter {
+.dataTables_length,
+.dataTables_filter {
   width: 50%;
   margin-bottom: 10px;
   background: white;

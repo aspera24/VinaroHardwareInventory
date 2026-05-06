@@ -9,6 +9,26 @@
         <button class="borrowBtn" onclick="borrowItem()">Borrow</button>
     </div>
 
+    <!-- MODAL -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Modify Details</h3>
+
+            <input type="text" id="modalBorrower">
+            <div id="suggestBox" class="suggest-box"></div>
+            <select id="modalItemSelect"></select>
+            <input type="number" id="modalQty">
+
+            <!-- FIX datetime -->
+            <input type="datetime-local" id="modalDate">
+
+            <div class="modal-actions">
+                <button onclick="saveItem()">Save</button>
+                <button onclick="closeItemModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div class="table-container">
         <table id="borrowTableUI">
             <thead>

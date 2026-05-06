@@ -98,6 +98,12 @@ if (window.location.pathname.startsWith("/auth")) {
         link.href = `/${username}/page/${page}`;
     });
 
+    const logo = document.getElementById("logoLink");
+    if (logo) {
+        const username = window.location.pathname.split("/")[1];
+        logo.href = `/${username}/page/dashboard`;
+    }
+
     // NAVIGATION (CLICK)
     window.navigate = function (page, btn) {
         loadPage(page, true);

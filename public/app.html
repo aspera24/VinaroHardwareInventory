@@ -3,7 +3,7 @@
 
 <head>
     <title id="browser-title"></title>
-
+    <link rel="icon" href="/graphics/vhiLogo.png">
     <!-- Main page style -->
     <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/app-tab-mob.css">
@@ -34,7 +34,10 @@
             <a class="menuBtn" onclick="toggleSidebar()">
                 <i class="fa-solid fa-bars"></i>
             </a>
-            <h2 data-page="dashboard" onclick="navigate('dashboard', this)">BorrowTrack</h2>
+            <img src="/graphics/vhiLogo.png" alt="">
+            <a data-page="dashboard" onclick="navigate('dashboard', this)" id="logoLink">
+                BorrowTrack
+            </a>
         </div>
 
         <a class="logoutBtn" onclick="logout()">Logout</a>

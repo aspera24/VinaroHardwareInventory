@@ -265,6 +265,7 @@
 
 #borrower-list {
   overflow: auto;
+  scrollbar-width: thin !important;
   scrollbar-color: var(--fb-bg) transparent;
   height: calc(100% - 30px);
 }
