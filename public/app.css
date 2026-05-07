@@ -195,14 +195,20 @@ button {
   cursor: pointer;
 }
 
+.dataTables_wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .dataTables_length,
 .dataTables_filter {
-  width: 50%;
+  width: 50% !important;
   margin-bottom: 10px;
   background: white;
   height: 50px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .dataTables_length {
@@ -216,4 +222,19 @@ button {
   border-bottom-right-radius: 10px;
   justify-content: right;
   padding-right: 10px;
+}
+
+.dataTables_info {
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+
+.dataTables_paginate {
+  height: 40px !important;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  margin-top: 0px !important;
 }
