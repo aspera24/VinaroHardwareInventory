@@ -69,18 +69,17 @@ html {
 }
 
 .logoutBtn {
-  background: white;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  color: var(--fb-bg);
-  font-size: 12px;
+  cursor: pointer !important;
+  color: white !important;
+  font-size: 12px !important;
+  padding: 5px;
+  margin-right: 10px;
+  border-radius: 5px;
   transition: .1s all ease-in-out;
 }
 
 .logoutBtn:hover {
-  transform: scale(1.08);
+  background: var(--fb-hover-bg);
 }
 
 
@@ -177,9 +176,14 @@ table {
 }
 
 th {
-  background: #e4e4e4;
+  background: #fafafa;
   text-align: left;
   padding: 12px;
+  cursor: pointer;
+}
+
+th:hover {
+  background: #f7f7f7;
 }
 
 td {
@@ -237,4 +241,40 @@ button {
   align-items: center;
   justify-content: right;
   margin-top: 0px !important;
+}
+
+.dataTables_length select {
+  height: 30px;
+  width: 50px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  outline: none;
+  cursor: pointer;
+}
+
+.dataTables_filter label {
+  font-size: 14px;
+  color: gray;
+}
+
+.dataTables_filter input {
+  margin-left: 5px;
+}
+
+.dataTables_info {
+  font-size: 12px;
+}
+
+
+.paginate_button {
+  font-size: 12px;
+}
+
+.paginate_button.disabled {
+  background: rgb(227, 227, 227);
+  user-select: none;
+}
+
+#modalTitle {
+  margin-bottom: 10px;
 }

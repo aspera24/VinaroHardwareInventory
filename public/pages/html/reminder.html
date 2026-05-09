@@ -1,0 +1,180 @@
+<section class="page reminderPage">
+
+    <div class="pageHeader">
+        <h3>Reminder</h3>
+
+        <button onclick="openReminderModal()">
+            Add Reminder
+        </button>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="reminderStats">
+
+        <div class="statCard">
+            <h4 id="todayCount">0</h4>
+            <p>Today</p>
+        </div>
+
+        <div class="statCard">
+            <h4 id="upcomingCount">0</h4>
+            <p>Upcoming</p>
+        </div>
+
+        <div class="statCard">
+            <h4 id="overdueCount">0</h4>
+            <p>Overdue</p>
+        </div>
+
+    </div>
+
+    <!-- FILTERS -->
+    <div class="reminderFilters">
+
+        <select id="reminderFilter">
+            <option value="all">All</option>
+            <option value="today">Today</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="overdue">Overdue</option>
+            <option value="completed">Completed</option>
+        </select>
+
+        <input type="search" placeholder="Search reminder...">
+
+    </div>
+
+    <!-- REMINDER LIST -->
+    <div id="reminderList" class="reminderList"></div>
+
+</section>
+
+<!-- REMINDER MODAL -->
+<div id="reminderModal" class="modal">
+
+    <div class="modalContent">
+
+        <div class="modalTop">
+            <h3>Add Reminder</h3>
+
+            <button onclick="closeReminderModal()">
+                ✕
+            </button>
+        </div>
+
+        <div class="modalBody">
+
+            <!-- TITLE -->
+            <div class="inputGroup">
+                <label>Reminder Title</label>
+
+                <input type="text" id="rTitle" placeholder="Enter reminder title">
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="inputGroup">
+                <label>Description</label>
+
+                <textarea id="rDescription" placeholder="Enter description">
+                </textarea>
+            </div>
+
+            <!-- TYPE -->
+            <div class="inputGroup">
+                <label>Reminder Type</label>
+
+                <select id="rType" onchange="handleReminderType()">
+
+                    <option value="one_time">
+                        One Time
+                    </option>
+
+                    <option value="daily">
+                        Daily
+                    </option>
+
+                    <option value="weekly">
+                        Weekly
+                    </option>
+
+                    <option value="monthly">
+                        Monthly
+                    </option>
+
+                    <option value="date_range">
+                        Date Range
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- DATE -->
+            <div class="inputGroup" id="singleDateGroup">
+
+                <label>Date</label>
+
+                <input type="date" id="rStartDate">
+            </div>
+
+            <!-- DATE RANGE -->
+            <div class="dateRangeWrap" id="dateRangeGroup" style="display:none;">
+
+                <div class="inputGroup">
+                    <label>Start Date</label>
+                    <input type="date" id="rRangeStart">
+                </div>
+
+                <div class="inputGroup">
+                    <label>End Date</label>
+                    <input type="date" id="rRangeEnd">
+                </div>
+
+            </div>
+
+            <!-- TIME -->
+            <div class="inputGroup">
+                <label>Reminder Time</label>
+
+                <input type="time" id="rTime">
+            </div>
+
+            <!-- WEEK DAY -->
+            <div class="inputGroup" id="weekDayGroup" style="display:none;">
+
+                <label>Week Day</label>
+
+                <select id="rWeekDay">
+
+                    <option value="">
+                        Select Week Day
+                    </option>
+
+                    <option value="Sunday">Sunday</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+
+                </select>
+            </div>
+
+            <!-- MONTH DAY -->
+            <div class="inputGroup" id="monthDayGroup" style="display:none;">
+
+                <label>Day of Month</label>
+
+                <input type="number" id="rMonthDay" min="1" max="31" placeholder="Example: 15">
+            </div>
+
+            <!-- BUTTON -->
+            <button onclick="saveReminder()">
+                Save Reminder
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

@@ -3,18 +3,15 @@ const router = express.Router();
 const db = require("../config/db.config");
 
 function handleAuth(req, res) {
-    console.log(`Session Expires: ${req.session.cookie.expires}`);
-    if (req.session.admin && req.path === "/auth") {
+    if (req.session?.admin) {
         return res.redirect(`/${req.session.admin}/page/dashboard`);
     }
 
-    console.log("No admin in session, showing login page");
-    res.sendFile(process.cwd() + "/public/auth.html");
+    return res.sendFile(process.cwd() + "/public/auth.html");
 }
 
 // BOTH routes use same function
-router.get("/", handleAuth);
-router.get("/auth", handleAuth);
+router.get(["/", "/auth"], handleAuth);
 
 router.get("/auth/check", (req, res) => {
     if (req.session.admin) {

@@ -21,7 +21,7 @@ if (window.location.pathname.startsWith("/auth")) {
     }
 
     // VALID PAGES
-    const validPages = ["dashboard", "inventory", "borrow", "logs"];
+    const validPages = ["dashboard", "inventory", "borrow", "reminder", "logs"];
 
     // SPA ROUTER CORE
     async function loadPage(page, addToHistory = true) {
@@ -172,7 +172,9 @@ if (window.location.pathname.startsWith("/auth")) {
     }
 
     function logout() {
-        return window.location.href = "/logout";
+        if (confirm("Do you want to logout?")) {
+            return window.location.href = "/logout";
+        }
     }
 
     // run on load

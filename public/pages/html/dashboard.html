@@ -32,9 +32,21 @@
       <div id="alerts"></div>
     </div>
 
+    <div class="reminder-container">
+      <h3>Reminders</h3>
+      <div id="reminderList"></div>
+    </div>
+
     <div class="borrower-container">
       <button title="Add Borrower" id="addBtn">+</button>
-      <h3>Borrower(s)</h3>
+      <div class="topborrower">
+        <h3>Borrowers</h3>
+        <div class="searchCont" id="searchCont">
+          <img title="Search Borrower" src="/graphics/search.svg" id="searchBtn" alt="search">
+          <input id="searchInput" type="search" name="" id="">
+        </div>
+      </div>
+
       <div id="borrower-list"></div>
       <div id="borrower-actions" style="display:none;">
         <button onclick="modifySelected()">Modify</button>
@@ -49,7 +61,7 @@
 
         <!-- PROFILE BOX -->
         <div class="profileBox" onclick="triggerFile()">
-          <img id="profilePreview" src="default.png" />
+          <img id="profilePreview" src="/graphics/default_profile.png" />
 
           <div class="overlay">
             <span>Change Profile</span>
@@ -69,13 +81,15 @@
   </div>
 
   <div class="table-container">
-    <h3>BorrowTrack Logs</h3>
+    <h3>Returned Items</h3>
     <table id="logsTableUI">
       <thead>
         <tr>
+          <th>#</th>
           <th>Item</th>
           <th>Borrower</th>
           <th>Date Borrowed</th>
+          <th>Date Returned</th>
           <th>Status</th>
         </tr>
       </thead>

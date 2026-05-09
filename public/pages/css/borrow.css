@@ -1,3 +1,7 @@
+.borrowLabel {
+    margin-bottom: 20px;
+}
+
 .borrow input, .borrow select{
    height: 100%;
    max-height: 50px;

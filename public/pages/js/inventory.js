@@ -5,7 +5,8 @@ async function loadItems() {
   const items = await res.json();
   const admin = localStorage.getItem("fullName");
 
-  const rows = items.map(item => [
+  const rows = items.map((item, index) => [
+    "",
     item.name,
     item.quantity,
     item.available,
@@ -23,9 +24,17 @@ async function loadItems() {
       pageLength: 10,
       lengthMenu: [10, 15, 20, 25],
       responsive: true,
+      autoWidth: false,
       columnDefs: [
+        { width: "40px", targets: 0 }, // FIRST COLUMN
         { orderable: false, targets: 5 }
-      ]
+      ],
+      rowCallback: function (row, data, displayIndex) {
+        const pageInfo = this.api().page.info();
+        const index = pageInfo.start + displayIndex + 1;
+
+        $('td:eq(0)', row).html(index + ".");
+      }
     });
   }
 

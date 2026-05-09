@@ -66,7 +66,7 @@ button.modify:hover {
     margin: 5px;
 }
 
-.modal-content input {
+.modal-content input, .modal-content select {
     width: 100%;
     padding: 10px;
     border-radius: 8px;

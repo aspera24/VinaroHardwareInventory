@@ -57,6 +57,7 @@ async function borrowItem() {
 
 async function saveItem() {
   const borrower = document.getElementById("modalBorrower").value;
+  const item_id = document.getElementById("modalItemSelect").value;
   const qty = document.getElementById("modalQty").value;
   const date = document.getElementById("modalDate").value;
 
@@ -71,6 +72,7 @@ async function saveItem() {
     credentials: "include",
     body: JSON.stringify({
       borrower,
+      item_id,
       quantity: qty,
       date_borrowed: date
     })
@@ -140,29 +142,73 @@ function selectBorrower(name, inputId, suggestId) {
   document.getElementById(suggestId).innerHTML = "";
 }
 
+
+document.getElementById("modalItemSelect").addEventListener("change", () => {
+  document.getElementById("modalQty").value = "";
+});
+
 let editItemId = null;
 
 async function modifyItem(id) {
+
   try {
+
     const res = await fetch(`/borrowedItem/${id}`);
     const item = await res.json();
 
     editItemId = id;
 
-    // SET VALUES
+    // LOAD ITEMS
+    const itemsRes = await fetch("/items", {
+      credentials: "include"
+    });
+
+    const items = await itemsRes.json();
+
+    const modalSelect = document.getElementById("modalItemSelect");
+
+    modalSelect.innerHTML = items.map(i => {
+
+      const available = i.quantity - i.borrowed_count;
+
+      return `
+        <option value="${i.id}">
+          ${i.name} (${available} in stock)
+        </option>
+      `;
+
+    }).join("");
+
+    // SET SELECTED ITEM
+    modalSelect.value = item.item_id;
+
+    // OTHER VALUES
     document.getElementById("modalBorrower").value = item.borrower;
+
     document.getElementById("modalQty").value = item.quantity;
 
-    // FORMAT DATE FOR INPUT
+    // FORMAT DATE
     const dt = new Date(item.date_borrowed);
-    const formatted = dt.toISOString().slice(0, 16);
-    document.getElementById("modalDate").value = formatted;
+
+    const pad = n => String(n).padStart(2, "0");
+
+    const localDatetime =
+      dt.getFullYear() + "-" +
+      pad(dt.getMonth() + 1) + "-" +
+      pad(dt.getDate()) + "T" +
+      pad(dt.getHours()) + ":" +
+      pad(dt.getMinutes());
+
+    document.getElementById("modalDate").value = localDatetime;
 
     openItemModal();
 
   } catch (err) {
+
     console.error(err);
+
   }
+
 }
 
 
@@ -188,17 +234,20 @@ async function loadLogs() {
   const res = await fetch("/borrow_logs", { credentials: "include" });
   const logs = await res.json();
 
-  const rows = logs.map(log => [
+  const rows = logs.map((log, index) => [
+    "", // placeholder for numbering
     `${log.item_name} <span class="qty">x${log.quantity}</span>`,
     log.borrower,
     datetimeformat(log.date_borrowed),
     `
-      <span class="status ${log.date_returned ? 'returned' : 'borrowed'}">
-        ${log.date_returned ? "Returned" : "Borrowed"}
-      </span>
-    `,
-    !log.date_returned ? `<button class="small modify" onclick="modifyItem(${log.id})">Modify</button> 
-    <button class="small" onclick="returnItem(${log.id}, '${log.borrower}')">Return</button>` : ""
+    <span class="status ${log.date_returned ? 'returned' : 'borrowed'}">
+      ${log.date_returned ? "Returned" : "Borrowed"}
+    </span>
+  `,
+    !log.date_returned ? `
+    <button class="small modify" onclick="modifyItem(${log.id})">Modify</button>
+    <button class="small" onclick="returnItem(${log.id}, '${log.borrower}')">Return</button>
+  ` : ""
   ]);
 
   // INIT FIRST TIME
@@ -207,9 +256,17 @@ async function loadLogs() {
       pageLength: 10,
       lengthMenu: [10, 15, 20, 25],
       responsive: true,
+      autoWidth: false,
       columnDefs: [
-        { orderable: false, targets: 4 }
-      ]
+        { width: "40px", targets: 0 }, // FIRST COLUMN
+        { orderable: false, targets: 5 }
+      ],
+      rowCallback: function (row, data, displayIndex) {
+        const pageInfo = this.api().page.info();
+        const index = pageInfo.start + displayIndex + 1;
+
+        $('td:eq(0)', row).html(index + ".");
+      }
     });
   }
 
@@ -222,14 +279,25 @@ async function loadLogs() {
 function datetimeformat(datetime) {
   if (!datetime) return "-";
 
-  return new Date(datetime).toLocaleString("en-US", {
-    year: "numeric",
+  const date = new Date(datetime);
+
+  const weekday = date.toLocaleDateString("en-US", {
+    weekday: "long"
+  });
+
+  const formattedDate = date.toLocaleDateString("en-US", {
     month: "long",
     day: "2-digit",
+    year: "numeric"
+  });
+
+  const time = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true
   });
+
+  return `(${weekday}) ${formattedDate} at ${time}`;
 }
 
 loadBorrowPage();

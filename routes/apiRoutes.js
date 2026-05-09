@@ -8,14 +8,23 @@ module.exports = (io) => {
 
   // GET borrowers
   router.get("/borrower", requireAuth, (req, res) => {
+
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 6;
+
+    let search = req.query.search || "";
 
     let offset = (page - 1) * limit;
 
     db.query(
-      "SELECT * FROM borrowers ORDER BY id DESC LIMIT ? OFFSET ?",
-      [limit, offset],
+      `
+      SELECT *
+      FROM borrowers
+      WHERE name LIKE ?
+      ORDER BY id DESC
+      LIMIT ? OFFSET ?
+    `,
+      [`%${search}%`, limit, offset],
       (err, result) => {
         if (err) return res.status(500).json(err);
 
@@ -356,18 +365,88 @@ module.exports = (io) => {
 
   // PUT modified borrowed item
   router.put("/borrow_logs/:id", requireAuth, (req, res) => {
-    const { borrower, quantity, date_borrowed } = req.body;
+
+    const { borrower, item_id, quantity, date_borrowed } = req.body;
     const { id } = req.params;
 
-    db.query(
-      `UPDATE borrow_logs 
-     SET borrower=?, quantity=?, date_borrowed=? 
-     WHERE id=?`,
-      [borrower, quantity, date_borrowed, id],
-      (err) => {
-        if (err) return res.status(500).json(err);
+    const newQty = Number(quantity);
 
-        res.json({ success: true });
+    db.query(
+      "SELECT item_id, quantity FROM borrow_logs WHERE id=?",
+      [id],
+      (err, result) => {
+
+        if (err) return res.status(500).json(err);
+        if (!result.length) return res.status(404).json({ message: "Not found" });
+
+        const oldItemId = result[0].item_id;
+        const oldQty = Number(result[0].quantity);
+
+        // STEP 1: rollback old stock
+        db.query(
+          "UPDATE items SET borrowed_count = borrowed_count - ? WHERE id=?",
+          [oldQty, oldItemId],
+          (err1) => {
+            if (err1) return res.status(500).json(err1);
+
+            // STEP 2: check new item availability
+            db.query(
+              "SELECT quantity, borrowed_count FROM items WHERE id=?",
+              [item_id],
+              (err2, itemRes) => {
+
+                if (err2) return res.status(500).json(err2);
+
+                const item = itemRes[0];
+                const available = item.quantity - item.borrowed_count;
+
+                if (newQty > available) {
+
+                  // rollback old stock if fail
+                  return db.query(
+                    "UPDATE items SET borrowed_count = borrowed_count + ? WHERE id=?",
+                    [oldQty, oldItemId],
+                    () => {
+                      res.json({
+                        success: false,
+                        message: "Not enough stock available"
+                      });
+                    }
+                  );
+                }
+
+                // STEP 3: apply new stock
+                db.query(
+                  "UPDATE items SET borrowed_count = borrowed_count + ? WHERE id=?",
+                  [newQty, item_id],
+                  (err3) => {
+
+                    if (err3) return res.status(500).json(err3);
+
+                    // STEP 4: update log
+                    db.query(
+                      `UPDATE borrow_logs
+                     SET borrower=?, item_id=?, quantity=?, date_borrowed=?
+                     WHERE id=?`,
+                      [borrower, item_id, newQty, date_borrowed, id],
+                      (err4) => {
+
+                        if (err4) return res.status(500).json(err4);
+
+                        res.json({ success: true });
+
+                      }
+                    );
+
+                  }
+                );
+
+              }
+            );
+
+          }
+        );
+
       }
     );
   });
@@ -404,6 +483,135 @@ module.exports = (io) => {
       if (err) return res.status(500).json(err);
       res.json(result);
     });
+  });
+
+  router.post("/void_return/:id", requireAuth, (req, res) => {
+    const logId = req.params.id;
+
+    // 1. get log info
+    db.query(
+      "SELECT item_id, quantity, date_returned FROM borrow_logs WHERE id=?",
+      [logId],
+      (err, result) => {
+        if (err) return res.status(500).json(err);
+        if (!result.length) return res.status(404).json({ message: "Not found" });
+
+        const log = result[0];
+
+        // if already not returned, prevent void
+        if (!log.date_returned) {
+          return res.json({
+            success: false,
+            message: "This item is not returned yet"
+          });
+        }
+
+        // 2. remove return status
+        db.query(
+          "UPDATE borrow_logs SET date_returned=NULL WHERE id=?",
+          [logId],
+          (err2) => {
+            if (err2) return res.status(500).json(err2);
+
+            // 3. restore borrowed stock
+            db.query(
+              "UPDATE items SET borrowed_count = borrowed_count + ? WHERE id=?",
+              [log.quantity, log.item_id],
+              (err3) => {
+                if (err3) return res.status(500).json(err3);
+
+                res.json({ success: true });
+              }
+            );
+          }
+        );
+      }
+    );
+  });
+
+
+  // ADD REMINDER
+  router.post("/reminders", requireAuth, (req, res) => {
+    const {
+      title,
+      description,
+      reminder_type,
+      start_date,
+      end_date,
+      reminder_time,
+      week_day,
+      month_day
+    } = req.body;
+
+    const adminId = req.session.adminId;
+
+    if (!title || !reminder_type) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    db.query(
+      `
+        INSERT INTO reminders (
+          title,
+          description,
+          reminder_type,
+          start_date,
+          end_date,
+          reminder_time,
+          week_day,
+          month_day,
+          created_by
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        title,
+        description || null,
+        reminder_type,
+        start_date || null,
+        end_date || null,
+        reminder_time || null,
+        week_day || null,
+        month_day || null,
+        adminId
+      ],
+      (err) => {
+        if (err) return res.status(500).json(err);
+        res.json({ success: true });
+      }
+    );
+  });
+
+
+  // GET REMINDERS
+  router.get("/reminders", requireAuth, (req, res) => {
+    db.query(
+      `
+        SELECT r.*, a.fullName AS admin_name
+        FROM reminders r
+        LEFT JOIN admins a ON r.created_by = a.id
+        WHERE r.is_active = 1
+        ORDER BY r.id DESC
+      `,
+      (err, result) => {
+        if (err) return res.status(500).json(err);
+        res.json(result);
+      }
+    );
+  });
+
+
+
+  // DELETE (SOFT DELETE)
+  router.delete("/reminders/:id", requireAuth, (req, res) => {
+    db.query(
+      "UPDATE reminders SET is_active = 0 WHERE id = ?",
+      [req.params.id],
+      (err) => {
+        if (err) return res.status(500).json(err);
+        res.json({ success: true });
+      }
+    );
   });
 
   return router

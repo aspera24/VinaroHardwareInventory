@@ -4,7 +4,7 @@ const requireAuth = require("../middleware/authMiddleware");
 const path = require("path");
 
 
-const validPages = ["dashboard", "inventory", "borrow", "logs"];
+const validPages = ["dashboard", "inventory", "borrow", "reminder", "logs"];
 
 router.get("/:username/page/:page", (req, res) => {
     const { username, page } = req.params;
