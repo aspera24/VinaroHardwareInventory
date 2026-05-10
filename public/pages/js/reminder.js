@@ -27,15 +27,20 @@ async function loadReminders() {
 
     const now = new Date();
 
+    // ADD THESE
+    let today = 0;
+    let upcoming = 0;
+    let overdue = 0;
+
     reminders.forEach(reminder => {
 
         const typeText = formatReminderType(reminder);
 
-        const start = new Date(reminder.start_date);
+        const start = reminder.start_date ? new Date(reminder.start_date) : null;
 
         if (reminder.reminder_type === "one_time") {
             today++;
-        } else if (start > now) {
+        } else if (start && start > now) {
             upcoming++;
         } else {
             overdue++;
@@ -66,7 +71,6 @@ async function loadReminders() {
     document.getElementById("todayCount").textContent = today;
     document.getElementById("upcomingCount").textContent = upcoming;
     document.getElementById("overdueCount").textContent = overdue;
-
 }
 
 function formatTime(time) {
@@ -89,12 +93,24 @@ async function deleteReminder(id) {
 }
 
 async function saveReminder() {
+
+    const type = document.getElementById("rType").value;
+
     const data = {
         title: document.getElementById("rTitle").value,
         description: document.getElementById("rDescription").value,
-        reminder_type: document.getElementById("rType").value,
-        start_date: document.getElementById("rStartDate").value,
-        end_date: document.getElementById("rEndDate").value,
+        reminder_type: type,
+
+        start_date:
+            type === "date_range"
+                ? document.getElementById("rRangeStart").value
+                : document.getElementById("rStartDate").value,
+
+        end_date:
+            type === "date_range"
+                ? document.getElementById("rRangeEnd").value
+                : null,
+
         reminder_time: document.getElementById("rTime").value,
         week_day: document.getElementById("rWeekDay").value,
         month_day: document.getElementById("rMonthDay").value

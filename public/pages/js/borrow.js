@@ -297,7 +297,7 @@ function datetimeformat(datetime) {
     hour12: true
   });
 
-  return `(${weekday}) ${formattedDate} at ${time}`;
+  return `<strong>(${weekday})</strong> ${formattedDate} at ${time}`;
 }
 
 loadBorrowPage();

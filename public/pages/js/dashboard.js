@@ -212,7 +212,7 @@ async function modifySelected() {
 
   isEditMode = true;
 
-  document.getElementById("modalTitle").textContent = "Modify Borrower";
+  document.getElementById("modalTitle").textContent = "MODIFY BORROWER";
 
   document.getElementById("bName").value = data.name;
   document.getElementById("bContact").value = data.contact;
@@ -273,7 +273,7 @@ if (addBtn && modal) {
 addBtn?.addEventListener("click", () => {
   isEditMode = false;
 
-  document.getElementById("modalTitle").textContent = "Add Borrower";
+  document.getElementById("modalTitle").textContent = "ADD BORROWER";
 
   openBorrowerModal();
   clearBorrowerForm();
@@ -291,7 +291,7 @@ function closeModal() {
   clearBorrowerForm();
   isEditMode = false;
 
-  document.getElementById("modalTitle").textContent = "Add Borrower";
+  document.getElementById("modalTitle").textContent = "ADD BORROWER";
 }
 
 // SAVE BORROWER (ADD + UPDATE)
@@ -622,7 +622,7 @@ function datetimeformat(datetime) {
     hour12: true
   });
 
-  return `(${weekday}) ${formattedDate} at ${time}`;
+  return `<strong>(${weekday})</strong> ${formattedDate} at ${time}`;
 }
 
 // SEARCH UI
