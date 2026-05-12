@@ -22,9 +22,9 @@ async function loadDashboard() {
     available += Number(i.available || 0);
   });
 
-  animateNumber("total", total);
-  animateNumber("borrowed", borrowed);
-  animateNumber("available", available);
+  animateNumber("total", Number(total).toLocaleString());
+  animateNumber("borrowed", Number(borrowed).toLocaleString());
+  animateNumber("available", Number(available).toLocaleString());
 }
 
 // NUMBER ANIMATION
@@ -105,6 +105,7 @@ async function loadBorrower(reset = false) {
         <div class="borrower-item">
           <p class="bname"><strong>${b.name}</strong></p>
           <p class="bcontact">${b.contact || ""}</p>
+          <p class="bcreatedat">${formatDate(b.created_at)}</p>
         </div>
       `;
 
@@ -444,6 +445,7 @@ async function voidReturn(id) {
 
   await loadLogs();
   await loadDashboard();
+  await loadBorrowedLogs();
 }
 
 
@@ -490,7 +492,7 @@ function loadAlerts(logs) {
 
         ${item.item_name} is overdue 
         (Borrower: <span>${item.borrower}</span>) 
-        (${diffDays} ${dayText} na ang nilabay)
+        (${diffDays} ${dayText} na ang ni-agi)
 
       </div>
     `;
@@ -506,33 +508,104 @@ async function loadDashboardReminders() {
 
   const reminders = await res.json();
 
-  const container =
-    document.getElementById("reminderList");
+  const container = document.getElementById("reminderList");
 
   container.innerHTML = "";
 
-  reminders.slice(0, 5).forEach(reminder => {
+  // FILTER FIRST
+  const todayReminders = reminders.filter(r => isDueToday(r));
+
+  if (todayReminders.length === 0) {
+    container.innerHTML = `
+      <div class="alert yellow">
+        No reminders for today 🎉
+      </div>`;
+    return;
+  }
+
+  // LIMIT 5 AFTER FILTER
+  todayReminders.slice(0, 5).forEach(reminder => {
 
     container.innerHTML += `
       <div class="reminderCard urgent">
         <div class="reminderTop">
-          <h4>${reminder.title}</h4>
-          <span>
-            ${formatReminderType(reminder)}
-          </span>
+          <h5>${reminder.title}</h5>
+          <span class="remSession">${formatReminderType(reminder)}</span>
         </div>
-        <p>${reminder.description || ""}</p>
-        <div class="reminderBottom">
-          <small>
-            Created by
-            ${reminder.admin_name || "Admin"}
-          </small>
-        </div>
+        <p class="desc">${reminder.description || ""}</p>
+          <button class="small" onclick="markComplete(${reminder.id})">
+            <i class="fa-solid fa-check"></i>
+          </button>
       </div>
     `;
-
   });
+}
 
+async function markComplete(id) {
+  if (confirm("Already done with this reminder?")) {
+    // STEP 1: create log first
+    await fetch(`/reminders/generate-log`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        reminder_id: id,
+        occurrence_date: new Date().toISOString().slice(0, 10)
+      })
+    });
+
+    // STEP 2: mark complete
+    await fetch(`/reminders/complete/${id}`, {
+      method: "PUT",
+      credentials: "include"
+    });
+
+    loadDashboardReminders();
+  }
+}
+
+function isDueToday(reminder) {
+
+  const today = new Date();
+
+  const todayStr = today.toISOString().slice(0, 10);
+  const todayDay = today.toLocaleString("en-US", { weekday: "long" });
+  const todayDate = today.getDate();
+
+  // ❗ if already completed today → HIDE
+  if (reminder.status === "completed") return false;
+
+  // ONE TIME
+  if (reminder.reminder_type === "one_time") {
+    return reminder.start_date === todayStr;
+  }
+
+  // DAILY
+  if (reminder.reminder_type === "daily") {
+    return true;
+  }
+
+  // WEEKLY
+  if (reminder.reminder_type === "weekly") {
+    return reminder.week_day === todayDay;
+  }
+
+  // MONTHLY
+  if (reminder.reminder_type === "monthly") {
+    return parseInt(reminder.month_day) === todayDate;
+  }
+
+  // DATE RANGE
+  if (reminder.reminder_type === "date_range") {
+    return (
+      reminder.start_date <= todayStr &&
+      reminder.end_date >= todayStr
+    );
+  }
+
+  return false;
 }
 
 function formatReminderType(reminder) {
@@ -622,7 +695,7 @@ function datetimeformat(datetime) {
     hour12: true
   });
 
-  return `<strong>(${weekday})</strong> ${formattedDate} at ${time}`;
+  return `<span class="dstrong">(${weekday})</span> ${formattedDate} at ${time}`;
 }
 
 // SEARCH UI

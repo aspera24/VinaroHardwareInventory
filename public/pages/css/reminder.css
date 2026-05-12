@@ -1,40 +1,353 @@
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-
-  display: none;
+.reminderPage {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  gap: 20px;
+}
+
+/* HEADER */
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #222;
+}
+
+.pageHeader button {
+  background: linear-gradient(135deg, #3498db, #4da8e5);
+  border: none;
+  border-radius: 7px;
+  color: white;
+  padding: 10px;
+  position: absolute;
+  right: 20px;
+  top: 60px;
+}
+
+.pageHeader button:hover {
+  background: linear-gradient(135deg, #308cca, #479cd4);
+  transform: translateY(-1px);
+}
+
+/* STATS */
+.reminderStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.statCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
+  border: 1px solid #f0f0f0;
+}
+
+.statCard h4 {
+  font-size: 28px;
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.statCard p {
+  color: #777;
+  font-size: 14px;
+}
+
+/* FILTER BAR */
+.reminderFilters {
+  display: flex;
+  gap: 12px;
+}
+
+.reminderFilters input {
+  height: 45px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 0 14px;
+  outline: none;
+  background: white;
+  transition: .2s;
+}
+
+.reminderFilters select {
+  min-width: 160px;
+}
+
+.reminderTab {
+  background: #3498db1f;
+  width: 100px;
+  border: none;
+  border-radius: 7px;
+  color: var(--fb-bg);
+  padding: 10px;
+}
+
+.reminderTab.active {
+  background: var(--fb-bg);
+  color: white;
+}
+
+
+
+.reminderTab:not(.active):hover {
+  background: #3498db2f;
+}
+
+.reminderFilters input {
+  flex: 1;
+}
+
+.reminderFilters select:focus,
+.reminderFilters input:focus {
+  border-color: #3498db;
+
+  box-shadow:
+    0 0 0 3px rgba(52, 152, 219, .15);
+}
+
+.reminderCont {
+  background: white;
+  padding: 20px;
+  height: 300px !important;
+  width: 50%;
+  margin: 0 auto;
+}
+
+/* REMINDER LIST */
+.reminderList {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* REMINDER CARD */
+.reminderCardTop {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 
-  z-index: 999;
+  margin-bottom: 8px;
 }
+
+.reminderCard h4 {
+  font-size: 17px;
+  color: #222;
+}
+
+.reminderCard p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.reminderMeta {
+  margin-top: 12px;
+
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.emptyState {
+    text-align: center;
+    padding: 30px;
+    color: #888;
+    font-size: 14px;
+}
+
+.reminderBadge {
+  background: #eef6ff;
+  color: #3498db;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+
+  .reminderStats {
+    grid-template-columns: 1fr;
+  }
+
+  .reminderFilters {
+    flex-direction: row;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pageHeader button {
+    width: 100%;
+  }
+
+}
+
+
 
 .modalContent {
   width: 100%;
-  max-width: 500px;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: modalPop .25s ease;
+}
 
-  background: white;
-  border-radius: 15px;
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(.95) translateY(10px);
+  }
 
-  padding: 20px;
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modalTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.modalTop button {
+  width: 34px;
+  height: 34px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #f2f2f2;
+  cursor: pointer;
+
+  font-size: 16px;
+  transition: .2s;
+}
+
+.modalTop button:hover {
+  background: #e0e0e0;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
 }
 
 .modalBody {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 15px;
+  gap: 7px;
 }
 
 .inputGroup label {
   font-size: 14px;
   font-weight: 600;
   color: #444;
+}
+
+.inputGroup input,
+.inputGroup textarea,
+.inputGroup select {
+  width: 100%;
+
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  padding: 12px 14px;
+
+  font-size: 14px;
+  outline: none;
+
+  transition: .2s;
+  background: #fafafa;
+}
+
+.inputGroup textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus,
+.inputGroup select:focus {
+  border-color: #3498db;
+  background: white;
+
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, .15);
+}
+
+.dateRangeWrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modalBody button {
+  height: 48px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #3498db;
+  color: white;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: .2s;
+
+  margin-top: 10px;
+}
+
+.modalBody button:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+.modalBody button:active {
+  transform: scale(.98);
+}
+
+.desc {
+  font-size: 12px !important;
+}
+
+.urgent {
+  position: relative;
+}
+
+.urgent button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }

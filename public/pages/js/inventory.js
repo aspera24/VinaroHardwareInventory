@@ -8,13 +8,13 @@ async function loadItems() {
   const rows = items.map((item, index) => [
     "",
     item.name,
-    item.quantity,
-    item.available,
-    `<span class="peso">₱</span> ${item.item_price ? item.item_price : "0.00"} each`,
+    item.quantity ? Number(item.quantity).toLocaleString() : 0,
+    `<span class="stock">${item.available ? Number(item.available).toLocaleString() : 0}</span>`,
+    `<span class="peso">₱</span> ${item.item_price ? Number(item.item_price).toLocaleString() + " each" : "0.00"}`,
     item.created_by_name == admin ? "You" : item.created_by_name,
     `
       <button class="small modify" onclick="modifyItem(${item.id})">Modify</button>
-      <button class="small" onclick="deleteItem(${item.id}, '${item.name}')">Delete</button>
+      <button class="small delete" onclick="deleteItem(${item.id}, '${item.name}')">Delete</button>
     `
   ]);
 

@@ -4,7 +4,7 @@
         <h3 class="pageTitle">LIST OF REMINDERS</h3>
 
         <button onclick="openReminderModal()">
-            Add Reminder
+            ADD REMINDER
         </button>
     </div>
 
@@ -31,21 +31,24 @@
     <!-- FILTERS -->
     <div class="reminderFilters">
 
-        <select id="reminderFilter">
-            <option value="all">All</option>
-            <option value="today">Today</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="overdue">Overdue</option>
-            <option value="completed">Completed</option>
-        </select>
+        <div class="reminderTabs">
+            <button class="reminderTab" onclick="setFilter('all')" data-filter="all">All</button>
+            <button class="reminderTab" onclick="setFilter('today')" data-filter="today">Today</button>
+            <button class="reminderTab" onclick="setFilter('weekly')" data-filter="weekly">Weekly</button>
+            <button class="reminderTab" onclick="setFilter('monthly')" data-filter="monthly">Monthly</button>
+            <button class="reminderTab" onclick="setFilter('overdue')" data-filter="overdue">Overdue</button>
+            <button class="reminderTab" onclick="setFilter('completed')" data-filter="completed">Completed</button>
+        </div>
 
-        <input type="search" placeholder="Search reminder...">
+        <!-- <input type="search" placeholder="Search reminder..."> -->
 
     </div>
 
     <!-- REMINDER LIST -->
-    <div id="reminderList" class="reminderList"></div>
+    <div class="reminderCont">
+        <h3>Reminders</h3>
+        <div id="reminderList" class="reminderList"></div>
+    </div>
 
 </section>
 

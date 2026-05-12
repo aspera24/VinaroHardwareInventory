@@ -9,7 +9,7 @@ async function loadBorrowPage() {
     .map(i => {
       const available = i.quantity - i.borrowed_count;
       return `<option value="${i.id}">
-      ${i.name} (${available} in stock)
+      ${i.name} <span>(${available} in stock)</span>
     </option>`;
     })
     .join("");
@@ -96,11 +96,15 @@ async function searchBorrower(inputEl, suggestEl) {
 
   const data = await res.json();
 
-  suggestEl.innerHTML = data.map(b => `
-    <a onclick="selectBorrower('${b.name}', '${inputEl.id}', '${suggestEl.id}')">
-      ${b.name}
-    </a>
-  `).join("");
+  suggestEl.innerHTML = data.map(b => {
+    const firstName = b.name.split(" ")[0]; // kuha first name
+
+    return `
+      <a onclick="selectBorrower('${b.name}', '${inputEl.id}', '${suggestEl.id}')">
+        ${firstName}
+      </a>
+    `;
+  }).join("");
 }
 
 // MAIN
@@ -128,6 +132,10 @@ function clearItemForm() {
   if (borrower) borrower.value = "";
   if (qty) qty.value = "";
   if (date) date.value = "";
+
+  // CLEAR SUGGESTIONS
+  const suggestBox = document.getElementById("modalSuggestBox");
+  if (suggestBox) suggestBox.innerHTML = "";
 
   editItemId = null;
 }
@@ -247,6 +255,7 @@ async function loadLogs() {
     !log.date_returned ? `
     <button class="small modify" onclick="modifyItem(${log.id})">Modify</button>
     <button class="small" onclick="returnItem(${log.id}, '${log.borrower}')">Return</button>
+    <button class="small delete" onclick="deleteBorrowedItem(${log.id}, '${log.borrower}')">Delete</button>
   ` : ""
   ]);
 
@@ -276,6 +285,18 @@ async function loadLogs() {
   borrowTable.draw();
 }
 
+async function deleteBorrowedItem(id, borrower) {
+  const confirmDelete = confirm(`Delete record of ${borrower}?`);
+  if (!confirmDelete) return;
+
+  await fetch(`/borrow_logs/${id}`, {
+    method: "DELETE",
+    credentials: "include"
+  });
+
+  loadBorrowPage(); // reload table + dropdown
+}
+
 function datetimeformat(datetime) {
   if (!datetime) return "-";
 
@@ -297,7 +318,7 @@ function datetimeformat(datetime) {
     hour12: true
   });
 
-  return `<strong>(${weekday})</strong> ${formattedDate} at ${time}`;
+  return `<span class="bstrong">(${weekday})</span> ${formattedDate} at ${time}`;
 }
 
 loadBorrowPage();

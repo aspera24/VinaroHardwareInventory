@@ -63,7 +63,7 @@
 }
 
 .card.blue {
-  background: linear-gradient(135deg, #1877f2, #5aa0ff);
+  background: linear-gradient(135deg, #3498db, #4da8e5);
 }
 
 .card.light {
@@ -100,7 +100,7 @@
 .alerts-container {
   background: #fff;
   padding: 15px;
-  width: 50%;
+  width: 70%;
   height: 300px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
@@ -108,11 +108,13 @@
 
 .alerts-container h3 {
   margin-bottom: 10px;
+  color: #c0392b;
 }
 
 #alerts {
   overflow: auto;
   scrollbar-width: thin !important;
+  scrollbar-color: #c0392b transparent;
   height: calc(100% - 30px);
 }
 
@@ -150,25 +152,48 @@
   font-weight: bold;
   margin-right: 5px;
   flex-shrink: 0;
+
+  animation: zinout 1s ease-in-out infinite;
+}
+
+@keyframes zinout {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .reminder-container {
   background: #fff;
   padding: 15px;
-  width: 100%;
+  width: 70%;
+  height: 300px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.reminder-container h3 {
+  margin-bottom: 10px;
+  color: var(--orange-bg);
 }
 
 #reminderList {
   overflow: auto;
   scrollbar-width: thin !important;
+  scrollbar-color: var(--orange-bg) transparent;
   height: calc(100% - 30px);
 }
 
 .reminderCard {
   background: #fff8e1;
-  padding: 5px;
+  padding: 8px;
   border-radius: 8px;
   margin-bottom: 8px;
   font-size: 12px;
@@ -275,11 +300,11 @@
 }
 
 .modalContent input:focus {
-  border-color: #1877f2;
+  border-color: var(--fb-bg);
 }
 
 .modalContent button {
-  background: linear-gradient(135deg, #1877f2, #5aa0ff);
+  background: linear-gradient(135deg, #3498db, #4da8e5);
   padding: 10px;
   border: none;
   border-radius: 8px;
@@ -333,7 +358,6 @@
 
 .topborrower {
   display: flex;
-  padding: 5px;
   align-items: center;
 }
 
@@ -349,7 +373,7 @@
 #borrower-list {
   overflow: auto;
   scrollbar-width: thin !important;
-  height: calc(100% - 30px);
+  height: calc(100% - 20px);
 }
 
 .blist {
@@ -363,21 +387,6 @@
   position: absolute;
   top: 10px;
   right: 45px;
-}
-
-#borrower-actions button {
-  background: linear-gradient(135deg, #ff8c42, #ffb26b);
-  color: white;
-  border: none;
-  height: 30px;
-  padding: 0 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: .1s all ease-in-out;
-}
-
-#borrower-actions button:hover {
-  transform: scale(1.08);
 }
 
 .borrower-checkbox {
@@ -418,7 +427,12 @@ input[type="checkbox"] {
   font-size: 12px;
 }
 
-
+.bcreatedat {
+  font-size: 12px;
+  position: absolute;
+  right: 10px;
+  bottom: 4px;
+}
 
 
 .table-container {
@@ -475,8 +489,8 @@ table tbody tr:hover {
 }
 
 .status.returned {
-  background: #1876f226;
-  color: #1877f2;
+  background: #3498db30;
+  color: var(--fb-bg);
 }
 
 .void {
@@ -503,7 +517,7 @@ table tbody tr:hover {
 }
 
 .dataTables_filter input:focus {
-  border-color: #1877f2;
+  border-color: var(--fb-bg);
 }
 
 /* PAGINATION */
@@ -516,12 +530,12 @@ table tbody tr:hover {
   margin: 2px;
   border-radius: 6px;
   border: 1px solid #ddd;
-  color: #1877f2;
+  color: var(--fb-bg);
   cursor: pointer;
 }
 
 .dataTables_paginate a.current {
-  background: #1877f2;
+  background: var(--fb-bg);
   color: white !important;
   border: none;
 }

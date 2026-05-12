@@ -2,9 +2,10 @@
     margin-bottom: 20px;
 }
 
-.borrow input, .borrow select{
-   height: 100%;
-   max-height: 50px;
+.borrow input,
+.borrow select {
+    height: 100%;
+    max-height: 50px;
 }
 
 .borrowerName {
@@ -25,7 +26,7 @@
     outline: none !important;
 }
 
-#suggestBox {
+#suggestBox, #modalSuggestBox {
     cursor: pointer;
     overflow-y: hidden;
     overflow-x: auto;
@@ -33,24 +34,60 @@
     display: flex;
 }
 
-#suggestBox a {
+#suggestBox a, #modalSuggestBox a {
     font-size: 12px;
     margin: 2px;
+    padding: 10px 20px;
+    color: black;
+    border-radius: 0px;
     background: var(--orange-bg);
 }
 
 
 .borrowBtn {
-    background: linear-gradient(135deg, #1877f2, #5aa0ff);
-    width: 100px;
+    background: linear-gradient(135deg, #3498db, #4da8e5);
     border: none;
     border-radius: 7px;
     color: white;
+    padding: 10px;
+}
+
+.borrowBtn:hover {
+  background: linear-gradient(135deg, #308cca, #479cd4);
+  transform: translateY(-1px);
+}
+
+.bstrong {
+    color: var(--fb-bg);
 }
 
 
 .qty {
-  font-size: 12px;
-  color: #888;
-  margin-left: 5px;
+    font-size: 12px;
+    color: #888;
+    margin-left: 5px;
+}
+
+.modalBorrowerName {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    flex: 1;
+    margin-bottom: 10px;
+    outline: none;
+    padding: 0 5px;
+}
+
+#modalBorrower {
+    margin: 0 !important;
+}
+
+#modalSuggestBox {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.modalBorrowerName input {
+    border: none;
 }

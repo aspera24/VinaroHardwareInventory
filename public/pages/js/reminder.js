@@ -1,3 +1,20 @@
+let currentFilter = "all";
+
+function setFilter(filter) {
+    currentFilter = filter;
+    setActiveTab(filter);
+    loadReminders();
+}
+
+function setActiveTab(filter) {
+    const buttons = document.querySelectorAll(".reminderTab");
+
+    buttons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.filter === filter);
+    });
+}
+
+
 function formatReminderType(reminder) {
     switch (reminder.reminder_type) {
         case "daily":
@@ -13,7 +30,13 @@ function formatReminderType(reminder) {
     }
 }
 
+
+
+
+
 async function loadReminders() {
+
+    let hasShown = false;
 
     const res = await fetch("/reminders", {
         credentials: "include"
@@ -22,55 +45,181 @@ async function loadReminders() {
     const reminders = await res.json();
 
     const list = document.getElementById("reminderList");
-
     list.innerHTML = "";
 
     const now = new Date();
+    const today = new Date();
 
-    // ADD THESE
-    let today = 0;
+    const todayStr = today.toISOString().split("T")[0];
+    const todayDay = today.toLocaleString("en-US", { weekday: "long" });
+    const todayMonthDay = today.getDate();
+
+    let todayCount = 0;
     let upcoming = 0;
     let overdue = 0;
 
     reminders.forEach(reminder => {
 
-        const typeText = formatReminderType(reminder);
-
         const start = reminder.start_date ? new Date(reminder.start_date) : null;
 
-        if (reminder.reminder_type === "one_time") {
-            today++;
-        } else if (start && start > now) {
-            upcoming++;
-        } else {
-            overdue++;
+        let show = false;
+
+        // TODAY LOGIC
+        if (currentFilter === "today") {
+
+            if (reminder.reminder_type === "daily") {
+                show = true;
+            }
+
+            else if (reminder.reminder_type === "weekly") {
+                show = reminder.week_day === todayDay;
+            }
+
+            else if (reminder.reminder_type === "monthly") {
+                show = Number(reminder.month_day) === todayMonthDay;
+            }
+
+            else if (reminder.reminder_type === "one_time") {
+                show = reminder.start_date === todayStr;
+            }
+
+            else if (reminder.reminder_type === "date_range") {
+                const s = new Date(reminder.start_date);
+                const e = new Date(reminder.end_date);
+                show = today >= s && today <= e;
+            }
         }
 
+        else if (currentFilter === "weekly") {
+            show = reminder.reminder_type === "weekly";
+        }
+
+        else if (currentFilter === "monthly") {
+            show = reminder.reminder_type === "monthly";
+        }
+
+        else if (currentFilter === "overdue") {
+            show = start && start < now;
+        }
+
+        else if (currentFilter === "completed") {
+            show = reminder.status === "completed";
+        }
+
+        else {
+            show = true;
+        }
+
+        if (currentFilter !== "completed" && reminder.status === "completed") {
+            show = false;
+        }
+
+        // ===== STATS (SINGLE SOURCE OF TRUTH) =====
+
+        if (reminder.reminder_type === "daily") {
+            todayCount++;
+        }
+
+        else if (reminder.reminder_type === "weekly" && reminder.week_day === todayDay) {
+            todayCount++;
+        }
+
+        else if (reminder.reminder_type === "monthly" && Number(reminder.month_day) === todayMonthDay) {
+            todayCount++;
+        }
+
+        else if (reminder.reminder_type === "one_time" && reminder.start_date === todayStr) {
+            todayCount++;
+        }
+
+        else if (reminder.reminder_type === "date_range") {
+            const s = new Date(reminder.start_date);
+            const e = new Date(reminder.end_date);
+            if (today >= s && today <= e) todayCount++;
+        }
+
+        // UPCOMING / OVERDUE
+        if (start) {
+            if (start > now) upcoming++;
+            else if (start < now) overdue++;
+        }
+
+        if (!show) return;
+
+        hasShown = true;
+
         list.innerHTML += `
-      <div class="reminderCard">
-        <div class="reminderTop">
-          <h4>${reminder.title}</h4>
-          <span>${typeText}</span>
+        <div class="reminderCard">
+            <div class="reminderTop">
+                <h4>${reminder.title}</h4>
+                <span>${formatReminderType(reminder)}</span>
+            </div>
+
+            <p>${reminder.description || "No description"}</p>
+
+            <div class="reminderBottom">
+                <small>Created by ${reminder.admin_name || "Admin"}</small>
+
+                <div>
+                    <button onclick="markComplete(${reminder.id})">Done</button>
+                    <button onclick="deleteReminder(${reminder.id})">Delete</button>
+                </div>
+            </div>
         </div>
-
-        <p>${reminder.description || "No description"}</p>
-
-        <div class="reminderBottom">
-          <small>Created by ${reminder.admin_name || "Admin"}</small>
-
-          <div>
-            <button onclick="deleteReminder(${reminder.id})">
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
     `;
     });
 
-    document.getElementById("todayCount").textContent = today;
+    if (!hasShown) {
+        list.innerHTML = `
+            <div class="emptyState">
+                <p>No reminders found for "${currentFilter}"</p>
+            </div>
+        `;
+    }
+
+    document.getElementById("todayCount").textContent = todayCount;
     document.getElementById("upcomingCount").textContent = upcoming;
     document.getElementById("overdueCount").textContent = overdue;
+}
+
+async function markComplete(id) {
+
+    // STEP 1: create log first
+    await fetch(`/reminders/generate-log`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            reminder_id: id,
+            occurrence_date: new Date().toISOString().slice(0, 10)
+        })
+    });
+
+    // STEP 2: mark complete
+    await fetch(`/reminders/complete/${id}`, {
+        method: "PUT",
+        credentials: "include"
+    });
+
+    loadReminders();
+}
+
+function generateTodayLog(reminder) {
+    const today = new Date().toISOString().slice(0, 10);
+
+    return fetch(`/reminders/generate-log`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify({
+            reminder_id: reminder.id,
+            occurrence_date: today
+        })
+    });
 }
 
 function formatTime(time) {
@@ -129,34 +278,7 @@ async function saveReminder() {
     loadReminders();
 }
 
-function handleReminderType() {
-    const type = document.getElementById("rType").value;
-    const weekDayGroup = document.getElementById("weekDayGroup");
-    const monthDayGroup = document.getElementById("monthDayGroup");
-    const singleDateGroup = document.getElementById("singleDateGroup");
-    const dateRangeGroup = document.getElementById("dateRangeGroup");
 
-    // RESET
-    weekDayGroup.style.display = "none";
-    monthDayGroup.style.display = "none";
-    singleDateGroup.style.display = "none";
-    dateRangeGroup.style.display = "none";
-
-    // SHOW NEEDED INPUTS ONLY
-    if (type === "one_time") {
-        singleDateGroup.style.display = "block";
-    }
-    else if (type === "weekly") {
-        weekDayGroup.style.display = "block";
-    }
-
-    else if (type === "monthly") {
-        monthDayGroup.style.display = "block";
-    }
-    else if (type === "date_range") {
-        dateRangeGroup.style.display = "grid";
-    }
-}
 
 // OPEN REMINDER MODAL
 function openReminderModal() {
@@ -170,6 +292,5 @@ function closeReminderModal() {
     document.body.style.overflow = "";
 }
 
-
+setActiveTab("all");
 loadReminders();
-handleReminderType();

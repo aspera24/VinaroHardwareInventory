@@ -3,7 +3,7 @@
 }
 
 .addItem {
-    background: linear-gradient(135deg, #1877f2, #5aa0ff);
+    background: linear-gradient(135deg, #3498db, #4da8e5);
     width: 100px;
     border: none;
     border-radius: 7px;
@@ -12,6 +12,11 @@
     position: absolute;
     right: 20px;
     top: 60px;
+}
+
+.addItem:hover {
+  background: linear-gradient(135deg, #308cca, #479cd4);
+  transform: translateY(-1px);
 }
 
 button.small {
@@ -77,7 +82,7 @@ button.modify:hover {
 }
 
 .modal-content button {
-    background: linear-gradient(135deg, #1877f2, #5aa0ff);
+    background: linear-gradient(135deg, #3498db, #4da8e5);
     padding: 10px;
     border: none;
     border-radius: 8px;
@@ -91,7 +96,11 @@ button.modify:hover {
     background: var(--fb-hover-bg);
 }
 
+.stock {
+    color: var(--fb-bg);
+    font-weight: bold;
+}
+
 .peso {
     font-family: 'Century Gothic';
-    
 }

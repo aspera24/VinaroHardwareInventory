@@ -451,6 +451,41 @@ module.exports = (io) => {
     );
   });
 
+  router.delete("/borrow_logs/:id", requireAuth, (req, res) => {
+    const { id } = req.params;
+
+    // STEP 1: get log info
+    db.query(
+      "SELECT item_id, quantity, date_returned FROM borrow_logs WHERE id=?",
+      [id],
+      (err, result) => {
+        if (err) return res.status(500).json(err);
+        if (!result.length) return res.status(404).json({ message: "Not found" });
+
+        const { item_id, quantity, date_returned } = result[0];
+
+        // STEP 2: if NOT returned, restore stock
+        if (!date_returned) {
+          db.query(
+            "UPDATE items SET borrowed_count = borrowed_count - ? WHERE id=?",
+            [quantity, item_id]
+          );
+        }
+
+        // STEP 3: delete log
+        db.query(
+          "DELETE FROM borrow_logs WHERE id=?",
+          [id],
+          (err2) => {
+            if (err2) return res.status(500).json(err2);
+
+            res.json({ success: true });
+          }
+        );
+      }
+    );
+  });
+
   // GET logs
   router.get("/borrow_logs", requireAuth, (req, res) => {
     db.query(`
@@ -587,12 +622,14 @@ module.exports = (io) => {
   router.get("/reminders", requireAuth, (req, res) => {
     db.query(
       `
-        SELECT r.*, a.fullName AS admin_name
-        FROM reminders r
-        LEFT JOIN admins a ON r.created_by = a.id
-        WHERE r.is_active = 1
-        ORDER BY r.id DESC
-      `,
+    SELECT r.*, l.status, l.occurrence_date, l.completed_at
+    FROM reminders r
+    LEFT JOIN reminder_logs l 
+        ON r.id = l.reminder_id 
+        AND l.occurrence_date = CURDATE()
+    WHERE r.is_active = 1
+    ORDER BY r.id DESC
+    `,
       (err, result) => {
         if (err) return res.status(500).json(err);
         res.json(result);
@@ -600,13 +637,47 @@ module.exports = (io) => {
     );
   });
 
-
+  router.put("/reminders/complete/:id", requireAuth, (req, res) => {
+    db.query(
+      `
+    UPDATE reminder_logs 
+    SET status = 'completed', completed_at = NOW()
+    WHERE reminder_id = ? AND occurrence_date = CURDATE()
+    `,
+      [req.params.id],
+      (err) => {
+        if (err) return res.status(500).json(err);
+        res.json({ success: true });
+      }
+    );
+  });
 
   // DELETE (SOFT DELETE)
   router.delete("/reminders/:id", requireAuth, (req, res) => {
     db.query(
       "UPDATE reminders SET is_active = 0 WHERE id = ?",
       [req.params.id],
+      (err) => {
+        if (err) return res.status(500).json(err);
+        res.json({ success: true });
+      }
+    );
+  });
+
+
+  router.post("/reminders/generate-log", requireAuth, (req, res) => {
+    const { reminder_id, occurrence_date } = req.body;
+
+    db.query(
+      `
+    INSERT INTO reminder_logs (reminder_id, occurrence_date)
+    SELECT ?, ?
+    WHERE NOT EXISTS (
+        SELECT 1 FROM reminder_logs 
+        WHERE reminder_id = ? AND occurrence_date = ?
+    )
+    `,
+      [reminder_id, occurrence_date, reminder_id, occurrence_date],
       (err) => {
         if (err) return res.status(500).json(err);
         res.json({ success: true });

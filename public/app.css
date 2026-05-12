@@ -6,8 +6,8 @@
 }
 
 :root {
-  --fb-bg: #1877f2;
-  --fb-hover-bg: #1468d6;
+  --fb-bg: #3498db;
+  --fb-hover-bg: #318ecc;
   --table-bg: #e4e4e4;
   --orange-bg: #ffb26b;
   --orange-hover-bg: #eda663;
@@ -81,6 +81,7 @@ html {
   padding: 5px;
   margin-right: 10px;
   border-radius: 5px;
+  font-style: italic;
   transition: .1s all ease-in-out;
 }
 
@@ -128,7 +129,7 @@ html {
 }
 
 .sidebar a.active {
-  background: linear-gradient(135deg, #1877f2, #5aa0ff);
+  background: linear-gradient(135deg, #3498db, #4da8e5);
   color: white;
 }
 
@@ -292,4 +293,17 @@ button {
 
 #modalTitle {
   margin-bottom: 10px;
+}
+
+.dstrong {
+    color: var(--fb-bg);
+}
+
+.delete {
+  background: rgba(255, 51, 0, 0.127) !important;
+  color: rgb(255, 51, 0) !important;
+}
+
+.delete:hover {
+  background: rgba(255, 51, 0, 0.227) !important;
 }

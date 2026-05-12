@@ -21,7 +21,7 @@ if (window.location.pathname.startsWith("/auth")) {
     }
 
     const adminName = document.getElementById("adminName");
-    adminName.textContent = "Hi, " + localStorage.getItem("fullName").split(" ")[0];
+    adminName.textContent = "Hi, " + localStorage.getItem("fullName").split(" ")[0] + "!";
 
     // VALID PAGES
     const validPages = ["dashboard", "inventory", "borrow", "reminder", "logs"];
