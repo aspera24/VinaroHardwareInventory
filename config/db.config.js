@@ -1,11 +1,11 @@
 const mysql = require("mysql2");
 
 const db = mysql.createPool({
-  host: "localhost",
+  host: "auth-db2050.hstgr.io",
   port: "3306",
   user: "u859692781_vhi",
   password: "Vhiapp-05122026-449",
-  database: "Vhiapp-05122026-449",
+  database: "u859692781_vhi",
   timezone: "+08:00"
 });
 
