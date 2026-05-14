@@ -54,20 +54,32 @@ module.exports = (io) => {
       const { ids } = req.body;
 
       if (!ids || ids.length === 0) {
-        return res.status(400).json({ message: "No IDs provided" });
+        return res.status(400).json({
+          success: false,
+          message: "No IDs provided"
+        });
       }
 
       const placeholders = ids.map(() => "?").join(",");
 
-      const sql = `DELETE FROM borrowers WHERE id IN (${placeholders})`;
+      await db.execute(
+        `DELETE FROM borrowers WHERE id IN (${placeholders})`,
+        ids
+      );
 
-      await db.execute(sql, ids);
-
-      res.json({ message: "Borrower(s) deleted successfully" });
+      // OPTIONAL: return deleted ids for UI sync
+      res.json({
+        success: true,
+        deletedIds: ids,
+        message: "Borrower(s) deleted successfully"
+      });
 
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({
+        success: false,
+        message: "Server error"
+      });
     }
   });
 
@@ -103,14 +115,12 @@ module.exports = (io) => {
       const { id, name, contact } = req.body;
       const file = req.file;
 
-      console.log(req.body);
-
       if (!id || !name) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
       let sql = "UPDATE borrowers SET name = ?, contact = ?";
-      let params = [name || null, contact || null];
+      let params = [name, contact];
 
       if (file) {
         const compressedImage = await sharp(file.buffer)
@@ -127,7 +137,25 @@ module.exports = (io) => {
 
       await db.execute(sql, params);
 
-      res.json({ message: "Borrower updated successfully" });
+      // FETCH UPDATED DATA (IMPORTANT PART)
+      db.query(
+        "SELECT * FROM borrowers WHERE id = ?",
+        [id],
+        (err, result) => {
+          if (err) return res.status(500).json(err);
+
+          const row = result[0];
+
+          if (row.profile) {
+            row.profile = `data:image/jpeg;base64,${row.profile.toString("base64")}`;
+          }
+
+          res.json({
+            success: true,
+            borrower: row
+          });
+        }
+      );
 
     } catch (err) {
       console.error(err);

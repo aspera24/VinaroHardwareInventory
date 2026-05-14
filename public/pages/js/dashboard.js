@@ -56,6 +56,7 @@ async function loadBorrower(reset = false) {
   if (reset) {
     page = 1;
     hasMore = true;
+    loading = false;
     list.innerHTML = "";
     list.scrollTop = 0;
   }
@@ -77,6 +78,7 @@ async function loadBorrower(reset = false) {
 
     if (data.length === 0) {
       hasMore = false;
+      loading = false;
       return;
     }
 
@@ -240,14 +242,30 @@ async function deleteSelected() {
 
   if (!confirm("Are you sure you want to delete selected borrowers?")) return;
 
-  await fetch("/borrower/delete", {
+  const res = await fetch("/borrower/delete", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ids: selected })
   });
 
+  const data = await res.json();
+
+  if (!data.success) {
+    alert(data.message || "Delete failed");
+    return;
+  }
+
+  // optional: sync UI better
+  if (data.deletedIds) {
+    data.deletedIds.forEach(id => {
+      const el = document.querySelector(
+        `.borrower-checkbox[data-id="${id}"]`
+      );
+      if (el) el.closest(".blist")?.remove();
+    });
+  }
+
   selectedBorrowers.clear();
-  window.location.href = `/${adminName}/page/dashboard`;
   resetBorrowerForm();
 }
 
@@ -298,7 +316,7 @@ async function saveBorrower() {
 
   const id = nameInput.dataset.id;
 
-  // basic validation
+  // VALIDATION
   if (!name) {
     nameInput.style.border = "2px solid red";
     return;
@@ -312,26 +330,41 @@ async function saveBorrower() {
     formData.append("profile", file);
   }
 
+  let res;
+
+  // ADD or UPDATE
   if (id) {
     formData.append("id", id);
 
-    await fetch("/borrower/update", {
+    res = await fetch("/borrower/update", {
       method: "POST",
       credentials: "include",
       body: formData
     });
   } else {
-    await fetch("/borrowers", {
+    res = await fetch("/borrowers", {
       method: "POST",
       credentials: "include",
       body: formData
     });
   }
 
-  window.location.href = `/${adminName}/page/dashboard`;
+  const data = await res.json();
+
+  // IMPORTANT: check success
+  if (!data.success) {
+    alert(data.message || "Something went wrong");
+    return;
+  }
+
+
+  // UI RESET
   closeModal();
   resetBorrowerForm();
+  await loadBorrower(true);
 }
+
+
 
 // RESET FORM + EDIT STATE
 function resetBorrowerForm() {
