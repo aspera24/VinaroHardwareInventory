@@ -113,14 +113,6 @@
     0 0 0 3px rgba(52, 152, 219, .15);
 }
 
-.reminderCont {
-  background: white;
-  padding: 20px;
-  height: 300px !important;
-  width: 50%;
-  margin: 0 auto;
-}
-
 /* REMINDER LIST */
 .reminderList {
   display: flex;
