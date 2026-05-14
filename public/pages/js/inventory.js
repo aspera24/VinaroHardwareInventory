@@ -142,13 +142,19 @@ document.addEventListener("keydown", function (event) {
 
 async function deleteItem(id, name) {
   const confirmDelete = confirm(`Delete "${name}"?`);
-
   if (!confirmDelete) return;
 
-  await fetch(`/items/${id}`, {
+  const res = await fetch(`/items/${id}`, {
     method: "DELETE",
     credentials: "include"
   });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    alert(data.message); 
+    return;
+  }
 
   loadItems();
 }

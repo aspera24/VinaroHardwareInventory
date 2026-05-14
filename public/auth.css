@@ -105,6 +105,11 @@ button i {
     margin-right: 6px;
 }
 
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 /* Button */
 .loginCard #login {
     width: 100%;
@@ -117,7 +122,6 @@ button i {
     margin-top: 10px;
     font-size: 14px;
     transition: 0.2s;
-    letter-spacing: 2px;
 }
 
 .loginCard #login:hover {

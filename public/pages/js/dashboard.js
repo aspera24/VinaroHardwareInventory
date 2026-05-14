@@ -51,44 +51,37 @@ function animateNumber(id, value) {
 // LOAD BORROWERS (INFINITE SCROLL)
 async function loadBorrower(reset = false) {
 
-  if (loading) return;
+  const list = document.getElementById("borrower-list");
 
-  // RESET
   if (reset) {
     page = 1;
     hasMore = true;
-
-    document.getElementById("borrower-list").innerHTML = "";
+    list.innerHTML = "";
+    list.scrollTop = 0;
   }
 
-  if (!hasMore) return;
+  if (loading || !hasMore) return;
 
   loading = true;
 
   try {
-
     const res = await fetch(
-      `/borrower?page=${page}&limit=${limit}&search=${encodeURIComponent(currentSearch)}`,
+      `/borrower?page=${page}&limit=${limit}&search=${encodeURIComponent(currentSearch)}&t=${Date.now()}`,
       {
-        credentials: "include"
+        credentials: "include",
+        cache: "no-store"
       }
     );
 
     const data = await res.json();
 
-    // NO MORE RESULTS
     if (data.length === 0) {
       hasMore = false;
-      loading = false;
       return;
     }
 
-    const list = document.getElementById("borrower-list");
-
     data.forEach(b => {
-
       const div = document.createElement("div");
-
       div.className = "blist";
 
       const isChecked = selectedBorrowers.has(String(b.id));
@@ -110,16 +103,12 @@ async function loadBorrower(reset = false) {
       `;
 
       list.appendChild(div);
-
     });
 
-    // NEXT PAGE
     page++;
 
   } catch (err) {
-
     console.error(err);
-
   }
 
   loading = false;
@@ -241,6 +230,8 @@ function clearBorrowerForm() {
   delete nameInput.dataset.id;
 }
 
+const adminName = localStorage.getItem("fullName").split(" ")[0];
+
 // DELETE BORROWERS
 async function deleteSelected() {
   const selected = getSelectedBorrowers();
@@ -256,7 +247,7 @@ async function deleteSelected() {
   });
 
   selectedBorrowers.clear();
-  loadBorrower(true);
+  window.location.href = `/${adminName}/page/dashboard`;
   resetBorrowerForm();
 }
 
@@ -326,19 +317,20 @@ async function saveBorrower() {
 
     await fetch("/borrower/update", {
       method: "POST",
+      credentials: "include",
       body: formData
     });
   } else {
     await fetch("/borrowers", {
       method: "POST",
+      credentials: "include",
       body: formData
     });
   }
 
-  // reset UI state after save
+  window.location.href = `/${adminName}/page/dashboard`;
   closeModal();
   resetBorrowerForm();
-  loadBorrower(true);
 }
 
 // RESET FORM + EDIT STATE
@@ -357,14 +349,12 @@ function resetBorrowerForm() {
 
   delete nameInput.dataset.id;
 
-  // IMPORTANT: reset selection UI
   selectedBorrowers.clear();
 
   if (actions) {
     actions.style.display = "none";
   }
 
-  // uncheck all checkboxes visually
   document.querySelectorAll(".borrower-checkbox").forEach(cb => {
     cb.checked = false;
   });
@@ -731,8 +721,12 @@ if (input) {
 }
 
 // INIT
-loadDashboard();
-loadBorrower(true);
-loadLogs();
-loadBorrowedLogs();
-loadDashboardReminders();
+async function init() {
+  loadDashboard();
+  await loadBorrower(true);
+  loadLogs();
+  loadBorrowedLogs();
+  loadDashboardReminders();
+}
+
+init();

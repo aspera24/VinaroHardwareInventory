@@ -103,6 +103,8 @@ module.exports = (io) => {
       const { id, name, contact } = req.body;
       const file = req.file;
 
+      console.log(req.body);
+
       if (!id || !name) {
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -299,13 +301,39 @@ module.exports = (io) => {
   // DELETE item
   router.delete("/items/:id", requireAuth, (req, res) => {
     const adminId = req.session.adminId;
+    const itemId = req.params.id;
 
+    // CHECK FIRST
     db.query(
-      "UPDATE items SET deleted_by=?, deleted_at=NOW() WHERE id=?",
-      [adminId, req.params.id],
-      (err) => {
+      "SELECT quantity, borrowed_count FROM items WHERE id=?",
+      [itemId],
+      (err, result) => {
         if (err) return res.status(500).json(err);
-        res.json({ success: true });
+
+        if (result.length === 0) {
+          return res.status(404).json({ message: "Item not found" });
+        }
+
+        const item = result[0];
+
+        // IF NOT FULLY RETURNED
+        if (item.borrowed_count > 0) {
+          return res.json({
+            success: false,
+            message: "Cannot delete. Some items are still borrowed. Please wait until all are returned."
+          });
+        }
+
+        // OK TO DELETE
+        db.query(
+          "UPDATE items SET deleted_by=?, deleted_at=NOW() WHERE id=?",
+          [adminId, itemId],
+          (err) => {
+            if (err) return res.status(500).json(err);
+
+            res.json({ success: true });
+          }
+        );
       }
     );
   });
