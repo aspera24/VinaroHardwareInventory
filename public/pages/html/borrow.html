@@ -1,15 +1,5 @@
 <section class="page">
-    <h3 class="borrowLabel pageTitle">LIST OF BORROWED ITEMS</h3>
-    <div class="form borrow">
-        <div class="borrowerName">
-            <input type="text" id="borrower" placeholder="Borrower name...">
-            <div id="suggestBox" class="suggest-box"></div>
-        </div>
-        <select id="itemSelect"></select>
-        <input type="number" id="borrowQty" placeholder="Quantity..." min="1">
-        <button class="borrowBtn" onclick="borrowItem()">BORROW</button>
-    </div>
-
+    <h3 class="borrowLabel pageTitle">LISTA SA TANANG NI-ULOS UG ITEM</h3>
     <!-- MODAL -->
     <div id="itemModal" class="modal">
         <div class="modal-content">
@@ -34,8 +24,8 @@
                 <tr>
                     <th>#</th>
                     <th>Item</th>
-                    <th>Borrower</th>
-                    <th>Date</th>
+                    <th>Manghulamay</th>
+                    <th>Kanus-a gi uslan</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -43,5 +33,15 @@
 
             <tbody id="borrowTable"></tbody>
         </table>
+    </div>
+
+    <div class="form borrow">
+        <div class="borrowerName">
+            <input type="text" id="borrower" placeholder="Pangalan sa manghulamay..">
+            <div id="suggestBox" class="suggest-box"></div>
+        </div>
+        <select id="itemSelect"></select>
+        <input type="number" id="borrowQty" placeholder="Pila kabook uslan?" min="1">
+        <button class="borrowBtn" onclick="borrowItem()">BORROW</button>
     </div>
 </section>

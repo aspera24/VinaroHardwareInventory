@@ -193,7 +193,7 @@ async function modifySelected() {
   const selected = getSelectedBorrowers();
 
   if (selected.length !== 1) {
-    alert("Select only ONE borrower to modify.");
+    alert("Pili lang ug usa ka manghulamay nga imong tarungon.");
     return;
   }
 
@@ -204,7 +204,7 @@ async function modifySelected() {
 
   isEditMode = true;
 
-  document.getElementById("modalTitle").textContent = "MODIFY BORROWER";
+  document.getElementById("modalTitle").textContent = "TARUNGON ANG MANGHULAMAY";
 
   document.getElementById("bName").value = data.name;
   document.getElementById("bContact").value = data.contact;
@@ -240,7 +240,7 @@ async function deleteSelected() {
 
   if (selected.length === 0) return;
 
-  if (!confirm("Are you sure you want to delete selected borrowers?")) return;
+  if (!confirm("Sure baka nga tangtangon ni nga manghulamay?")) return;
 
   const res = await fetch("/borrower/delete", {
     method: "POST",
@@ -283,7 +283,7 @@ if (addBtn && modal) {
 addBtn?.addEventListener("click", () => {
   isEditMode = false;
 
-  document.getElementById("modalTitle").textContent = "ADD BORROWER";
+  document.getElementById("modalTitle").textContent = "MAGPUNO UG MANGHULAMAY";
 
   openBorrowerModal();
   clearBorrowerForm();
@@ -301,7 +301,7 @@ function closeModal() {
   clearBorrowerForm();
   isEditMode = false;
 
-  document.getElementById("modalTitle").textContent = "ADD BORROWER";
+  document.getElementById("modalTitle").textContent = "MAGPUNO UG MANGHULAMAY";
 }
 
 // SAVE BORROWER (ADD + UPDATE)
@@ -353,7 +353,7 @@ async function saveBorrower() {
 
   // IMPORTANT: check success
   if (!data.success) {
-    alert(data.message || "Something went wrong");
+    alert(data.message || "Naay bati nga nahitabo!");
     return;
   }
 
@@ -451,7 +451,7 @@ async function loadBorrowedLogs() {
 
 
 async function voidReturn(id) {
-  const confirmVoid = confirm("Are you sure you want to VOID this return?");
+  const confirmVoid = confirm("Nasayop raba ka ani nga return?");
   if (!confirmVoid) return;
 
   const res = await fetch(`/void_return/${id}`, {
@@ -462,7 +462,7 @@ async function voidReturn(id) {
   const data = await res.json();
 
   if (!data.success) {
-    alert(data.message || "Failed to void return");
+    alert(data.message || "Wala madayon ug void ang return.");
     return;
   }
 
@@ -474,25 +474,39 @@ async function voidReturn(id) {
 
 // LOAD ALERTS
 function loadAlerts(logs) {
+
   const container = document.getElementById("alerts");
   if (!container) return;
 
   container.innerHTML = "";
 
   const now = new Date();
-
   const overdue = logs.filter(l => {
+
     if (!l.date_returned && l.date_borrowed) {
+
       const borrowDate = new Date(l.date_borrowed);
+
       if (isNaN(borrowDate.getTime())) return false;
-      const diffDays = (Date.now() - borrowDate.getTime()) / (1000 * 60 * 60 * 24);
-      return diffDays > 3;
+
+      // SAME DAY END TIME = 11:59:59 PM
+      const endOfDay = new Date(borrowDate);
+
+      endOfDay.setHours(23, 59, 59, 999);
+
+      // OVERDUE IF CURRENT TIME PASSED END OF DAY
+      return now > endOfDay;
     }
+
     return false;
   });
 
   if (overdue.length === 0) {
-    container.innerHTML = `<div class="alert yellow">No overdue items.</div>`;
+    container.innerHTML = `
+      <div class="alert yellow">
+        Wala pay overdue nga item.
+      </div>
+    `;
     return;
   }
 
@@ -500,11 +514,14 @@ function loadAlerts(logs) {
 
     const borrowDate = new Date(item.date_borrowed);
 
-    const diffDays = Math.floor(
-      (Date.now() - borrowDate.getTime()) / (1000 * 60 * 60 * 24)
-    );
+    const endOfDay = new Date(borrowDate);
+    endOfDay.setHours(23, 59, 59, 999);
 
-    const dayText = diffDays === 1 ? "day" : "days";
+    const diffMs = now - endOfDay;
+
+    const diffHours = Math.floor(
+      diffMs / (1000 * 60 * 60)
+    );
 
     container.innerHTML += `
       <div class="alert red">
@@ -513,9 +530,9 @@ function loadAlerts(logs) {
           ${index + 1}
         </span>
 
-        ${item.item_name} is overdue 
+        ${item.item_name} wala pa ma uli
         (Borrower: <span>${item.borrower}</span>) 
-        (${diffDays} ${dayText} na ang ni-agi)
+        (Overdue na for ${diffHours} hour${diffHours !== 1 ? "s" : ""})
 
       </div>
     `;
@@ -565,7 +582,7 @@ async function loadDashboardReminders() {
 }
 
 async function markComplete(id) {
-  if (confirm("Already done with this reminder?")) {
+  if (confirm("Humana naba ka'g buhat ani nga reminder?")) {
     // STEP 1: create log first
     await fetch(`/reminders/generate-log`, {
       method: "POST",

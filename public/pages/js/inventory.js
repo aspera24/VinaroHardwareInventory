@@ -119,7 +119,7 @@ async function modifyItem(id) {
 
     editItemId = id;
 
-    document.getElementById("modalTitle").textContent = "MODIFY ITEM";
+    document.getElementById("modalTitle").textContent = "TARUNGON ANG ITEM";
     document.getElementById("itemName").value = item.name;
     document.getElementById("itemQty").value = item.quantity;
     document.getElementById("itemPrice").value = item.item_price || 0;

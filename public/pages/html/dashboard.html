@@ -12,7 +12,7 @@
     <div class="card orange">
       <div class="cardLabel">
         <i class="fas fa-check-circle"></i>
-        <h3>AVAILABLE STOCK</h3>
+        <h3>AVAILABLE NGA STOCK</h3>
       </div>
       <p id="available"></p>
     </div>
@@ -20,7 +20,7 @@
     <div class="card light">
       <div class="cardLabel">
         <i class="fas fa-hand-holding"></i>
-        <h3>BORROWED ITEM</h3>
+        <h3>GI-HULAMAN NGA ITEM</h3>
       </div>
       <p id="borrowed"></p>
     </div>
@@ -28,19 +28,19 @@
 
   <div class="centView">
     <div class="alerts-container">
-      <h3>Alerts</h3>
+      <h3>Alerto</h3>
       <div id="alerts"></div>
     </div>
 
     <div class="reminder-container">
-      <h3>Reminders</h3>
+      <h3>Pahinumdom</h3>
       <div id="reminderList"></div>
     </div>
 
     <div class="borrower-container">
       <button title="Add Borrower" id="addBtn">+</button>
       <div class="topborrower">
-        <h3>Borrowers</h3>
+        <h3>Manghulamay</h3>
         <div class="searchCont" id="searchCont">
           <img title="Search Borrower" src="/graphics/search.svg" id="searchBtn" alt="search">
           <input id="searchInput" type="search" name="" id="">
@@ -49,30 +49,30 @@
 
       <div id="borrower-list"></div>
       <div id="borrower-actions" style="display:none;">
-        <button class="small modify" onclick="modifySelected()">Modify</button>
-        <button class="small delete" onclick="deleteSelected()">Delete</button>
+        <button class="small modify" onclick="modifySelected()">Tarungon</button>
+        <button class="small delete" onclick="deleteSelected()">Wagtangon</button>
       </div>
     </div>
 
     <!-- MODAL -->
     <div id="borrowerModal" class="modal">
       <div class="modalContent">
-        <h3 id="modalTitle">ADD BORROWER</h3>
+        <h3 id="modalTitle">MAGPUNO UG MANGHULAMAY</h3>
 
         <!-- PROFILE BOX -->
         <div class="profileBox" onclick="triggerFile()">
           <img id="profilePreview" src="/graphics/default_profile.png" />
 
           <div class="overlay">
-            <span>Change Profile</span>
+            <span>Ilisan Ang Profile</span>
           </div>
         </div>
 
         <!-- HIDDEN FILE INPUT -->
         <input type="file" id="bProfile" hidden>
 
-        <input type="text" id="bName" placeholder="Name">
-        <input type="text" id="bContact" placeholder="Contact">
+        <input type="text" id="bName" placeholder="Pangalan sa manghulamay">
+        <input type="text" id="bContact" placeholder="Contact Number">
 
         <button onclick="saveBorrower()">Save</button>
         <button onclick="closeModal()">Cancel</button>
@@ -81,15 +81,15 @@
   </div>
 
   <div class="table-container">
-    <h3>RETURNED ITEMS</h3>
+    <h3>GI-ULI NGA ITEMS</h3>
     <table id="logsTableUI">
       <thead>
         <tr>
           <th>#</th>
           <th>Item</th>
-          <th>Borrower</th>
-          <th>Date Borrowed</th>
-          <th>Date Returned</th>
+          <th>Manghulamay</th>
+          <th>Kanus-a gi uslan</th>
+          <th>Kanus-a gi uli</th>
           <th>Status</th>
         </tr>
       </thead>

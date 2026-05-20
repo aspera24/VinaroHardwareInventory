@@ -32,7 +32,7 @@ async function borrowItem() {
 
   // basic validation
   if (!item_id || !borrower || !qty) {
-    alert("Complete all fields");
+    alert("Complitoha tanang fields");
     return;
   }
 
