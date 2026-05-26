@@ -82,9 +82,9 @@
 }
 
 .reminderTab {
-  background: #3498db1f;
+  background: #ffffff;
   width: 100px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 7px;
   color: var(--fb-bg);
   padding: 10px;
@@ -92,13 +92,18 @@
 
 .reminderTab.active {
   background: var(--fb-bg);
+  border: 1px solid var(--fb-bg);
   color: white;
 }
 
+.inputGroup,
+.dateRangeWrap {
+  transition: all 0.2s ease;
+}
 
 
 .reminderTab:not(.active):hover {
-  background: #3498db2f;
+  border: 1px solid var(--fb-bg);
 }
 
 .reminderFilters input {
@@ -121,6 +126,35 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.reminderList.rlist {
+  padding: 10px 0 !important;
+}
+
+.reminder {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.reminder button {
+  width: 80px;
+  height: 30px;
+  border-radius: 50px;
+  border: none;
+  outline: none;
+}
+
+.reminder button.done {
+  background: var(--fb-bg);
+  color: white;
+}
+
+.reminderCard.completed {
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 /* REMINDER CARD */
@@ -194,7 +228,7 @@
 
 
 
-.modalContent {
+.remindermodalContent {
   width: 100%;
   max-width: 520px;
   background: #fff;

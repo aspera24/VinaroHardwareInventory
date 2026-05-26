@@ -11,6 +11,8 @@
   --table-bg: #e4e4e4;
   --orange-bg: #ffb26b;
   --orange-hover-bg: #eda663;
+  --pg-width: 2000px;
+  --pg-gutter: 20px;
 }
 
 * {
@@ -178,8 +180,13 @@ html {
   letter-spacing: 4px;
 }
 
+.page {
+  max-width: calc(var(--pg-width) - 2 * var(--pg-gutter));
+  margin: 0 auto;
+}
+
 #modalTitle {
-  letter-spacing: 4px;
+  letter-spacing: 1px;
 }
 
 /* TABLE */
@@ -188,7 +195,6 @@ table {
   border-collapse: collapse;
   background: white;
   border-radius: 10px;
-  overflow: hidden;
 }
 
 th {

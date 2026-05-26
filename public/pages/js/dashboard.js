@@ -1,11 +1,6 @@
 // GLOBAL STATE
-let page = 1;
-const limit = 6;
-let loading = false;
-let hasMore = true;
 let selectedBorrowers = new Set();
 let isEditMode = false;
-let currentSearch = "";
 
 // DASHBOARD
 async function loadDashboard() {
@@ -48,117 +43,235 @@ function animateNumber(id, value) {
   }, 16);
 }
 
-// LOAD BORROWERS (INFINITE SCROLL)
-async function loadBorrower(reset = false) {
+async function loadReminderCount() {
 
-  const list = document.getElementById("borrower-list");
+  const res = await fetch("/reminders", {
+    credentials: "include"
+  });
 
-  if (reset) {
-    page = 1;
-    hasMore = true;
-    loading = false;
-    list.innerHTML = "";
-    list.scrollTop = 0;
-  }
+  const reminders = await res.json();
 
-  if (loading || !hasMore) return;
+  const today = new Date();
 
-  loading = true;
+  const todayStr = today.toISOString().slice(0, 10);
+  const todayDay = today.toLocaleString("en-US", { weekday: "long" });
+  const todayMonthDay = today.getDate();
 
-  try {
-    const res = await fetch(
-      `/borrower?page=${page}&limit=${limit}&search=${encodeURIComponent(currentSearch)}&t=${Date.now()}`,
-      {
-        credentials: "include",
-        cache: "no-store"
-      }
-    );
+  let count = 0;
 
-    const data = await res.json();
+  reminders.forEach(r => {
 
-    if (data.length === 0) {
-      hasMore = false;
-      loading = false;
-      return;
+    let show = false;
+
+    if (r.status === "completed") return;
+
+    if (r.reminder_type === "daily") {
+      show = true;
     }
 
-    data.forEach(b => {
-      const div = document.createElement("div");
-      div.className = "blist";
+    else if (r.reminder_type === "weekly") {
+      show = r.week_day === todayDay;
+    }
 
-      const isChecked = selectedBorrowers.has(String(b.id));
+    else if (r.reminder_type === "monthly") {
+      show = Number(r.month_day) === todayMonthDay;
+    }
 
-      div.innerHTML = `
-        <input type="checkbox"
-          class="borrower-checkbox"
-          data-id="${b.id}"
-          ${isChecked ? "checked" : ""}>
+    else if (r.reminder_type === "one_time") {
+      show = r.start_date === todayStr;
+    }
 
-        <img src="${b.profile || '/graphics/default_profile.png'}"
-          onerror="this.src='/graphics/default_profile.png'">
+    else if (r.reminder_type === "date_range") {
+      show =
+        r.start_date <= todayStr &&
+        r.end_date >= todayStr;
+    }
 
-        <div class="borrower-item">
-          <p class="bname"><strong>${b.name}</strong></p>
-          <p class="bcontact">${b.contact || ""}</p>
-          <p class="bcreatedat">${formatDate(b.created_at)}</p>
+    if (show) count++;
+  });
+
+  document.getElementById("reminderCount").textContent = count;
+}
+
+
+window.borrowerTable = null;
+
+async function loadBorrowersTable() {
+
+  const res = await fetch("/borrower", {
+    credentials: "include"
+  });
+
+  const borrowers = await res.json();
+
+  const rows = borrowers.map(b => {
+
+    return [
+
+      `
+        <img
+          src="${b.profile || '/graphics/default_profile.png'}"
+          onerror="this.src='/graphics/default_profile.png'"
+          class="tableProfile">
+      `,
+
+      `<strong>${b.name}</strong>`,
+
+      b.contact || "-",
+
+      formatDate(b.created_at),
+
+      `
+        <div class="actionWrapper">
+
+          <button class="actionBtn"
+            onclick="toggleBorrowerMenu(event, ${b.id})">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+          </button>
+
+          <div class="popoverMenu" id="menu-${b.id}">
+
+            <button onclick="editBorrower(${b.id})">
+              <i class="fa-solid fa-pen"></i>
+              Edit
+            </button>
+
+            <button class="delete"
+              onclick="deleteBorrower(${b.id})">
+              <i class="fa-solid fa-trash"></i>
+              Delete
+            </button>
+
+          </div>
+
         </div>
-      `;
+      `
+    ];
+  });
 
-      list.appendChild(div);
+  
+
+  // INIT ONLY ONCE
+  if (!window.borrowerTable) {
+
+    window.borrowerTable = $("#borrowerTableUI").DataTable({
+
+      data: rows,
+
+      pageLength: 6,
+
+      lengthMenu: [6, 10, 15, 20],
+
+      responsive: true,
+
+      autoWidth: false,
+
+      language: {
+        emptyTable: "No borrowers added yet"
+      },
+
+      columnDefs: [
+        {
+          orderable: false,
+          targets: [0, 4]
+        }
+      ]
     });
 
-    page++;
+    console.log(window.borrowerTable.page.info());
 
-  } catch (err) {
-    console.error(err);
-  }
-
-  loading = false;
-}
-
-
-
-// BORROWER LIST EVENTS
-const borrowerList = document.getElementById("borrower-list");
-
-if (borrowerList) {
-  // CHECKBOX
-  borrowerList.addEventListener("change", (e) => {
-    if (e.target.classList.contains("borrower-checkbox")) {
-      handleSelection(e.target);
-    }
-  });
-
-  // INFINITE SCROLL
-  borrowerList.addEventListener("scroll", () => {
-    if (
-      borrowerList.scrollTop + borrowerList.clientHeight >=
-      borrowerList.scrollHeight - 10
-    ) {
-      loadBorrower();
-    }
-  });
-}
-
-
-
-// HANDLE CHECKBOX SELECTION
-function handleSelection(checkbox) {
-  const id = checkbox.dataset.id;
-
-  if (checkbox.checked) {
-    selectedBorrowers.add(id);
   } else {
-    selectedBorrowers.delete(id);
-  }
 
-  const actions = document.getElementById("borrower-actions");
-
-  if (actions) {
-    // always based on Set, not DOM
-    actions.style.display = selectedBorrowers.size > 0 ? "block" : "none";
+    window.borrowerTable.clear();
+    window.borrowerTable.rows.add(rows);
+    window.borrowerTable.draw(false);
   }
 }
+
+
+// TOGGLE MENU
+function toggleBorrowerMenu(event, id) {
+
+  event.stopPropagation();
+
+  // close all first
+  document.querySelectorAll(".popoverMenu")
+    .forEach(menu => {
+      menu.classList.remove("show");
+    });
+
+  const menu = document.getElementById(`menu-${id}`);
+
+  if (menu) {
+    menu.classList.toggle("show");
+  }
+}
+
+// CLOSE WHEN CLICK OUTSIDE
+document.addEventListener("click", () => {
+  document.querySelectorAll(".popoverMenu")
+    .forEach(menu => {
+      menu.classList.remove("show");
+    });
+});
+
+
+async function editBorrower(id) {
+
+  const res = await fetch(`/borrower/${id}`, {
+    credentials: "include"
+  });
+
+  const borrower = await res.json();
+
+  document.getElementById("bName").value =
+    borrower.name || "";
+
+  document.getElementById("bContact").value =
+    borrower.contact || "";
+
+  document.getElementById("profilePreview").src =
+    borrower.profile || "/graphics/default_profile.png";
+
+  document.getElementById("bName").dataset.id = id;
+
+  document.getElementById("modalTitle").textContent =
+    "EDIT MANGHULAMAY";
+
+  openBorrowerModal();
+}
+
+async function deleteBorrower(id) {
+
+  const confirmDelete = confirm(
+    "Sure baka nga tangtangon ni nga manghulamay?"
+  );
+
+  if (!confirmDelete) return;
+
+  const res = await fetch("/borrower/delete", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ids: [id]
+    })
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    alert(data.message || "Delete failed");
+    return;
+  }
+
+  await loadBorrowersTable();
+}
+
+
+
+
 
 
 // open file picker
@@ -167,53 +280,25 @@ function triggerFile() {
 }
 
 // preview image
-document.getElementById("bProfile").addEventListener("change", function () {
-  const file = this.files[0];
+const profileInput = document.getElementById("bProfile");
 
-  if (!file) return;
+if (profileInput) {
+  profileInput.addEventListener("change", function () {
+    const file = this.files[0];
 
-  const reader = new FileReader();
+    if (!file) return;
 
-  reader.onload = function (e) {
-    document.getElementById("profilePreview").src = e.target.result;
-  };
+    const reader = new FileReader();
 
-  reader.readAsDataURL(file);
-});
+    reader.onload = function (e) {
+      document.getElementById("profilePreview").src = e.target.result;
+    };
 
-
-
-// GET SELECTED BORROWERS
-function getSelectedBorrowers() {
-  return Array.from(selectedBorrowers);
+    reader.readAsDataURL(file);
+  });
 }
 
-// MODIFY BORROWER
-async function modifySelected() {
-  const selected = getSelectedBorrowers();
 
-  if (selected.length !== 1) {
-    alert("Pili lang ug usa ka manghulamay nga imong tarungon.");
-    return;
-  }
-
-  const id = selected[0];
-
-  const res = await fetch(`/borrower/${id}`);
-  const data = await res.json();
-
-  isEditMode = true;
-
-  document.getElementById("modalTitle").textContent = "TARUNGON ANG MANGHULAMAY";
-
-  document.getElementById("bName").value = data.name;
-  document.getElementById("bContact").value = data.contact;
-  document.getElementById("bName").dataset.id = data.id;
-
-  document.getElementById("profilePreview").src = data.profile || "/graphics/default_profile.png";
-
-  openBorrowerModal();
-}
 
 function openBorrowerModal() {
   const modal = document.getElementById("borrowerModal");
@@ -236,6 +321,7 @@ const adminName = localStorage.getItem("fullName").split(" ")[0];
 
 // DELETE BORROWERS
 async function deleteSelected() {
+
   const selected = getSelectedBorrowers();
 
   if (selected.length === 0) return;
@@ -244,7 +330,9 @@ async function deleteSelected() {
 
   const res = await fetch("/borrower/delete", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({ ids: selected })
   });
 
@@ -255,18 +343,11 @@ async function deleteSelected() {
     return;
   }
 
-  // optional: sync UI better
-  if (data.deletedIds) {
-    data.deletedIds.forEach(id => {
-      const el = document.querySelector(
-        `.borrower-checkbox[data-id="${id}"]`
-      );
-      if (el) el.closest(".blist")?.remove();
-    });
-  }
-
   selectedBorrowers.clear();
   resetBorrowerForm();
+
+  // IMPORTANT
+  await loadBorrowersTable();
 }
 
 // OPEN MODAL
@@ -291,10 +372,6 @@ addBtn?.addEventListener("click", () => {
 
 // CLOSE MODAL
 function closeModal() {
-  const actions = document.getElementById("borrower-actions");
-  if (actions) {
-    actions.style.display = selectedBorrowers.size > 0 ? "block" : "none";
-  }
   document.getElementById("borrowerModal").style.display = "none";
   document.body.style.overflow = "";
 
@@ -361,7 +438,7 @@ async function saveBorrower() {
   // UI RESET
   closeModal();
   resetBorrowerForm();
-  await loadBorrower(true);
+  await loadBorrowersTable();
 }
 
 
@@ -372,7 +449,6 @@ function resetBorrowerForm() {
   const contactInput = document.getElementById("bContact");
   const fileInput = document.getElementById("bProfile");
   const img = document.getElementById("profilePreview");
-  const actions = document.getElementById("borrower-actions");
 
   nameInput.value = "";
   contactInput.value = "";
@@ -384,13 +460,6 @@ function resetBorrowerForm() {
 
   selectedBorrowers.clear();
 
-  if (actions) {
-    actions.style.display = "none";
-  }
-
-  document.querySelectorAll(".borrower-checkbox").forEach(cb => {
-    cb.checked = false;
-  });
 }
 
 // LOAD LOGS
@@ -531,7 +600,7 @@ function loadAlerts(logs) {
         </span>
 
         ${item.item_name} wala pa ma uli
-        (Borrower: <span>${item.borrower}</span>) 
+        (Manghulamay: <span>${item.borrower}</span>) 
         (Overdue na for ${diffHours} hour${diffHours !== 1 ? "s" : ""})
 
       </div>
@@ -558,7 +627,7 @@ async function loadDashboardReminders() {
   if (todayReminders.length === 0) {
     container.innerHTML = `
       <div class="alert yellow">
-        No reminders for today 🎉
+        Walay pahinumdom karong adlawa 🎉
       </div>`;
     return;
   }
@@ -573,7 +642,7 @@ async function loadDashboardReminders() {
           <span class="remSession">${formatReminderType(reminder)}</span>
         </div>
         <p class="desc">${reminder.description || ""}</p>
-          <button class="small" onclick="markComplete(${reminder.id})">
+          <button class="complete" onclick="markComplete(${reminder.id})">
             <i class="fa-solid fa-check"></i>
           </button>
       </div>
@@ -738,45 +807,17 @@ function datetimeformat(datetime) {
   return `<span class="dstrong">(${weekday})</span> ${formattedDate} at ${time}`;
 }
 
-// SEARCH UI
-const searchCont = document.getElementById("searchCont");
-const btn = document.getElementById("searchBtn");
-const input = document.getElementById("searchInput");
 
 
-// OPEN SEARCH
-if (btn) {
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    input.classList.add("active");
-    input.focus();
-  });
-}
-
-
-// CLOSE SEARCH WHEN CLICK OUTSIDE
-document.addEventListener("click", (e) => {
-  if (!searchCont.contains(e.target)) {
-    input.classList.remove("active");
-  }
-});
-
-
-// SEARCH INPUT
-if (input) {
-  input.addEventListener("input", () => {
-    currentSearch = input.value.trim();
-    loadBorrower(true);
-  });
-}
 
 // INIT
 async function init() {
   loadDashboard();
-  await loadBorrower(true);
+  await loadBorrowersTable();
   loadLogs();
   loadBorrowedLogs();
   loadDashboardReminders();
+  loadReminderCount();
 }
 
 init();

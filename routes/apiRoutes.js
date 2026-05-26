@@ -9,29 +9,29 @@ module.exports = (io) => {
   // GET borrowers
   router.get("/borrower", requireAuth, (req, res) => {
 
-    let page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 6;
-
     let search = req.query.search || "";
-
-    let offset = (page - 1) * limit;
 
     db.query(
       `
-      SELECT *
-      FROM borrowers
-      WHERE name LIKE ?
-      ORDER BY id DESC
-      LIMIT ? OFFSET ?
+    SELECT *
+    FROM borrowers
+    WHERE name LIKE ?
+    ORDER BY id DESC
     `,
-      [`%${search}%`, limit, offset],
+      [`%${search}%`],
       (err, result) => {
-        if (err) return res.status(500).json(err);
+
+        if (err) {
+          return res.status(500).json(err);
+        }
 
         const formatted = result.map(r => {
+
           if (r.profile) {
-            r.profile = `data:image/jpeg;base64,${r.profile.toString("base64")}`;
+            r.profile =
+              `data:image/jpeg;base64,${r.profile.toString("base64")}`;
           }
+
           return r;
         });
 
@@ -741,5 +741,34 @@ module.exports = (io) => {
     );
   });
 
+
+  // GET COMPLETED REMINDERS HISTORY
+  router.get("/reminder_logs", requireAuth, (req, res) => {
+
+    db.query(`
+      SELECT 
+        l.*,
+        r.title,
+        r.description,
+        r.reminder_type,
+        r.reminder_time,
+        r.week_day,
+        r.month_day,
+        r.start_date,
+        r.end_date
+      FROM reminder_logs l
+      JOIN reminders r ON l.reminder_id = r.id
+      WHERE l.status = 'completed' ORDER BY l.completed_at DESC
+    `, (err, result) => {
+
+      if (err) {
+        return res.status(500).json(err);
+      }
+
+      res.json(result);
+
+    });
+
+  });
   return router
 };

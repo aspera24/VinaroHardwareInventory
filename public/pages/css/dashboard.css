@@ -43,7 +43,7 @@
   flex-shrink: 0;
 }
 
-.card.light>.cardLabel i {
+.card>.cardLabel i {
   color: var(--fb-bg);
   border: 2px solid var(--fb-bg);
 }
@@ -63,7 +63,8 @@
 }
 
 .card.blue {
-  background: linear-gradient(135deg, #3498db, #4da8e5);
+  background: white;
+  color: var(--fb-bg);
 }
 
 .card.light {
@@ -72,7 +73,13 @@
 }
 
 .card.orange {
-  background: linear-gradient(135deg, #ff8c42, #ffb26b);
+  background: white;
+  color: var(--fb-bg);
+}
+
+.card.purple {
+  background: white;
+  color: var(--fb-bg);
 }
 
 .card::before {
@@ -89,7 +96,8 @@
 
 
 .centView {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr minmax(400px, 1fr);
   gap: 20px;
   margin-top: 20px;
 }
@@ -100,10 +108,12 @@
 .alerts-container {
   background: #fff;
   padding: 15px;
-  width: 70%;
+  width: 100%;
   height: 300px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
 }
 
 .alerts-container h3 {
@@ -173,10 +183,12 @@
 .reminder-container {
   background: #fff;
   padding: 15px;
-  width: 70%;
+  width: 100%;
   height: 300px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
 }
 
 .reminder-container h3 {
@@ -191,76 +203,224 @@
   height: calc(100% - 30px);
 }
 
-.reminderCard {
-  background: #fff8e1;
+.urgent {
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
   padding: 8px;
   border-radius: 8px;
   margin-bottom: 8px;
   font-size: 12px;
 }
 
+.urgent button {
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  border: none;
+  background: var(--fb-bg);
+  color: white;
+  transition: all .1s ease-in-out;
+}
+
+.urgent button:hover {
+  transform: scale(.9);
+}
 
 .borrower-container {
   background: white;
   padding: 15px;
   width: 100%;
-  height: 300px;
-  border: 3px solid white;
   border-radius: 12px;
   position: relative;
-  overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  grid-column: 3 / 4;
+  grid-row: 1 / 3;
 }
 
 .borrower-container h3 {
   color: var(--fb-bg);
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .borrower-container #addBtn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 30px;
-  height: 30px;
+  top: 15px;
+  right: 15px;
+  width: 35px;
+  height: 35px;
   cursor: pointer;
   border-radius: 10px;
   border: none;
   background: var(--fb-bg);
   color: white;
-  transition: .1s all ease-in-out;
+  font-size: 18px;
+  transition: .2s ease;
+  z-index: 5;
 }
 
-.searchCont {
+.borrower-container #addBtn:hover {
+  transform: scale(1.05);
+}
+
+.topborrower {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 2px;
-  border-radius: 50px;
-  width: fit-content;
-  border: 1px solid var(--fb-bg);
+  margin-bottom: 15px;
 }
 
-.searchCont img {
-  height: 20px;
-  width: 20px;
+/* DATATABLE WRAPPER */
+#borrowerTableUI_wrapper {
+  margin-top: 10px;
+}
+
+/* SEARCH INPUT */
+#borrowerTableUI_filter input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 6px 10px;
+  outline: none;
+  margin-left: 5px;
+}
+
+/* SHOW ENTRIES */
+#borrowerTableUI_length select {
+  border-radius: 6px;
+  padding: 4px;
+}
+
+/* TABLE */
+#borrowerTableUI {
+  width: 100% !important;
+  border-collapse: collapse;
+}
+
+/* TABLE HEADER */
+#borrowerTableUI thead th {
+  background: #ffffff;
+  color: #333;
+  font-size: 13px;
+  /* padding: 12px; */
+  border-bottom: 1px solid #eee;
+}
+
+#borrowerTableUI thead th:first-child {
+  width: 0px;
+}
+
+/* TABLE BODY */
+#borrowerTableUI tbody td {
+  padding: 5px;
+  vertical-align: middle;
+  font-size: 12px;
+}
+
+/* ROW HOVER */
+#borrowerTableUI tbody tr:hover {
+  /* background: #fafafa; */
+}
+
+/* PROFILE IMAGE */
+.tableProfile {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #eee;
+}
+
+/* CHECKBOX */
+.borrower-checkbox {
+  width: 16px;
+  height: 16px;
   cursor: pointer;
 }
 
-.searchCont input {
-  width: 0;
-  opacity: 0;
-  outline: none;
-  transition: 0.3s ease;
-  border: none;
-  font-size: 10px;
+
+/* .dataTables_paginate .paginate_button {
+  border-radius: 8px !important;
+  margin: 0 2px;
 }
 
-.searchCont input.active {
-  width: 140px;
-  opacity: 1;
-  margin-right: 5px;
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: var(--fb-bg) !important;
+  color: white !important;
+  border: none !important;
+} */
+
+
+
+.actionWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
 }
+
+.actionBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.actionBtn:hover {
+  background: #f1f1f1;
+}
+
+.popoverMenu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+  width: 140px;
+  display: none;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.popoverMenu.show {
+  display: block;
+}
+
+.popoverMenu button {
+  width: 100%;
+  border: none;
+  background: white;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.popoverMenu button:hover {
+  background: #f5f5f5;
+}
+
+.popoverMenu button.delete {
+  color: red;
+}
+
+.tableProfile {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+
+
 
 .modal {
   display: none;
@@ -270,8 +430,8 @@
   z-index: 30000;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.616);
+  /* backdrop-filter: blur(4px); */
   justify-content: center;
   align-items: center;
 }
@@ -282,21 +442,35 @@
 
 .modalContent {
   background: white;
-  padding: 20px;
+  padding: 20px 0;
   border-radius: 10px;
-  width: 300px;
+  width: 500px;
   z-index: 40000;
   text-align: center;
 }
 
-.modalContent input {
+.inputBox {
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.inputBox i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+  font-size: 14px;
+}
+
+.inputBox input {
   width: 100%;
-  padding: 10px;
+  padding: 12px 12px 12px 38px;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  border: 1px solid #ddd;
-  flex: 1;
   outline: none;
-  margin: 5px 0;
 }
 
 .modalContent input:focus {
@@ -308,8 +482,8 @@
   padding: 10px;
   border: none;
   border-radius: 8px;
-  margin: 5px 0;
-  width: 100%;
+  margin: 5px auto;
+  width: 90%;
   color: white;
   cursor: pointer;
 }
@@ -318,15 +492,18 @@
   background: var(--fb-hover-bg);
 }
 
+.saveBtn,
+.cancelBtn {
+  gap: 10px;
+}
+
 .profileBox {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 180px;
   margin: 10px auto;
-  border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-  border: 2px solid #ddd;
 }
 
 .profileBox img {
@@ -353,6 +530,7 @@
 
 .profileBox:hover .overlay {
   background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   opacity: 1;
 }
 
@@ -374,6 +552,34 @@
   overflow: auto;
   scrollbar-width: thin !important;
   height: calc(100% - 20px);
+}
+
+.emptyBorrower {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 20px;
+  text-align: center;
+  color: #777;
+}
+
+.emptyBorrower i {
+  font-size: 45px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.emptyBorrower h4 {
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.emptyBorrower p {
+  font-size: 13px;
+  max-width: 250px;
+  line-height: 1.5;
 }
 
 .blist {
@@ -437,7 +643,8 @@ input[type="checkbox"] {
 
 .table-container {
   border-radius: 12px;
-  padding: 20px 0;
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
 }
 
 /* TITLE */
@@ -452,7 +659,6 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
-  overflow: hidden;
   border-radius: 10px;
 }
 
@@ -464,7 +670,7 @@ table th {
 
 /* ROWS */
 table td {
-  padding: 12px;
+  /* padding: 12px; */
   color: #1c1e21;
 }
 
@@ -479,7 +685,6 @@ table tbody tr:hover {
   padding: 5px 10px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 600;
   display: inline-block;
 }
 
@@ -497,7 +702,6 @@ table tbody tr:hover {
   padding: 5px 10px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 600;
   display: inline-block;
   background: var(--orange-bg);
   color: white;

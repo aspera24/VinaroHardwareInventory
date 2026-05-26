@@ -1,6 +1,14 @@
 <section class="page">
   <h3 class="pageTitle">DASHBOARD OVERVIEW</h3>
   <div class="cards">
+    <div class="card purple">
+      <div class="cardLabel">
+        <i class="fa-solid fa-bell"></i>
+        <h3>PAHINUMDOM KARON</h3>
+      </div>
+      <p id="reminderCount"></p>
+    </div>
+
     <div class="card blue">
       <div class="cardLabel">
         <i class="fas fa-box"></i>
@@ -41,60 +49,99 @@
       <button title="Add Borrower" id="addBtn">+</button>
       <div class="topborrower">
         <h3>Manghulamay</h3>
-        <div class="searchCont" id="searchCont">
-          <img title="Search Borrower" src="/graphics/search.svg" id="searchBtn" alt="search">
-          <input id="searchInput" type="search" name="" id="">
-        </div>
       </div>
 
-      <div id="borrower-list"></div>
-      <div id="borrower-actions" style="display:none;">
-        <button class="small modify" onclick="modifySelected()">Tarungon</button>
-        <button class="small delete" onclick="deleteSelected()">Wagtangon</button>
-      </div>
+      <table id="borrowerTableUI" class="display">
+        <thead>
+          <tr>
+            <th>Profile</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Date Added</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="table-container">
+      <h3>GI-ULI NGA ITEMS</h3>
+      <table id="logsTableUI">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th>Manghulamay</th>
+            <th>Kanus-a gi uslan</th>
+            <th>Kanus-a gi uli</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="logsTable"></tbody>
+      </table>
     </div>
 
     <!-- MODAL -->
     <div id="borrowerModal" class="modal">
       <div class="modalContent">
-        <h3 id="modalTitle">MAGPUNO UG MANGHULAMAY</h3>
 
-        <!-- PROFILE BOX -->
+        <!-- TITLE -->
+        <h3 id="modalTitle">
+          <i class="fa-solid fa-user-plus"></i>
+          MAGPUNO UG MANGHULAMAY
+        </h3>
+
+        <!-- PROFILE -->
+        <label class="sectionLabel">
+          Profile Picture
+        </label>
+
         <div class="profileBox" onclick="triggerFile()">
-          <img id="profilePreview" src="/graphics/default_profile.png" />
+          <img id="profilePreview" src="/graphics/default_profile.png">
 
           <div class="overlay">
-            <span>Ilisan Ang Profile</span>
+            <span>
+              <i class="fa-solid fa-camera"></i>
+              Ilisan Ang Profile
+            </span>
           </div>
         </div>
 
-        <!-- HIDDEN FILE INPUT -->
         <input type="file" id="bProfile" hidden>
 
-        <input type="text" id="bName" placeholder="Pangalan sa manghulamay">
-        <input type="text" id="bContact" placeholder="Contact Number">
+        <div class="inputBox">
+          <i class="fa-solid fa-user"></i>
 
-        <button onclick="saveBorrower()">Save</button>
-        <button onclick="closeModal()">Cancel</button>
+          <input type="text" id="bName" placeholder="Enter full name">
+        </div>
+
+        <div class="inputBox">
+          <i class="fa-solid fa-phone"></i>
+
+          <input type="text" id="bContact" placeholder="09XXXXXXXXX" maxlength="11">
+        </div>
+
+        <!-- BUTTONS -->
+        <div class="modalActions">
+
+          <button onclick="saveBorrower()" class="saveBtn">
+            <i class="fa-solid fa-floppy-disk"></i>
+            Save Borrower
+          </button>
+
+          <button onclick="closeModal()" class="cancelBtn">
+            <i class="fa-solid fa-xmark"></i>
+            Cancel
+          </button>
+
+        </div>
+
       </div>
     </div>
   </div>
 
-  <div class="table-container">
-    <h3>GI-ULI NGA ITEMS</h3>
-    <table id="logsTableUI">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Item</th>
-          <th>Manghulamay</th>
-          <th>Kanus-a gi uslan</th>
-          <th>Kanus-a gi uli</th>
-          <th>Status</th>
-        </tr>
-      </thead>
 
-      <tbody id="logsTable"></tbody>
-    </table>
-  </div>
 </section>

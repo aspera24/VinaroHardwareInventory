@@ -31,12 +31,108 @@ function formatReminderType(reminder) {
 }
 
 
+function handleReminderType() {
+    const type = document.getElementById("rType").value;
 
+    const singleDateGroup = document.getElementById("singleDateGroup");
+    const dateRangeGroup = document.getElementById("dateRangeGroup");
+    const weekDayGroup = document.getElementById("weekDayGroup");
+    const monthDayGroup = document.getElementById("monthDayGroup");
+
+    // RESET ALL
+    singleDateGroup.style.display = "none";
+    dateRangeGroup.style.display = "none";
+    weekDayGroup.style.display = "none";
+    monthDayGroup.style.display = "none";
+
+    // SHOW BASED ON TYPE
+    if (type === "one_time") {
+        singleDateGroup.style.display = "block";
+    }
+
+    else if (type === "date_range") {
+        dateRangeGroup.style.display = "flex";
+    }
+
+    else if (type === "weekly") {
+        weekDayGroup.style.display = "block";
+    }
+
+    else if (type === "monthly") {
+        monthDayGroup.style.display = "block";
+    }
+
+}
 
 
 async function loadReminders() {
 
     let hasShown = false;
+
+    const list = document.getElementById("reminderList");
+    list.innerHTML = "";
+
+    // =========================
+    // COMPLETED FILTER
+    // =========================
+
+    if (currentFilter === "completed") {
+
+        const res = await fetch("/reminder_logs", {
+            credentials: "include"
+        });
+
+        const logs = await res.json();
+
+        if (logs.length === 0) {
+
+            list.innerHTML = `
+                <div class="emptyState">
+                    <p>No completed reminders yet.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+        logs.forEach(log => {
+
+            list.innerHTML += `
+                <div class="reminderCard completed">
+
+                    <div class="reminderTop">
+
+                        <h4>${log.title}</h4>
+
+                        <span>
+                            ${formatReminderType(log)}
+                        </span>
+
+                    </div>
+
+                    <p>
+                        ${log.description || "No description"}
+                    </p>
+
+                    <div class="reminderBottom">
+
+                        <small>
+                            Completed:
+                            ${formatDate(log.completed_at)}
+                        </small>
+
+                    </div>
+
+                </div>
+            `;
+        });
+
+        return;
+    }
+
+    // =========================
+    // NORMAL REMINDERS
+    // =========================
 
     const res = await fetch("/reminders", {
         credentials: "include"
@@ -44,27 +140,25 @@ async function loadReminders() {
 
     const reminders = await res.json();
 
-    const list = document.getElementById("reminderList");
-    list.innerHTML = "";
-
     const now = new Date();
     const today = new Date();
 
     const todayStr = today.toISOString().split("T")[0];
-    const todayDay = today.toLocaleString("en-US", { weekday: "long" });
-    const todayMonthDay = today.getDate();
+    const todayDay = today.toLocaleString("en-US", {
+        weekday: "long"
+    });
 
-    let todayCount = 0;
-    let upcoming = 0;
-    let overdue = 0;
+    const todayMonthDay = today.getDate();
 
     reminders.forEach(reminder => {
 
-        const start = reminder.start_date ? new Date(reminder.start_date) : null;
+        const start = reminder.start_date
+            ? new Date(reminder.start_date)
+            : null;
 
         let show = false;
 
-        // TODAY LOGIC
+        // TODAY
         if (currentFilter === "today") {
 
             if (reminder.reminder_type === "daily") {
@@ -84,64 +178,48 @@ async function loadReminders() {
             }
 
             else if (reminder.reminder_type === "date_range") {
+
                 const s = new Date(reminder.start_date);
                 const e = new Date(reminder.end_date);
+
                 show = today >= s && today <= e;
             }
         }
 
+        // WEEKLY
         else if (currentFilter === "weekly") {
             show = reminder.reminder_type === "weekly";
         }
 
+        // MONTHLY
         else if (currentFilter === "monthly") {
             show = reminder.reminder_type === "monthly";
         }
 
+        // OVERDUE
         else if (currentFilter === "overdue") {
-            show = start && start < now;
+
+            if (
+                reminder.reminder_type === "one_time" &&
+                reminder.start_date
+            ) {
+
+                const dueDate = new Date(reminder.start_date);
+
+                show =
+                    dueDate < now &&
+                    reminder.status !== "completed";
+            }
         }
 
-        else if (currentFilter === "completed") {
-            show = reminder.status === "completed";
-        }
-
+        // ALL
         else {
             show = true;
         }
 
-        if (currentFilter !== "completed" && reminder.status === "completed") {
+        // HIDE COMPLETED TODAY
+        if (reminder.status === "completed") {
             show = false;
-        }
-
-        // ===== STATS (SINGLE SOURCE OF TRUTH) =====
-
-        if (reminder.reminder_type === "daily") {
-            todayCount++;
-        }
-
-        else if (reminder.reminder_type === "weekly" && reminder.week_day === todayDay) {
-            todayCount++;
-        }
-
-        else if (reminder.reminder_type === "monthly" && Number(reminder.month_day) === todayMonthDay) {
-            todayCount++;
-        }
-
-        else if (reminder.reminder_type === "one_time" && reminder.start_date === todayStr) {
-            todayCount++;
-        }
-
-        else if (reminder.reminder_type === "date_range") {
-            const s = new Date(reminder.start_date);
-            const e = new Date(reminder.end_date);
-            if (today >= s && today <= e) todayCount++;
-        }
-
-        // UPCOMING / OVERDUE
-        if (start) {
-            if (start > now) upcoming++;
-            else if (start < now) overdue++;
         }
 
         if (!show) return;
@@ -149,39 +227,62 @@ async function loadReminders() {
         hasShown = true;
 
         list.innerHTML += `
-        <div class="reminderCard">
-            <div class="reminderTop">
-                <h4>${reminder.title}</h4>
-                <span>${formatReminderType(reminder)}</span>
-            </div>
+            <div class="reminderCard reminder">
 
-            <p>${reminder.description || "No description"}</p>
+                <div class="reminderTop">
 
-            <div class="reminderBottom">
-                <small>Created by ${reminder.admin_name || "Admin"}</small>
+                    <h4>${reminder.title}</h4>
 
-                <div>
-                    <button onclick="markComplete(${reminder.id})">Done</button>
-                    <button onclick="deleteReminder(${reminder.id})">Delete</button>
+                    <span>
+                        ${formatReminderType(reminder)}
+                    </span>
+
                 </div>
+
+                <p>
+                    ${reminder.description || "No description"}
+                </p>
+
+                <div class="reminderBottom">
+
+                    <small>
+                        Created by 
+                        ${reminder.admin_name || "Admin"}
+                    </small>
+
+                    <div class="reminderBtn">
+
+                        <button
+                            onclick="markComplete(${reminder.id})"
+                            class="done">
+                            Done
+                        </button>
+
+                        <button
+                            onclick="deleteReminder(${reminder.id})"
+                            class="delete">
+                            Delete
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
-        </div>
-    `;
+        `;
     });
 
     if (!hasShown) {
+
         list.innerHTML = `
             <div class="emptyState">
-                <p>No reminders found for "${currentFilter}"</p>
+                <p>
+                    No reminders found for "${currentFilter}"
+                </p>
             </div>
         `;
     }
-
-    document.getElementById("todayCount").textContent = todayCount;
-    document.getElementById("upcomingCount").textContent = upcoming;
-    document.getElementById("overdueCount").textContent = overdue;
 }
-
 async function markComplete(id) {
 
     // STEP 1: create log first
