@@ -1,144 +1,150 @@
 <section class="page">
-  <h3 class="pageTitle">DASHBOARD OVERVIEW</h3>
+  <div>
+    <h3 class="pageTitle">DASHBOARD OVERVIEW</h3>
+    <p class="pageSub">Monitor system activity, summaries, and overall performance at a glance</p>
+  </div>
   <div class="cards">
     <div class="card purple">
       <div class="cardLabel">
         <i class="fa-solid fa-bell"></i>
-        <h3>PAHINUMDOM KARON</h3>
+        <h3>Reminder Today</h3>
       </div>
-      <p id="reminderCount"></p>
+      <p id="reminderCount">0</p>
     </div>
 
     <div class="card blue">
       <div class="cardLabel">
         <i class="fas fa-box"></i>
-        <h3>TOTAL ITEM</h3>
+        <h3>Total Item</h3>
       </div>
-      <p id="total"></p>
+      <p id="total">0</p>
     </div>
 
     <div class="card orange">
       <div class="cardLabel">
         <i class="fas fa-check-circle"></i>
-        <h3>AVAILABLE NGA STOCK</h3>
+        <h3>Available Stock</h3>
       </div>
-      <p id="available"></p>
+      <p id="available">0</p>
     </div>
 
     <div class="card light">
       <div class="cardLabel">
         <i class="fas fa-hand-holding"></i>
-        <h3>GI-HULAMAN NGA ITEM</h3>
+        <h3>Borrowed Item</h3>
       </div>
-      <p id="borrowed"></p>
+      <p id="borrowed">0</p>
     </div>
   </div>
 
   <div class="centView">
-    <div class="alerts-container">
-      <h3>Alerto</h3>
-      <div id="alerts"></div>
-    </div>
-
-    <div class="reminder-container">
-      <h3>Pahinumdom</h3>
-      <div id="reminderList"></div>
-    </div>
-
-    <div class="borrower-container">
-      <button title="Add Borrower" id="addBtn">+</button>
-      <div class="topborrower">
-        <h3>Manghulamay</h3>
+    <div class="leftView">
+      <div class="alerts-container">
+        <h3>Alerts</h3>
+        <div id="alerts"></div>
       </div>
 
-      <table id="borrowerTableUI" class="display">
-        <thead>
-          <tr>
-            <th>Profile</th>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Date Added</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+      <div class="reminder-container">
+        <h3>Reminders</h3>
+        <div id="reminderList"></div>
+      </div>
 
-        <tbody></tbody>
-      </table>
+      <div class="table-container">
+        <h3>Returned Items</h3>
+        <table id="logsTableUI">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Item</th>
+              <th>Borrower</th>
+              <th>Borrowed Date</th>
+              <th>Returned Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody id="logsTable"></tbody>
+        </table>
+      </div>
     </div>
+    <div class="rightView">
+      <div class="borrower-container">
+        <button title="Add Borrower" id="addBtn"><i class="fa-solid fa-plus"></i></button>
+        <div class="topborrower">
+          <h3>Borrowers</h3>
+        </div>
 
-    <div class="table-container">
-      <h3>GI-ULI NGA ITEMS</h3>
-      <table id="logsTableUI">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Item</th>
-            <th>Manghulamay</th>
-            <th>Kanus-a gi uslan</th>
-            <th>Kanus-a gi uli</th>
-            <th>Status</th>
-          </tr>
-        </thead>
+        <table id="borrowerTableUI" class="display">
+          <thead>
+            <tr>
+              <th>Profile</th>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Date Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-        <tbody id="logsTable"></tbody>
-      </table>
-    </div>
+          <tbody></tbody>
+        </table>
+      </div>
 
-    <!-- MODAL -->
-    <div id="borrowerModal" class="modal">
-      <div class="modalContent">
+      <!-- MODAL -->
+      <div id="borrowerModal" class="modal">
+        <div class="modalContent">
 
-        <!-- TITLE -->
-        <h3 id="modalTitle">
-          <i class="fa-solid fa-user-plus"></i>
-          MAGPUNO UG MANGHULAMAY
-        </h3>
+          <!-- TITLE -->
+          <h3 id="modalTitle">
+            <i class="fa-solid fa-user-plus"></i>
+            ADD BORROWER
+          </h3>
 
-        <!-- PROFILE -->
-        <label class="sectionLabel">
-          Profile Picture
-        </label>
+          <!-- PROFILE -->
+          <label class="sectionLabel">
+            Profile Picture
+          </label>
 
-        <div class="profileBox" onclick="triggerFile()">
-          <img id="profilePreview" src="/graphics/default_profile.png">
+          <div class="profileBox" onclick="triggerFile()">
+            <img id="profilePreview" src="/graphics/default_profile.png">
 
-          <div class="overlay">
-            <span>
-              <i class="fa-solid fa-camera"></i>
-              Ilisan Ang Profile
-            </span>
+            <div class="overlay">
+              <span>
+                <i class="fa-solid fa-camera"></i>
+                Select Profile
+              </span>
+            </div>
           </div>
+
+          <input type="file" id="bProfile" hidden>
+
+          <div class="inputBox">
+            <i class="fa-solid fa-user"></i>
+
+            <input type="text" id="bName" placeholder="Enter full name">
+          </div>
+
+          <div class="inputBox">
+            <i class="fa-solid fa-phone"></i>
+
+            <input type="text" id="bContact" placeholder="09XXXXXXXXX" maxlength="11">
+          </div>
+
+          <!-- BUTTONS -->
+          <div class="modalActions">
+
+            <button onclick="saveBorrower()" class="saveBtn">
+              <i class="fa-solid fa-floppy-disk"></i>
+              Save Borrower
+            </button>
+
+            <button onclick="closeModal()" class="cancelBtn">
+              <i class="fa-solid fa-xmark"></i>
+              Cancel
+            </button>
+
+          </div>
+
         </div>
-
-        <input type="file" id="bProfile" hidden>
-
-        <div class="inputBox">
-          <i class="fa-solid fa-user"></i>
-
-          <input type="text" id="bName" placeholder="Enter full name">
-        </div>
-
-        <div class="inputBox">
-          <i class="fa-solid fa-phone"></i>
-
-          <input type="text" id="bContact" placeholder="09XXXXXXXXX" maxlength="11">
-        </div>
-
-        <!-- BUTTONS -->
-        <div class="modalActions">
-
-          <button onclick="saveBorrower()" class="saveBtn">
-            <i class="fa-solid fa-floppy-disk"></i>
-            Save Borrower
-          </button>
-
-          <button onclick="closeModal()" class="cancelBtn">
-            <i class="fa-solid fa-xmark"></i>
-            Cancel
-          </button>
-
-        </div>
-
       </div>
     </div>
   </div>

@@ -1,18 +1,21 @@
 <section class="page">
-    <h3 class="pageTitle">LISTA SA TANANG ITEMS</h3>
+    <div>
+        <h3 class="pageTitle">LIST OF ALL ITEMS</h3>
+        <p class="pageSub">View, manage, and track all available items in the inventory system</p>
+    </div>
     <!-- ADD ITEM -->
     <div class="form inventory">
-        <button class="addItem" onclick="openItemModal()">PUNO UG ITEM</button>
+        <button class="addItem" onclick="openItemModal()"><i class="fa-solid fa-plus"></i> ADD ITEM</button>
     </div>
 
     <div id="itemModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle">PUNO UG ITEM</h3>
-            <label for="itemName">Pangalan sa item</label>
+            <h3 id="modalTitle">ADD ITEM</h3>
+            <label for="itemName">Item Name</label>
             <input type="text" id="itemName" required>
-            <label for="itemQty">Gidaghanon</label>
+            <label for="itemQty">Quantity</label>
             <input type="number" id="itemQty" required>
-            <label for="itemPrice">Presyo (Optional ra)</label>
+            <label for="itemPrice">Price (Optional)</label>
             <input type="number" id="itemPrice">
 
             <div class="modal-actions">
@@ -29,9 +32,9 @@
                 <tr>
                     <th>#</th>
                     <th>Item</th>
-                    <th>Gidaghanon</th>
-                    <th>Nahabilin</th>
-                    <th>Presyo</th>
+                    <th>Quantity</th>
+                    <th>Stock</th>
+                    <th>Price</th>
                     <th>Added by</th>
                     <th>Action</th>
                 </tr>

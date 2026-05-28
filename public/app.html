@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/pages/css/borrow.css">
     <link rel="stylesheet" href="/pages/css/logs.css">
     <link rel="stylesheet" href="/pages/css/reminder.css">
+    <link rel="stylesheet" href="/pages/css/order.css">
 
     <!-- For icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -46,6 +47,11 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
+        
+        <div class="divider">
+            <span>Main Option</span>
+        </div>
+
         <a data-page="dashboard" onclick="navigate('dashboard', this)">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
@@ -64,6 +70,15 @@
         <a data-page="reminder" onclick="navigate('reminder', this)">
             <i class="fa-solid fa-bell"></i>
             <span>Set Reminder</span>
+        </a>
+
+        <div class="divider">
+            <span>Other Option</span>
+        </div>
+
+        <a data-page="order" onclick="navigate('order', this)">
+            <i class="fas fa-box"></i>
+            <span>Material Orders</span>
         </a>
 
         <!-- <a data-page="logs" onclick="navigate('logs', this)">

@@ -14,8 +14,8 @@
 }
 
 .addItem:hover {
-  background: linear-gradient(135deg, #308cca, #479cd4);
-  transform: translateY(-1px);
+    background: linear-gradient(135deg, #308cca, #479cd4);
+    transform: translateY(-1px);
 }
 
 button.small {
@@ -59,9 +59,22 @@ button.modify:hover {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    width: 300px;
+    width: 400px;
     display: flex;
     flex-direction: column;
+    animation: modalPop .25s ease;
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: scale(.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .modal-content label {
@@ -69,7 +82,8 @@ button.modify:hover {
     margin: 5px;
 }
 
-.modal-content input, .modal-content select {
+.modal-content input,
+.modal-content select {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
@@ -101,4 +115,10 @@ button.modify:hover {
 
 .peso {
     font-family: 'Century Gothic';
+}
+
+@media (max-width: 700px) {
+    .modal-content {
+        width: 90%;
+    }
 }

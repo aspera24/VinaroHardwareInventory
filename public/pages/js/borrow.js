@@ -32,15 +32,31 @@ async function borrowItem() {
 
   // basic validation
   if (!item_id || !borrower || !qty) {
-    alert("Complitoha tanang fields");
+    alert("Complete of fields");
     return;
   }
+
+  if (!selectedBorrowerId) {
+    alert("Please select borrower from suggestion list");
+    return;
+  }
+
+  console.log("BORROW SUBMIT:", {
+    item_id,
+    borrower,
+    selectedBorrowerId
+  });
 
   await fetch("/borrow", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ item_id, borrower, qty })
+    body: JSON.stringify({
+      item_id,
+      borrower,
+      borrower_id: selectedBorrowerId,
+      qty
+    })
   });
 
   // CLEAR FORM
@@ -66,6 +82,16 @@ async function saveItem() {
     return;
   }
 
+  if (!selectedBorrowerId) {
+    alert("Please select a valid borrower from suggestions");
+    return;
+  }
+
+  console.log("MODAL SAVE:", {
+    borrower,
+    selectedBorrowerId
+  });
+
   await fetch(`/borrow_logs/${editItemId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -74,7 +100,8 @@ async function saveItem() {
       borrower,
       item_id,
       quantity: qty,
-      date_borrowed: date
+      date_borrowed: date,
+      borrower_id: selectedBorrowerId
     })
   });
 
@@ -100,7 +127,7 @@ async function searchBorrower(inputEl, suggestEl) {
     const firstName = b.name.split(" ")[0]; // kuha first name
 
     return `
-      <a onclick="selectBorrower('${b.name}', '${inputEl.id}', '${suggestEl.id}')">
+      <a onclick="selectBorrower('${b.name}', '${b.id}', '${inputEl.id}', '${suggestEl.id}')">
         ${firstName}
       </a>
     `;
@@ -110,11 +137,13 @@ async function searchBorrower(inputEl, suggestEl) {
 // MAIN
 document.getElementById("borrower").addEventListener("input", function () {
   searchBorrower(this, document.getElementById("suggestBox"));
+  selectedBorrowerId = null;
 });
 
 // MODAL
 document.getElementById("modalBorrower").addEventListener("input", function () {
   searchBorrower(this, document.getElementById("modalSuggestBox"));
+  selectedBorrowerId = null;
 });
 
 function closeItemModal() {
@@ -138,6 +167,7 @@ function clearItemForm() {
   if (suggestBox) suggestBox.innerHTML = "";
 
   editItemId = null;
+  selectedBorrowerId = null;
 }
 
 function openItemModal() {
@@ -145,9 +175,15 @@ function openItemModal() {
   document.body.style.overflow = "hidden";
 }
 
-function selectBorrower(name, inputId, suggestId) {
+let selectedBorrowerId = null;
+
+function selectBorrower(name, id, inputId, suggestId) {
   document.getElementById(inputId).value = name;
   document.getElementById(suggestId).innerHTML = "";
+
+  selectedBorrowerId = Number(id);
+
+  console.log("SELECTED BORROWER:", selectedBorrowerId);
 }
 
 
@@ -192,6 +228,7 @@ async function modifyItem(id) {
 
     // OTHER VALUES
     document.getElementById("modalBorrower").value = item.borrower;
+    selectedBorrowerId = item.borrower_id;
 
     document.getElementById("modalQty").value = item.quantity;
 

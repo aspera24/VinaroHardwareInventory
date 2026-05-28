@@ -2,7 +2,9 @@ if (window.location.pathname.startsWith("/auth")) {
     console.log("Auth page detected, skipping app.js");
 } else {
     const appContent = document.getElementById("appContent");
-    appContent.innerHTML = "Loading...";
+    appContent.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+    `;
 
     async function checkSession() {
         try {
@@ -24,7 +26,7 @@ if (window.location.pathname.startsWith("/auth")) {
     adminName.textContent = "Hi, " + localStorage.getItem("fullName").split(" ")[0] + "!";
 
     // VALID PAGES
-    const validPages = ["dashboard", "inventory", "borrow", "reminder", "logs"];
+    const validPages = ["dashboard", "inventory", "borrow", "reminder", "order", "logs"];
 
     // SPA ROUTER CORE
     async function loadPage(page, addToHistory = true) {

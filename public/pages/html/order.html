@@ -1,0 +1,96 @@
+
+<section class="page orderPage">
+
+    <div class="pageHeader">
+        <div>
+            <h2 class="pageTitle">MATERIAL ORDERS</h2>
+            <p class="pageSub">Manage purchased materials from suppliers and lumber stores</p>
+        </div>
+
+        <button class="addOrderBtn">
+            <i class="fa-solid fa-plus"></i>
+            Add Order
+        </button>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="orderSummary">
+
+        <div class="summaryCard blue">
+            <div>
+                <span>Total Orders</span>
+                <h2 id="totalOrders">0</h2>
+            </div>
+            <i class="fa-solid fa-box"></i>
+        </div>
+
+        <div class="summaryCard orange">
+            <div>
+                <span>Total Expenses</span>
+                <h2 id="totalExpenses">₱0</h2>
+            </div>
+            <i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+
+        <div class="summaryCard green">
+            <div>
+                <span>Suppliers</span>
+                <h2 id="totalSuppliers">0</h2>
+            </div>
+            <i class="fa-solid fa-truck"></i>
+        </div>
+
+        <div class="summaryCard red">
+            <div>
+                <span>Low Stocks</span>
+                <h2 id="lowStocks">0</h2>
+            </div>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="tableCard">
+
+        <div class="tableTop">
+
+            <h3>Recent Orders</h3>
+
+            <div class="tableRight">
+                <input type="text" placeholder="Search materials...">
+
+                <select>
+                    <option>All Suppliers</option>
+                    <option>Saint John Lumber</option>
+                    <option>Cebu Lumber</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="tableWrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Supplier</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="orderTableBody">
+                    <!-- dynamic rows -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</section>
+

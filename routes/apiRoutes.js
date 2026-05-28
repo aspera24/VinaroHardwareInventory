@@ -6,6 +6,8 @@ module.exports = (io) => {
   const multer = require("multer");
   const upload = multer({ storage: multer.memoryStorage() });
 
+  router.use(requireAuth);
+
   // GET borrowers
   router.get("/borrower", requireAuth, (req, res) => {
 
@@ -48,39 +50,66 @@ module.exports = (io) => {
     });
   });
 
-  // DELETE borrower(s)
-  router.post("/borrower/delete", async (req, res) => {
-    try {
-      const { ids } = req.body;
+  // DELETE borrower(s) - SAFE VERSION
+  router.post("/borrower/delete", (req, res) => {
+    const { ids } = req.body;
 
-      if (!ids || ids.length === 0) {
-        return res.status(400).json({
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No IDs provided"
+      });
+    }
+
+    const placeholders = ids.map(() => "?").join(",");
+
+    // STEP 1: CHECK ACTIVE BORROWS
+    const checkQuery = `
+      SELECT DISTINCT borrower_id
+      FROM borrow_logs
+      WHERE borrower_id IN (${placeholders})
+      AND date_returned IS NULL
+    `;
+
+    db.query(checkQuery, ids, (err, active) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
           success: false,
-          message: "No IDs provided"
+          message: "Server error (checking borrows)"
         });
       }
 
-      const placeholders = ids.map(() => "?").join(",");
+      // IF NAAY ACTIVE BORROW → BLOCK DELETE
+      if (active.length > 0) {
+        return res.json({
+          success: false,
+          message: "Cannot delete borrower with active borrowed items"
+        });
+      }
 
-      await db.execute(
-        `DELETE FROM borrowers WHERE id IN (${placeholders})`,
-        ids
-      );
+      // STEP 2: DELETE BORROWERS SAFELY
+      const deleteQuery = `
+        DELETE FROM borrowers
+        WHERE id IN (${placeholders})
+      `;
 
-      // OPTIONAL: return deleted ids for UI sync
-      res.json({
-        success: true,
-        deletedIds: ids,
-        message: "Borrower(s) deleted successfully"
+      db.query(deleteQuery, ids, (err2) => {
+        if (err2) {
+          console.error(err2);
+          return res.status(500).json({
+            success: false,
+            message: "Server error (deleting borrowers)"
+          });
+        }
+
+        return res.json({
+          success: true,
+          deletedIds: ids,
+          message: "Borrower(s) deleted successfully"
+        });
       });
-
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({
-        success: false,
-        message: "Server error"
-      });
-    }
+    });
   });
 
   // GET SINGLE BORROWER
@@ -268,7 +297,7 @@ module.exports = (io) => {
 
   // BORROW item
   router.post("/borrow", requireAuth, (req, res) => {
-    const { item_id, borrower, qty } = req.body;
+    const { item_id, borrower, qty, borrower_id } = req.body;
     const adminId = req.session.adminId;
 
     const borrowQty = Number(qty || 1);
@@ -292,11 +321,12 @@ module.exports = (io) => {
           [borrowQty, item_id]
         );
 
-        // log
+        // INSERT WITH borrower_id
         db.query(
-          `INSERT INTO borrow_logs (item_id, borrower, quantity, date_borrowed, created_by)
-            VALUES (?, ?, ?, NOW(), ?)`,
-          [item_id, borrower, borrowQty, adminId]
+          `INSERT INTO borrow_logs
+          (item_id, borrower_id, borrower, quantity, date_borrowed, created_by)
+          VALUES (?, ?, ?, ?, NOW(), ?)`,
+          [item_id, borrower_id, borrower, borrowQty, adminId]
         );
 
         res.json({ success: true });
@@ -422,7 +452,7 @@ module.exports = (io) => {
   // PUT modified borrowed item
   router.put("/borrow_logs/:id", requireAuth, (req, res) => {
 
-    const { borrower, item_id, quantity, date_borrowed } = req.body;
+    const { borrower, borrower_id, item_id, quantity, date_borrowed } = req.body;
     const { id } = req.params;
 
     const newQty = Number(quantity);
@@ -482,12 +512,15 @@ module.exports = (io) => {
                     // STEP 4: update log
                     db.query(
                       `UPDATE borrow_logs
-                     SET borrower=?, item_id=?, quantity=?, date_borrowed=?
-                     WHERE id=?`,
-                      [borrower, item_id, newQty, date_borrowed, id],
+                      SET borrower=?, borrower_id=?, item_id=?, quantity=?, date_borrowed=?
+                      WHERE id=?`,
+                      [borrower, borrower_id, item_id, newQty, date_borrowed, id],
                       (err4) => {
 
-                        if (err4) return res.status(500).json(err4);
+                        if (err4) {
+                          console.error(err4);
+                          return res.status(500).json(err4);
+                        }
 
                         res.json({ success: true });
 

@@ -108,19 +108,10 @@ async function loadBorrowersTable() {
 
     return [
 
-      `
-        <img
-          src="${b.profile || '/graphics/default_profile.png'}"
-          onerror="this.src='/graphics/default_profile.png'"
-          class="tableProfile">
-      `,
-
+      `<img src="${b.profile || '/graphics/default_profile.png'}" class="tableProfile">`,
       `<strong>${b.name}</strong>`,
-
       b.contact || "-",
-
       formatDate(b.created_at),
-
       `
         <div class="actionWrapper">
 
@@ -149,43 +140,28 @@ async function loadBorrowersTable() {
     ];
   });
 
-  
+
 
   // INIT ONLY ONCE
   if (!window.borrowerTable) {
-
     window.borrowerTable = $("#borrowerTableUI").DataTable({
-
-      data: rows,
-
       pageLength: 6,
-
       lengthMenu: [6, 10, 15, 20],
-
       responsive: true,
-
       autoWidth: false,
-
       language: {
         emptyTable: "No borrowers added yet"
       },
-
       columnDefs: [
-        {
-          orderable: false,
-          targets: [0, 4]
-        }
+        { orderable: false, targets: [0, 4] }
       ]
     });
-
-    console.log(window.borrowerTable.page.info());
-
-  } else {
-
-    window.borrowerTable.clear();
-    window.borrowerTable.rows.add(rows);
-    window.borrowerTable.draw(false);
   }
+
+  // update data ONLY
+  window.borrowerTable.clear();
+  window.borrowerTable.rows.add(rows);
+  window.borrowerTable.columns.adjust().draw(false);
 }
 
 
@@ -236,7 +212,7 @@ async function editBorrower(id) {
   document.getElementById("bName").dataset.id = id;
 
   document.getElementById("modalTitle").textContent =
-    "EDIT MANGHULAMAY";
+    "EDIT BORROWER";
 
   openBorrowerModal();
 }
@@ -244,25 +220,24 @@ async function editBorrower(id) {
 async function deleteBorrower(id) {
 
   const confirmDelete = confirm(
-    "Sure baka nga tangtangon ni nga manghulamay?"
+    "Are you sure you want to remove this borrower?"
   );
 
   if (!confirmDelete) return;
 
   const res = await fetch("/borrower/delete", {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      ids: [id]
-    })
+    body: JSON.stringify({ ids: [id] })
   });
 
   const data = await res.json();
 
   if (!data.success) {
-    alert(data.message || "Delete failed");
+    alert(data.message);
     return;
   }
 
@@ -319,52 +294,53 @@ function clearBorrowerForm() {
 
 const adminName = localStorage.getItem("fullName").split(" ")[0];
 
-// DELETE BORROWERS
-async function deleteSelected() {
+// // DELETE BORROWERS
+// async function deleteSelected() {
 
-  const selected = getSelectedBorrowers();
+//   const selected = getSelectedBorrowers();
 
-  if (selected.length === 0) return;
+//   if (selected.length === 0) return;
 
-  if (!confirm("Sure baka nga tangtangon ni nga manghulamay?")) return;
+//   if (!confirm("Sure baka nga tangtangon ni nga manghulamay?")) return;
 
-  const res = await fetch("/borrower/delete", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ ids: selected })
-  });
+//   const res = await fetch("/borrower/delete", {
+//     method: "POST",
+//     credentials: "include",
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify({ ids: selected })
+//   });
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  if (!data.success) {
-    alert(data.message || "Delete failed");
-    return;
-  }
+//   if (!data.success) {
+//     alert(data.message || "Delete failed");
+//     return;
+//   }
 
-  selectedBorrowers.clear();
-  resetBorrowerForm();
+//   selectedBorrowers.clear();
+//   resetBorrowerForm();
 
-  // IMPORTANT
-  await loadBorrowersTable();
-}
+//   // IMPORTANT
+//   await loadBorrowersTable();
+// }
 
 // OPEN MODAL
 const modal = document.getElementById("borrowerModal");
 const addBtn = document.getElementById("addBtn");
 
-if (addBtn && modal) {
-  addBtn.addEventListener("click", () => {
-    modal.style.display = "flex";
-    document.body.style.overflow = "hidden";
-  });
-}
+// if (addBtn && modal) {
+//   addBtn.addEventListener("click", () => {
+//     modal.style.display = "flex";
+//     document.body.style.overflow = "hidden";
+//   });
+// }
 
 addBtn?.addEventListener("click", () => {
   isEditMode = false;
 
-  document.getElementById("modalTitle").textContent = "MAGPUNO UG MANGHULAMAY";
+  document.getElementById("modalTitle").textContent = "ADD BORROWER";
 
   openBorrowerModal();
   clearBorrowerForm();
@@ -378,7 +354,7 @@ function closeModal() {
   clearBorrowerForm();
   isEditMode = false;
 
-  document.getElementById("modalTitle").textContent = "MAGPUNO UG MANGHULAMAY";
+  document.getElementById("modalTitle").textContent = "ADD BORROWER";
 }
 
 // SAVE BORROWER (ADD + UPDATE)
@@ -430,7 +406,7 @@ async function saveBorrower() {
 
   // IMPORTANT: check success
   if (!data.success) {
-    alert(data.message || "Naay bati nga nahitabo!");
+    alert(data.message || "Something went wrong!");
     return;
   }
 
@@ -520,7 +496,7 @@ async function loadBorrowedLogs() {
 
 
 async function voidReturn(id) {
-  const confirmVoid = confirm("Nasayop raba ka ani nga return?");
+  const confirmVoid = confirm("Did you accidentally make a mistake with this return?");
   if (!confirmVoid) return;
 
   const res = await fetch(`/void_return/${id}`, {
@@ -573,7 +549,7 @@ function loadAlerts(logs) {
   if (overdue.length === 0) {
     container.innerHTML = `
       <div class="alert yellow">
-        Wala pay overdue nga item.
+        No overdue item 🎉
       </div>
     `;
     return;
@@ -599,9 +575,9 @@ function loadAlerts(logs) {
           ${index + 1}
         </span>
 
-        ${item.item_name} wala pa ma uli
-        (Manghulamay: <span>${item.borrower}</span>) 
-        (Overdue na for ${diffHours} hour${diffHours !== 1 ? "s" : ""})
+        ${item.item_name} has not been returned yet
+        (Borrower: <span>${item.borrower}</span>) 
+        (Overdue for ${diffHours} hour${diffHours !== 1 ? "s" : ""})
 
       </div>
     `;
@@ -627,7 +603,7 @@ async function loadDashboardReminders() {
   if (todayReminders.length === 0) {
     container.innerHTML = `
       <div class="alert yellow">
-        Walay pahinumdom karong adlawa 🎉
+        No reminder for today 🎉
       </div>`;
     return;
   }
@@ -651,8 +627,8 @@ async function loadDashboardReminders() {
 }
 
 async function markComplete(id) {
-  if (confirm("Humana naba ka'g buhat ani nga reminder?")) {
-    // STEP 1: create log first
+  if (confirm("Are you done with this reminder?")) {
+
     await fetch(`/reminders/generate-log`, {
       method: "POST",
       headers: {
@@ -665,13 +641,13 @@ async function markComplete(id) {
       })
     });
 
-    // STEP 2: mark complete
+
     await fetch(`/reminders/complete/${id}`, {
       method: "PUT",
       credentials: "include"
     });
 
-    loadDashboardReminders();
+    await loadDashboardReminders();
   }
 }
 
@@ -812,12 +788,12 @@ function datetimeformat(datetime) {
 
 // INIT
 async function init() {
-  loadDashboard();
+  await loadDashboard();
   await loadBorrowersTable();
-  loadLogs();
-  loadBorrowedLogs();
-  loadDashboardReminders();
-  loadReminderCount();
+  await loadLogs();
+  await loadBorrowedLogs();
+  await loadDashboardReminders();
+  await loadReminderCount();
 }
 
 init();

@@ -143,6 +143,30 @@ html {
   background: #d5dfec;
 }
 
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 30px 0 10px 0;
+  color: #777;
+  font-size: 12px;
+}
+
+.divider:first-of-type {
+  margin: 0px 0 10px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.divider span {
+  padding: 0 10px;
+}
+
 /* CONTENT */
 .content {
   padding: 20px;
@@ -177,7 +201,7 @@ html {
 
 
 .pageTitle {
-  letter-spacing: 4px;
+  letter-spacing: 1px;
 }
 
 .page {
@@ -302,7 +326,7 @@ button {
 }
 
 .dstrong {
-    color: var(--fb-bg);
+  color: var(--fb-bg);
 }
 
 .delete {

@@ -89,7 +89,7 @@ async function loadReminders() {
             list.innerHTML = `
                 <div class="emptyState">
                     <p>No completed reminders yet.</p>
-                </div>
+                </div> 
             `;
 
             return;
