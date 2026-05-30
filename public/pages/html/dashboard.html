@@ -6,34 +6,35 @@
   <div class="cards">
     <div class="card purple">
       <div class="cardLabel">
-        <i class="fa-solid fa-bell"></i>
         <h3>Reminder Today</h3>
+        <p id="reminderCount">0</p>
       </div>
-      <p id="reminderCount">0</p>
+      <i class="fa-solid fa-bell"></i>
     </div>
 
     <div class="card blue">
       <div class="cardLabel">
-        <i class="fas fa-box"></i>
         <h3>Total Item</h3>
+        <p id="total">0</p>
       </div>
-      <p id="total">0</p>
+
+      <i class="fas fa-box"></i>
     </div>
 
     <div class="card orange">
       <div class="cardLabel">
-        <i class="fas fa-check-circle"></i>
         <h3>Available Stock</h3>
+        <p id="available">0</p>
       </div>
-      <p id="available">0</p>
+      <i class="fas fa-check-circle"></i>
     </div>
 
     <div class="card light">
       <div class="cardLabel">
-        <i class="fas fa-hand-holding"></i>
         <h3>Borrowed Item</h3>
+        <p id="borrowed">0</p>
       </div>
-      <p id="borrowed">0</p>
+      <i class="fas fa-hand-holding"></i>
     </div>
   </div>
 
@@ -132,8 +133,8 @@
           <!-- BUTTONS -->
           <div class="modalActions">
 
-            <button onclick="saveBorrower()" class="saveBtn">
-              <i class="fa-solid fa-floppy-disk"></i>
+            <button onclick="saveBorrower()" class="saveBtn" id="saveBorrowerBtn">
+              <i class="fa-solid fa-floppy-disk" id="saveBorrowerIcon"></i>
               Save Borrower
             </button>
 

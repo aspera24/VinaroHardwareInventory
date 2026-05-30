@@ -10,18 +10,41 @@
 
     <div id="itemModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle">ADD ITEM</h3>
-            <label for="itemName">Item Name</label>
+
+            <h3 id="modalTitle">
+                <i class="fa-solid fa-box"></i>
+                ADD ITEM
+            </h3>
+
+            <label>
+                <i class="fa-solid fa-tag"></i> Item Name
+            </label>
             <input type="text" id="itemName" required>
-            <label for="itemQty">Quantity</label>
+
+            <label>
+                <i class="fa-solid fa-layer-group"></i> Quantity
+            </label>
             <input type="number" id="itemQty" required>
-            <label for="itemPrice">Price (Optional)</label>
+
+            <label>
+                <i class="fa-solid fa-peso-sign"></i> Price (Optional)
+            </label>
             <input type="number" id="itemPrice">
 
             <div class="modal-actions">
-                <button onclick="saveItem()">Save</button>
-                <button onclick="closeItemModal()">Cancel</button>
+
+                <button onclick="saveItem()" id="saveItemBtn" class="save">
+                    <i class="fa-solid fa-floppy-disk" id="saveItemIcon"></i>
+                    Save Item
+                </button>
+
+                <button onclick="closeItemModal()" class="cancel">
+                    <i class="fa-solid fa-xmark"></i>
+                    Cancel
+                </button>
+
             </div>
+
         </div>
     </div>
 

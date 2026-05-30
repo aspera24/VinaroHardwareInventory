@@ -98,6 +98,9 @@ window.borrowerTable = null;
 
 async function loadBorrowersTable() {
 
+  const aB = document.getElementById("addBtn");
+  aB.disabled = true;
+
   const res = await fetch("/borrower", {
     credentials: "include"
   });
@@ -162,6 +165,8 @@ async function loadBorrowersTable() {
   window.borrowerTable.clear();
   window.borrowerTable.rows.add(rows);
   window.borrowerTable.columns.adjust().draw(false);
+  await finishLoading();
+  aB.disabled = false;
 }
 
 
@@ -242,6 +247,7 @@ async function deleteBorrower(id) {
   }
 
   await loadBorrowersTable();
+  await finishLoading();
 }
 
 
@@ -279,6 +285,10 @@ function openBorrowerModal() {
   const modal = document.getElementById("borrowerModal");
   modal.style.display = "flex";
   document.body.style.overflow = "hidden";
+  const nameInput = document.getElementById("bName");
+  nameInput.style.border = "1px solid #ccc";
+  isBorrowerModalOpen = true;
+  finishLoading();
 }
 
 function clearBorrowerForm() {
@@ -294,48 +304,11 @@ function clearBorrowerForm() {
 
 const adminName = localStorage.getItem("fullName").split(" ")[0];
 
-// // DELETE BORROWERS
-// async function deleteSelected() {
-
-//   const selected = getSelectedBorrowers();
-
-//   if (selected.length === 0) return;
-
-//   if (!confirm("Sure baka nga tangtangon ni nga manghulamay?")) return;
-
-//   const res = await fetch("/borrower/delete", {
-//     method: "POST",
-//     credentials: "include",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify({ ids: selected })
-//   });
-
-//   const data = await res.json();
-
-//   if (!data.success) {
-//     alert(data.message || "Delete failed");
-//     return;
-//   }
-
-//   selectedBorrowers.clear();
-//   resetBorrowerForm();
-
-//   // IMPORTANT
-//   await loadBorrowersTable();
-// }
 
 // OPEN MODAL
 const modal = document.getElementById("borrowerModal");
 const addBtn = document.getElementById("addBtn");
 
-// if (addBtn && modal) {
-//   addBtn.addEventListener("click", () => {
-//     modal.style.display = "flex";
-//     document.body.style.overflow = "hidden";
-//   });
-// }
 
 addBtn?.addEventListener("click", () => {
   isEditMode = false;
@@ -350,18 +323,48 @@ addBtn?.addEventListener("click", () => {
 function closeModal() {
   document.getElementById("borrowerModal").style.display = "none";
   document.body.style.overflow = "";
-
+  const nameInput = document.getElementById("bName");
+  nameInput.style.border = "1px solid #ccc";
+  isBorrowerModalOpen = false;
   clearBorrowerForm();
   isEditMode = false;
+
 
   document.getElementById("modalTitle").textContent = "ADD BORROWER";
 }
 
+
+let isBorrowerModalOpen = false;
+let isSavingBorrower = false;
+
+document.addEventListener("keydown", function (e) {
+
+  if (!isBorrowerModalOpen) return;
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+
+    if (!isSavingBorrower) {
+      saveBorrower();
+    }
+  }
+});
+
 // SAVE BORROWER (ADD + UPDATE)
 async function saveBorrower() {
+
+  if (isSavingBorrower) return;
+
+  const btn = document.getElementById("saveBorrowerBtn");
+  const icon = document.getElementById("saveBorrowerIcon");
+
   const nameInput = document.getElementById("bName");
   const contactInput = document.getElementById("bContact");
   const fileInput = document.getElementById("bProfile");
+
+  nameInput.disabled = true;
+  contactInput.disabled = true;
+  fileInput.disabled = true;
 
   const name = nameInput.value.trim();
   const contact = contactInput.value;
@@ -375,48 +378,63 @@ async function saveBorrower() {
     return;
   }
 
-  const formData = new FormData();
-  formData.append("name", name);
-  formData.append("contact", contact);
+  isSavingBorrower = true;
 
-  if (file) {
-    formData.append("profile", file);
+  // LOADING UI
+  btn.disabled = true;
+  icon.className = "fa-solid fa-spinner fa-spin";
+
+  try {
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("contact", contact);
+
+    if (file) {
+      formData.append("profile", file);
+    }
+
+    let res;
+
+    if (id) {
+      formData.append("id", id);
+
+      res = await fetch("/borrower/update", {
+        method: "POST",
+        credentials: "include",
+        body: formData
+      });
+    } else {
+      res = await fetch("/borrowers", {
+        method: "POST",
+        credentials: "include",
+        body: formData
+      });
+    }
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.message || "Something went wrong!");
+      return;
+    }
+
+    await loadBorrowersTable();
+    await closeModal();
+    await resetBorrowerForm();
+    await finishLoading();
+
+  } finally {
+
+    // RESTORE UI
+    isSavingBorrower = false;
+    btn.disabled = false;
+    icon.className = "fa-solid fa-floppy-disk";
+    nameInput.disabled = false;
+    contactInput.disabled = false;
+    fileInput.disabled = false;
   }
-
-  let res;
-
-  // ADD or UPDATE
-  if (id) {
-    formData.append("id", id);
-
-    res = await fetch("/borrower/update", {
-      method: "POST",
-      credentials: "include",
-      body: formData
-    });
-  } else {
-    res = await fetch("/borrowers", {
-      method: "POST",
-      credentials: "include",
-      body: formData
-    });
-  }
-
-  const data = await res.json();
-
-  // IMPORTANT: check success
-  if (!data.success) {
-    alert(data.message || "Something went wrong!");
-    return;
-  }
-
-
-  // UI RESET
-  closeModal();
-  resetBorrowerForm();
-  await loadBorrowersTable();
 }
-
 
 
 // RESET FORM + EDIT STATE
@@ -514,6 +532,7 @@ async function voidReturn(id) {
   await loadLogs();
   await loadDashboard();
   await loadBorrowedLogs();
+  finishLoading();
 }
 
 
@@ -788,12 +807,34 @@ function datetimeformat(datetime) {
 
 // INIT
 async function init() {
-  await loadDashboard();
-  await loadBorrowersTable();
-  await loadLogs();
-  await loadBorrowedLogs();
-  await loadDashboardReminders();
-  await loadReminderCount();
+
+  try {
+
+    await Promise.all([
+      loadBorrowersTable(),
+      loadLogs(),
+      loadBorrowedLogs(),
+      loadDashboardReminders(),
+      loadReminderCount(),
+      loadDashboard(),
+
+    ]);
+
+    await new Promise(resolve =>
+      requestAnimationFrame(() =>
+        requestAnimationFrame(resolve)
+      )
+    );
+
+  } catch (err) {
+
+    console.error(err);
+
+  } finally {
+
+    await finishLoading();
+
+  }
 }
 
 init();

@@ -1,17 +1,20 @@
-
 <section class="page orderPage">
 
+    <!-- HEADER -->
     <div class="pageHeader">
         <div>
             <h2 class="pageTitle">MATERIAL ORDERS</h2>
-            <p class="pageSub">Manage purchased materials from suppliers and lumber stores</p>
+            <p class="pageSub">
+                Manage purchased materials from suppliers and lumber stores
+            </p>
         </div>
 
-        <button class="addOrderBtn">
+        <button class="addOrderBtn" onclick="openOrderModal()">
             <i class="fa-solid fa-plus"></i>
             Add Order
         </button>
     </div>
+
 
     <!-- SUMMARY -->
     <div class="orderSummary">
@@ -50,6 +53,7 @@
 
     </div>
 
+
     <!-- TABLE -->
     <div class="tableCard">
 
@@ -58,36 +62,127 @@
             <h3>Recent Orders</h3>
 
             <div class="tableRight">
-                <input type="text" placeholder="Search materials...">
+                <input type="text" id="searchInput" placeholder="Search materials...">
 
-                <select>
-                    <option>All Suppliers</option>
-                    <option>Saint John Lumber</option>
-                    <option>Cebu Lumber</option>
+                <select id="supplierFilter">
+                    <option value="all">All Suppliers</option>
                 </select>
             </div>
 
         </div>
 
+
         <div class="tableWrapper">
             <table>
+
                 <thead>
                     <tr>
                         <th>Material</th>
-                        <th>Supplier</th>
+                        <th>Category</th>
+                        <th>Unit</th>
                         <th>Qty</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
+                        <th>Price / Unit</th>
+                        <th>Total Cost</th>
+                        <th>Supplier</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
 
-                <tbody id="orderTableBody">
-                    <!-- dynamic rows -->
-                </tbody>
+                <tbody id="orderTableBody"></tbody>
+
             </table>
+        </div>
+
+    </div>
+
+
+    <!-- MODAL -->
+    <div class="modalOverlay" id="orderModal">
+
+        <div class="orderModalCard">
+
+            <div class="modalTop">
+                <h3>Add Material Order</h3>
+
+                <button onclick="closeOrderModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+
+            <div class="formGrid">
+
+                <div class="inputGroup">
+                    <label>Material Name</label>
+                    <input type="text" id="materialName">
+                </div>
+
+                <div class="inputGroup">
+                    <label>Category</label>
+                    <select id="materialCategory">
+                        <option value="Cement">Cement</option>
+                        <option value="Wood">Wood</option>
+                        <option value="Steel">Steel</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Paint">Paint</option>
+                        <option value="Plumbing">Plumbing</option>
+                    </select>
+                </div>
+
+                <div class="inputGroup">
+                    <label>Unit</label>
+                    <input type="text" id="materialUnit" placeholder="bag, kg, pcs, meter...">
+                </div>
+
+                <div class="inputGroup">
+                    <label>Quantity</label>
+                    <input type="number" id="materialQty">
+                </div>
+
+                <div class="inputGroup">
+                    <label>Unit Price</label>
+                    <input type="number" id="materialPrice">
+                </div>
+
+                <div class="inputGroup">
+                    <label>Total Cost</label>
+                    <input type="text" id="materialTotal" readonly>
+                </div>
+
+                <div class="inputGroup">
+                    <label>Supplier</label>
+                    <input type="text" id="materialSupplier">
+                </div>
+
+                <div class="inputGroup">
+                    <label>Date Purchased</label>
+                    <input type="date" id="materialDate">
+                </div>
+
+                <div class="inputGroup fullWidth">
+                    <label>Status</label>
+                    <select id="materialStatus">
+                        <option value="Delivered">Delivered</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+            </div>
+
+
+            <div class="modalActions">
+                <button class="cancelBtn" onclick="closeOrderModal()">
+                    Cancel
+                </button>
+
+                <button class="saveBtn" onclick="saveOrder()">
+                    Save Order
+                </button>
+            </div>
+
         </div>
 
     </div>

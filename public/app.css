@@ -35,6 +35,18 @@ html {
   scrollbar-color: var(--fb-bg) white !important;
 }
 
+#topLoader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 5px;
+    background: #ffffff;
+    z-index: 999999;
+    transition: width 0.2s ease;
+    box-shadow: 0 0 10px #ffffff;
+}
+
 /* TOPBAR */
 .topbar {
   background: var(--fb-bg);

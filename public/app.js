@@ -1,6 +1,80 @@
 if (window.location.pathname.startsWith("/auth")) {
     console.log("Auth page detected, skipping app.js");
 } else {
+    const loader = document.getElementById("topLoader");
+
+    let loaderInterval;
+    let pageLoading = false;
+
+    function startLoading() {
+
+        clearInterval(loaderInterval);
+
+        loader.style.opacity = "1";
+        loader.style.width = "0%";
+
+        let width = 0;
+
+        loaderInterval = setInterval(() => {
+
+            // hinay hinay increase
+            // pero dili moabot 100%
+
+            if (width < 90) {
+
+                // dynamic speed
+                if (width < 30) {
+                    width += 10;
+                } else if (width < 60) {
+                    width += 4;
+                } else {
+                    width += 1;
+                }
+
+                loader.style.width = width + "%";
+            }
+
+        }, 200);
+    }
+
+    function finishLoading() {
+
+        clearInterval(loaderInterval);
+
+        loader.style.width = "100%";
+
+        requestAnimationFrame(() => {
+
+            loader.style.opacity = "0";
+
+            setTimeout(() => {
+                loader.style.width = "0%";
+            }, 150);
+
+        });
+    }
+
+
+    const originalFetch = window.fetch;
+
+    window.fetch = async (...args) => {
+
+        startLoading();
+
+        try {
+
+            const response = await originalFetch(...args);
+
+            return response;
+
+        } catch (err) {
+
+            throw err;
+
+        }
+    };
+
+
     const appContent = document.getElementById("appContent");
     appContent.innerHTML = `
         <i class="fa-solid fa-spinner fa-spin"></i> Loading...
@@ -30,6 +104,9 @@ if (window.location.pathname.startsWith("/auth")) {
 
     // SPA ROUTER CORE
     async function loadPage(page, addToHistory = true) {
+
+        pageLoading = true;
+
         // CHECK SESSION FIRST
         const isLoggedIn = await checkSession();
 
@@ -50,7 +127,9 @@ if (window.location.pathname.startsWith("/auth")) {
 
             appContent.innerHTML = html;
 
-            loadScript(page);
+            await loadScript(page);
+
+            pageLoading = false;
 
             if (addToHistory) {
                 const username = window.location.pathname.split("/")[1];
@@ -66,18 +145,29 @@ if (window.location.pathname.startsWith("/auth")) {
 
     // LOAD PAGE JS FILES
     function loadScript(page) {
-        const oldScript = document.getElementById("pageScript");
-        if (oldScript) oldScript.remove();
 
-        const script = document.createElement("script");
-        script.src = `/pages/js/${page}.js`;
-        script.id = "pageScript";
+        return new Promise((resolve, reject) => {
 
-        script.onerror = () => {
-            console.error("Failed to load JS for:", page);
-        };
+            const oldScript = document.getElementById("pageScript");
 
-        document.body.appendChild(script);
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement("script");
+
+            script.src = `/pages/js/${page}.js`;
+            script.id = "pageScript";
+
+            script.onload = () => {
+                resolve();
+            };
+
+            script.onerror = () => {
+                reject("Failed to load JS");
+            };
+
+            document.body.appendChild(script);
+
+        });
     }
 
     // SIDEBAR ACTIVE STATE
@@ -187,5 +277,8 @@ if (window.location.pathname.startsWith("/auth")) {
 
     // run every resize
     window.addEventListener("resize", handleSidebarResize);
+
+    window.startLoading = startLoading;
+    window.finishLoading = finishLoading;
 
 }

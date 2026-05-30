@@ -105,8 +105,10 @@ async function saveItem() {
     })
   });
 
-  closeItemModal();
-  loadBorrowPage();
+  
+  await loadBorrowPage();
+  await closeItemModal();
+  await finishLoading();
 }
 
 async function searchBorrower(inputEl, suggestEl) {
@@ -124,7 +126,7 @@ async function searchBorrower(inputEl, suggestEl) {
   const data = await res.json();
 
   suggestEl.innerHTML = data.map(b => {
-    const firstName = b.name.split(" ")[0]; // kuha first name
+    const firstName = b.name.split(" ")[0]; 
 
     return `
       <a onclick="selectBorrower('${b.name}', '${b.id}', '${inputEl.id}', '${suggestEl.id}')">
@@ -247,6 +249,7 @@ async function modifyItem(id) {
     document.getElementById("modalDate").value = localDatetime;
 
     openItemModal();
+    finishLoading();
 
   } catch (err) {
 
@@ -267,7 +270,8 @@ async function returnItem(id, borrower) {
     credentials: "include"
   });
 
-  loadBorrowPage();
+  await loadBorrowPage();
+  finishLoading();
 }
 
 
@@ -358,4 +362,30 @@ function datetimeformat(datetime) {
   return `<span class="bstrong">(${weekday})</span> ${formattedDate} at ${time}`;
 }
 
-loadBorrowPage();
+
+
+
+
+async function init() {
+  try {
+
+    await loadBorrowPage();
+
+    await new Promise(resolve =>
+      requestAnimationFrame(() =>
+        requestAnimationFrame(resolve)
+      )
+    );
+
+  } catch (err) {
+
+    console.error(err);
+
+  } finally {
+
+    finishLoading();
+
+  }
+}
+
+init();

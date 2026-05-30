@@ -1,4 +1,6 @@
 let itemsTable = null;
+let isItemModalOpen = false;
+let isSavingItem = false;
 
 async function loadItems() {
   const res = await fetch("/items", { credentials: "include" });
@@ -49,12 +51,14 @@ let editItemId = null;
 function openItemModal() {
   document.getElementById("itemModal").style.display = "flex";
   document.body.style.overflow = "hidden";
+  isItemModalOpen = true;
 }
 
 function closeItemModal() {
   document.getElementById("itemModal").style.display = "none";
   document.body.style.overflow = "";
-
+  isItemModalOpen = false;
+  resetBorders();
   clearItemForm();
 }
 
@@ -66,7 +70,49 @@ function clearItemForm() {
   editItemId = null;
 }
 
+function resetBorders() {
+  document.getElementById("itemName").style.border = "1px solid #ddd";
+  document.getElementById("itemQty").style.border = "1px solid #ddd";
+  document.getElementById("itemPrice").style.border = "1px solid #ddd";
+}
+
+resetBorders();
+
+document.addEventListener("keydown", function (e) {
+
+  // ONLY IF MODAL OPEN
+  if (isItemModalOpen) {
+
+    // ENTER = SAVE
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (!isSavingItem) {
+        saveItem();
+      }
+    }
+
+    // ESC = CLOSE
+    if (e.key === "Escape") {
+      closeItemModal();
+    }
+  }
+
+  // CTRL + N = OPEN MODAL
+  if (e.ctrlKey && e.key.toLowerCase() === "n") {
+    e.preventDefault();
+    openItemModal();
+  }
+
+});
+
 async function saveItem() {
+
+  if (isSavingItem) return;
+
+  const btn = document.getElementById("saveItemBtn");
+  const icon = document.getElementById("saveItemIcon");
+
   const nameInput = document.getElementById("itemName");
   const qtyInput = document.getElementById("itemQty");
   const priceInput = document.getElementById("itemPrice");
@@ -85,26 +131,41 @@ async function saveItem() {
     return;
   }
 
-  if (editItemId) {
-    // UPDATE
-    await fetch(`/items/${editItemId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ name, quantity, price })
-    });
-  } else {
-    // ADD
-    await fetch("/items", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ name, quantity, price })
-    });
-  }
+  isSavingItem = true;
 
-  closeItemModal();
-  loadItems();
+  // LOADING UI
+  btn.disabled = true;
+  icon.className = "fa-solid fa-spinner fa-spin";
+
+  try {
+
+    if (editItemId) {
+      await fetch(`/items/${editItemId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, quantity, price })
+      });
+    } else {
+      await fetch("/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, quantity, price })
+      });
+    }
+
+    
+    await loadItems();
+    await closeItemModal();
+    await finishLoading();
+
+  } finally {
+
+    isSavingItem = false;
+    btn.disabled = false;
+    icon.className = "fa-solid fa-floppy-disk";
+  }
 }
 
 
@@ -126,6 +187,7 @@ async function modifyItem(id) {
     document.getElementById("itemPrice").value = item.item_price || 0;
 
     openItemModal();
+    await finishLoading();
 
   } catch (err) {
     console.error(err);
@@ -153,11 +215,39 @@ async function deleteItem(id, name) {
   const data = await res.json();
 
   if (!data.success) {
-    alert(data.message); 
+    alert(data.message);
+    await finishLoading();
     return;
   }
 
-  loadItems();
+  await loadItems();
+  await finishLoading();
 }
 
-loadItems();
+
+
+
+async function init() {
+
+  try {
+
+    await loadItems();
+
+    await new Promise(resolve =>
+      requestAnimationFrame(() =>
+        requestAnimationFrame(resolve)
+      )
+    );
+
+  } catch (err) {
+
+    console.error(err);
+
+  } finally {
+
+    await finishLoading();
+
+  }
+}
+
+init();

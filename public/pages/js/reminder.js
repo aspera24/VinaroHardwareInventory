@@ -1,9 +1,10 @@
 let currentFilter = "all";
 
-function setFilter(filter) {
+async function setFilter(filter) {
     currentFilter = filter;
     setActiveTab(filter);
-    loadReminders();
+    await loadReminders();
+    await finishLoading();
 }
 
 function setActiveTab(filter) {
@@ -282,7 +283,11 @@ async function loadReminders() {
             </div>
         `;
     }
+
+    await finishLoading();
 }
+
+
 async function markComplete(id) {
 
     // STEP 1: create log first
@@ -304,10 +309,11 @@ async function markComplete(id) {
         credentials: "include"
     });
 
-    loadReminders();
+    await loadReminders();
+    await finishLoading();
 }
 
-function generateTodayLog(reminder) {
+async function generateTodayLog(reminder) {
     const today = new Date().toISOString().slice(0, 10);
 
     return fetch(`/reminders/generate-log`, {
@@ -321,6 +327,8 @@ function generateTodayLog(reminder) {
             occurrence_date: today
         })
     });
+
+    await finishLoading();
 }
 
 function formatTime(time) {
@@ -339,7 +347,8 @@ async function deleteReminder(id) {
         credentials: "include"
     });
 
-    loadReminders();
+    await loadReminders();
+    await finishLoading();
 }
 
 async function saveReminder() {
@@ -375,8 +384,9 @@ async function saveReminder() {
         body: JSON.stringify(data)
     });
 
-    closeReminderModal();
-    loadReminders();
+    await loadReminders();
+    await closeReminderModal();
+    await finishLoading();
 }
 
 
@@ -393,5 +403,32 @@ function closeReminderModal() {
     document.body.style.overflow = "";
 }
 
-setActiveTab("all");
-loadReminders();
+
+
+
+
+async function init() {
+
+    try {
+
+        setActiveTab("all");
+        await loadReminders();
+
+        await new Promise(resolve =>
+            requestAnimationFrame(() =>
+                requestAnimationFrame(resolve)
+            )
+        );
+
+    } catch (err) {
+
+        console.error(err);
+
+    } finally {
+
+        finishLoading();
+
+    }
+}
+
+init();
