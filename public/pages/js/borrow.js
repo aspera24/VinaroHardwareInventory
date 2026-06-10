@@ -134,6 +134,8 @@ async function searchBorrower(inputEl, suggestEl) {
       </a>
     `;
   }).join("");
+
+  await finishLoading();
 }
 
 // MAIN

@@ -68,5 +68,5 @@ app.get("/", (req, res) => {
    START SERVER
 ========================= */
 http.listen(4000, () =>
-  console.log("Server running on port 3000")
+  console.log("Server running on port 4000")
 );
