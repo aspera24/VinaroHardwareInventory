@@ -66,7 +66,8 @@ async function borrowItem() {
   document.getElementById("suggestBox").innerHTML = "";
 
   // reload data
-  loadBorrowPage();
+  await loadBorrowPage();
+  await finishLoading();
 }
 
 
@@ -337,7 +338,8 @@ async function deleteBorrowedItem(id, borrower) {
     credentials: "include"
   });
 
-  loadBorrowPage(); // reload table + dropdown
+  await loadBorrowPage(); // reload table + dropdown
+  finishLoading();
 }
 
 function datetimeformat(datetime) {
