@@ -28,6 +28,7 @@ body {
   position: relative;
   height: auto;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 html {
@@ -219,6 +220,7 @@ html {
 .page {
   max-width: calc(var(--pg-width) - 2 * var(--pg-gutter));
   margin: 0 auto;
+  /* padding: 25px; */
 }
 
 #modalTitle {
@@ -230,7 +232,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 10px;
+  border-radius: 18px;
 }
 
 th {
@@ -274,14 +276,14 @@ button {
 }
 
 .dataTables_length {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: 18px;
+  border-bottom-left-radius: 18px;
   padding-left: 10px;
 }
 
 .dataTables_filter {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
   justify-content: right;
   padding-right: 10px;
 }
