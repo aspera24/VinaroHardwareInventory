@@ -23,14 +23,25 @@ function formatReminderType(reminder) {
         case "weekly":
             return `${reminder.week_day || ""} • ${formatTime(reminder.reminder_time || "")}`;
         case "monthly":
-            return `Every ${reminder.month_day || ""}`;
+            return `Every ${reminder.month_day} • ${formatTime(reminder.reminder_time)}`;
         case "date_range":
-            return `${reminder.start_date || ""} - ${reminder.end_date || ""}`;
+            return `${formatDateOnly(reminder.start_date)} - ${formatDateOnly(reminder.end_date)}`;
         default:
             return reminder.start_date || "One Time";
     }
 }
 
+function formatDateOnly(date) {
+
+    if (!date) return "";
+
+    return new Date(date)
+        .toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+}
 
 function handleReminderType() {
     const type = document.getElementById("rType").value;
@@ -144,7 +155,33 @@ async function loadReminders() {
     const now = new Date();
     const today = new Date();
 
-    const todayStr = today.toISOString().split("T")[0];
+
+    function normalizeDate(dateValue) {
+
+        if (!dateValue) return "";
+
+        const d = new Date(dateValue);
+
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    }
+
+
+
+    function getLocalDateString() {
+        const d = new Date();
+
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    }
+
+    const todayStr = getLocalDateString();
     const todayDay = today.toLocaleString("en-US", {
         weekday: "long"
     });
@@ -175,15 +212,23 @@ async function loadReminders() {
             }
 
             else if (reminder.reminder_type === "one_time") {
-                show = reminder.start_date === todayStr;
+                show = normalizeDate(reminder.start_date)
             }
 
             else if (reminder.reminder_type === "date_range") {
 
-                const s = new Date(reminder.start_date);
-                const e = new Date(reminder.end_date);
+                const currentDate =
+                    new Date(getLocalDateString());
 
-                show = today >= s && today <= e;
+                const startDate =
+                    new Date(normalizeDate(reminder.start_date));
+
+                const endDate =
+                    new Date(normalizeDate(reminder.end_date));
+
+                show =
+                    currentDate >= startDate &&
+                    currentDate <= endDate;
             }
         }
 
@@ -205,10 +250,18 @@ async function loadReminders() {
                 reminder.start_date
             ) {
 
-                const dueDate = new Date(reminder.start_date);
+                const dueDate =
+                    new Date(
+                        normalizeDate(reminder.start_date)
+                    );
+
+                const currentDate =
+                    new Date(
+                        getLocalDateString()
+                    );
 
                 show =
-                    dueDate < now &&
+                    dueDate < currentDate &&
                     reminder.status !== "completed";
             }
         }

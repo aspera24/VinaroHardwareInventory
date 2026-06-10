@@ -706,7 +706,6 @@ module.exports = (io) => {
     );
   });
 
-
   // GET REMINDERS
   router.get("/reminders", requireAuth, (req, res) => {
     db.query(
@@ -753,7 +752,6 @@ module.exports = (io) => {
     );
   });
 
-
   router.post("/reminders/generate-log", requireAuth, (req, res) => {
     const { reminder_id, occurrence_date } = req.body;
 
@@ -773,7 +771,6 @@ module.exports = (io) => {
       }
     );
   });
-
 
   // GET COMPLETED REMINDERS HISTORY
   router.get("/reminder_logs", requireAuth, (req, res) => {
@@ -803,5 +800,7 @@ module.exports = (io) => {
     });
 
   });
+
+
   return router
 };
