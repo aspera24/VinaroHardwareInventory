@@ -351,3 +351,57 @@ button {
 .delete:hover {
   background: rgba(255, 51, 0, 0.227) !important;
 }
+
+
+
+/* For Modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modalContent {
+    width: 400px;
+    max-width: 95%;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modalHeader,
+.modalFooter {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modalFooter {
+    border-top: 1px solid #ddd;
+    border-bottom: none;
+}
+
+.modalBody {
+    padding: 15px;
+}
+
+.inputGroup {
+    margin-bottom: 15px;
+}
+
+.inputGroup label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 10px;
+}

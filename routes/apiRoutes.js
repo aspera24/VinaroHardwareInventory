@@ -802,5 +802,88 @@ module.exports = (io) => {
   });
 
 
+  router.get("/admin/:id", requireAuth, (req, res) => {
+
+    db.query(
+      `SELECT
+            id,
+            username,
+            fullName,
+            account_type
+         FROM admins
+         WHERE id = ?`,
+      [req.params.id],
+      (err, result) => {
+
+        if (err) {
+          return res.status(500).json(err);
+        }
+
+        if (!result.length) {
+          return res.status(404).json({
+            error: "Admin not found"
+          });
+        }
+
+        res.json(result[0]);
+      }
+    );
+
+  });
+
+  router.put("/admin/:id", requireAuth, (req, res) => {
+
+    const {
+      full_name,
+      username,
+      password
+    } = req.body;
+
+    if (password) {
+
+      db.query(
+        `UPDATE admins
+             SET fullName=?,
+                 username=?,
+                 password=?
+             WHERE id=?`,
+        [full_name, username, password, req.params.id],
+        (err) => {
+
+          if (err) {
+            return res.status(500).json(err);
+          }
+
+          res.json({
+            success: true
+          });
+
+        }
+      );
+
+    } else {
+
+      db.query(
+        `UPDATE admins
+             SET fullName=?
+             WHERE id=?`,
+        [full_name, username, req.params.id],
+        (err) => {
+
+          if (err) {
+            return res.status(500).json(err);
+          }
+
+          res.json({
+            success: true
+          });
+
+        }
+      );
+
+    }
+
+  });
+
   return router
 };

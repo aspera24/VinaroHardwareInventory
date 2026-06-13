@@ -41,13 +41,13 @@
                 BorrowTrack
             </a>
         </div>
-        <p id="adminName"></p>
+        <p id="adminName" style="cursor: pointer;"></p>
         <a class="logoutBtn" onclick="logout()">Logout</a>
     </header>
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        
+
         <div class="divider">
             <span>Main Option</span>
         </div>
@@ -91,6 +91,43 @@
     <main class="content">
         <div id="appContent"></div>
     </main>
+
+    <!-- ACCOUNT SETTINGS MODAL -->
+    <div id="accountModal" class="modal">
+        <div class="modalContent">
+
+            <div class="modalHeader">
+                <h3>Account Settings</h3>
+                <button onclick="closeAccountModal()">&times;</button>
+            </div>
+
+            <div class="modalBody">
+
+                <div class="inputGroup">
+                    <label>Full Name</label>
+                    <input type="text" id="accountFullName">
+                </div>
+
+                <div class="inputGroup">
+                    <label>Username</label>
+                    <input type="text" id="accountUsername">
+                </div>
+
+                <div class="inputGroup">
+                    <label>New Password</label>
+                    <input type="password" id="accountPassword" placeholder="Leave blank if no change">
+                </div>
+
+            </div>
+
+            <div class="modalFooter">
+                <button onclick="saveAccountSettings()">
+                    Save Changes
+                </button>
+            </div>
+
+        </div>
+    </div>
 
     <script src="/app.js"></script>
 </body>

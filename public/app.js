@@ -1,6 +1,89 @@
 if (window.location.pathname.startsWith("/auth")) {
     console.log("Auth page detected, skipping app.js");
 } else {
+    document.getElementById("adminName").addEventListener("click", () => {
+        openAccountModal();
+    });
+
+    async function openAccountModal() {
+
+        document.getElementById("accountModal").classList.add("show");
+
+        try {
+
+            const id = localStorage.getItem("id");
+
+            const res = await fetch(`/admin/${id}`);
+            const data = await res.json();
+
+            document.getElementById("accountFullName").value = data.fullName;
+            document.getElementById("accountUsername").value = data.username;
+            document.getElementById("accountPassword").value = "";
+
+        } catch (err) {
+            console.error(err);
+            alert("Failed to load account");
+        }
+
+    }
+
+    function closeAccountModal() {
+        document.getElementById("accountModal").classList.remove("show");
+    }
+
+    window.saveAccountSettings = async function () {
+
+        const id = localStorage.getItem("id");
+
+        const full_name =
+            document.getElementById("accountFullName").value.trim();
+
+        const username =
+            document.getElementById("accountUsername").value.trim();
+
+        const password =
+            document.getElementById("accountPassword").value.trim();
+
+        try {
+
+            const res = await fetch(`/admin/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    full_name,
+                    username,
+                    password
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error);
+            }
+
+            localStorage.setItem("fullName", full_name);
+
+            document.getElementById("adminName").textContent =
+                "Hi, " + full_name.split(" ")[0] + "!";
+
+            alert("Account updated");
+
+            closeAccountModal();
+
+        } catch (err) {
+
+            console.error(err);
+            alert(err.message);
+
+        }
+
+    }
+
+
+
     const loader = document.getElementById("topLoader");
 
     let loaderInterval;
@@ -16,10 +99,7 @@ if (window.location.pathname.startsWith("/auth")) {
         let width = 0;
 
         loaderInterval = setInterval(() => {
-
-            // hinay hinay increase
-            // pero dili moabot 100%
-
+            
             if (width < 90) {
 
                 // dynamic speed
