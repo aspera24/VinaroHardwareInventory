@@ -1,4 +1,4 @@
-/* DEFAULT: visible on desktop */
+
 .sidebar.hide {
     transform: translateX(-100%);
 }
@@ -9,4 +9,36 @@
 
 .content.slide {
     margin-left: 0;
+}
+
+@media (max-width: 1400px) {
+    #logsTableUI td {
+        font-size: 11px;
+    }
+
+    #logsTableUI td span {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 1000px) {
+    #logsTableUI th {
+        font-size: 8px;
+    }
+
+    #logsTableUI td {
+        font-size: 6px;
+    }
+
+    #logsTableUI td span {
+        font-size: 6px;
+    }
+
+    #borrowerTableUI th {
+        font-size: 8px !important;
+    }
+
+    #borrowerTableUI td {
+        font-size: 6px !important;
+    }
 }

@@ -148,8 +148,8 @@ async function loadBorrowersTable() {
   // INIT ONLY ONCE
   if (!window.borrowerTable) {
     window.borrowerTable = $("#borrowerTableUI").DataTable({
-      pageLength: 5,
-      lengthMenu: [5, 10, 15, 20],
+      pageLength: 10,
+      lengthMenu: [10, 15, 25, 50, 100],
       responsive: true,
       autoWidth: false,
       pagingType: 'simple',

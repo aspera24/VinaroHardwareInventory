@@ -330,7 +330,7 @@ if (window.location.pathname.startsWith("/auth")) {
     const menu = document.querySelector(".menuBtn");
 
     function handleSidebarResize() {
-        if (window.innerWidth <= 1040) {
+        if (window.innerWidth <= 1300) {
             sidebar.classList.add("hide"); // auto hide
             content.classList.add("slide");
             menu.classList.remove("hide");
